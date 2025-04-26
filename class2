@@ -1,0 +1,95 @@
+Class 2 26/04/2025
+
+Types of OS:
+1) Single User - Single Tasking Operating System Ex:MS-DOS
+2) Single User - Multitasking Operating System Ex: win-98, Win-7
+3) Multi User - Multitasking Operating System Ex: Unix, Linux
+
+Origin of UNIX?
+First Code of the OS, Configured from C Launguage, 1969 Dennis Ritch and Ken Thomson at & Labs
+
+64 OS intruduced from UNIX
+
+Sun 10Develop Unix====> Solaris OS + Hardware + support	Medium	60$	75%availabulity
+IBM 10Developers Unix ====> AIX + Hardware + support	High	100$	100%availabulity
+HP 10Developers Unix =====> HpUx + Hardware + support   Cheep	30$	50%availabulity
+
+Linus Thorvalds Unix ========> Linux 1991
+
+Origin of Linux?
+RedHat 10Developer Linux ===> RedHat Linux OS + HP + support
+Fedora 10Developer Linux ===> Fedora
+Kali 10Developer Linux ===> Kali Linux
+Suse 10Developer Linux ===> SuseLinux
+Oracle 10Developer Linux ===> Oracle Enterprise Linux (OEL)
+
+Server Environments:
+Production: Live application in internet and will generate revenew
+Testing: Non-Live application which is used for test the modifications and enhansments
+Development: To do the Troubleshooing and develop new features
+
+ARCHITECTURE OF UNIX/Linux/OS?
+1) Hardware, 2) OS/Kernel/system, 3) SHell, 4) Utilities 5) Users
+
+FILESYSTEM HIERARCHY SYSTEM ?
+/	This is top level directory 
+   	It is parent directory for all other directories 
+   	It is called as ROOT directory 
+   	It is represented by forward slash (/) 
+   	C:\ of windows  
+  
+/root  it is home directory for root user (super user) 
+   	It provides working environment for root user 
+   	C:\Documents and Settings\Administrator 
+ 
+/home  it is home directory for other users 
+     	It provide working environment for other users (other than root) 
+   	c:\Documents and Settings\username 
+  
+/boot  it contains bootable files for Linux 
+   	Like vmlinuz (kernel)..... ntoskrnl 
+   	Initrd (INITial Ram Disk)and 
+   	GRUB (GRand Unified Boot loader)....  boot.ini, ntldr 
+ 
+/etc  it contains all configuration files 
+   	Like /etc/passwd.....  User info 
+    	/etc/resolv.conf... Preferred DNS 
+    	/etc/dhcpd.conf.... DHCP server 
+   	C:\windows\system32\dirvers\ 
+ 
+/usr  by default soft wares are installed in /usr directory 
+   	(UNIX Sharable Resources) 
+   	c:\program files 
+ 
+/opt  It is optional directory for /usr 
+   	It contains third party softwares 
+   	c:\program files 
+ 
+/bin  it contains commands used by all users 
+   	(Binary files) 
+  
+/sbin  it contains commands used by only Super User (root) 
+   	(Super user's binary files) 
+
+/dev  it contains device files 
+   	Like  /dev/hda  ... for hard disk 
+   	/dev/cd rom ... for cd rom 
+   	Similar to device manager of windows 
+ 
+/proc  it contain process files 
+   	Its contents are not permanent, they keep changing 
+   	It is also called as Virtual Directory 
+   	Its file contain useful information used by OS 
+   	like /proc/meminfo ... information of RAM/SWAP 
+   	/proc/cpuinfo ... information of CPU 
+ 
+/var  it is containing variable data like mails, log files 
+   
+/mnt  it is default mount point for any partition 
+   	It is empty by default 
+ 
+/media it contains all of removable media like CD-ROM, pen drive 
+   
+/lib  it contains library files which are used by OS 
+   	It is similar to dll files of windows 
+   	Library files in Linux are SO (shared object) files 
