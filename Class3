@@ -119,3 +119,7 @@ If the file is already existed and used >> it will append the data and keep the 
 	 21:21:49 up 45 min,  2 users,  load average: 0.00, 0.03, 0.05
 	Linux gvnkansiblesrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 		x86_64 x86_64 GNU/Linux
 	[root@gvnkansiblesrv tmp]#
+
+
+
+goto /tmp directory and create 30 files
