@@ -1,0 +1,121 @@
+Class 3 29/04/2025
+
+Launching Instance in AWS linux7srv1
+Connected the server and hit below command to switch root account
+ec2-user@ip-172.29.132.233$ sudo su -
+root@ip-172.29.132.233#
+
+Basic Commands:
+
+uname -a : This command will provide the details of OS type, Fully Qualified Domain name and Kernel Version
+
+	[root@gvnkansiblesrv ~]# uname -a
+	Linux gvnkansiblesrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 	x86_64 x86_64 GNU/Linux
+	[root@gvnkansiblesrv ~]#
+
+uptime: This command will provide the information of server date, Life time, Login users info and load average
+
+	[root@gvnkansiblesrv ~]# uptime
+	 20:51:13 up 14 min,  2 users,  load average: 0.02, 0.06, 0.05
+	[root@gvnkansiblesrv ~]#
+
+
+pwd: Present working directory path
+
+	[root@gvnkansiblesrv log]# pwd
+	/var/log
+	[root@gvnkansiblesrv log]#
+
+
+ls: list of files and directories in current directory
+
+ls -l: Details list of files and directories in current directory
+
+	[root@gvnkansiblesrv log]# cd audit
+	[root@gvnkansiblesrv audit]# pwd
+	/var/log/audit
+	[root@gvnkansiblesrv audit]# ls
+	audit.log
+	[root@gvnkansiblesrv audit]# ls -l
+	total 6904
+	-rw-------. 1 root root 7065094 Apr 29 20:51 audit.log
+	[root@gvnkansiblesrv audit]#
+
+
+cd: change Directory it will switch the directory as per your specifications
+
+cd ..: Switch the back directory
+
+	[root@gvnkansiblesrv audit]# pwd
+	/var/log/audit
+	[root@gvnkansiblesrv audit]#
+	[root@gvnkansiblesrv audit]# cd ..
+	[root@gvnkansiblesrv log]# pwd
+	/var/log
+	[root@gvnkansiblesrv log]# cd ..
+	[root@gvnkansiblesrv var]# pwd
+	/var
+	[root@gvnkansiblesrv var]#
+
+
+cd ../..: Switch back to 2 directories
+
+cd -: Switch back to previous directory
+
+	[root@gvnkansiblesrv sbin]# pwd
+	/usr/local/sbin
+	[root@gvnkansiblesrv sbin]#
+	[root@gvnkansiblesrv sbin]# cd -
+	/var/log
+	[root@gvnkansiblesrv log]#
+	[root@gvnkansiblesrv log]#
+	[root@gvnkansiblesrv log]# pwd
+	/var/log
+	[root@gvnkansiblesrv log]# cd -
+	/usr/local/sbin
+	[root@gvnkansiblesrv sbin]#
+
+
+cd directory: switch the specified directory
+
+cat filename: This will view the contet of the file
+
+
+	[root@gvnkansiblesrv tmp]# cat srvinfo
+	 21:21:49 up 45 min,  2 users,  load average: 0.00, 0.03, 0.05
+	Linux gvnkansiblesrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 	x86_64 x86_64 GNU/Linux
+	[root@gvnkansiblesrv tmp]#
+
+
+cat > filename ctl+d
+cat >> filename ctl+d
+cat file1 > file2
+cat file3 >> file4
+command > finame
+command >> filename
+
+Create a file if the file is not existed.
+
+If the file is already existed and used > it will override the date and keep the new data
+
+	[root@gvnkansiblesrv tmp]# cat srvinfo
+	Linux gvnkansiblesrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 	x86_64 x86_64 GNU/Linux
+	[root@gvnkansiblesrv tmp]#
+	[root@gvnkansiblesrv tmp]# uptime > srvinfo
+	[root@gvnkansiblesrv tmp]#
+	[root@gvnkansiblesrv tmp]# cat srvinfo
+	 21:21:49 up 45 min,  2 users,  load average: 0.00, 0.03, 0.05
+	[root@gvnkansiblesrv tmp]#
+
+
+If the file is already existed and used >> it will append the data and keep the new data along with old data
+
+	[root@gvnkansiblesrv tmp]# cat srvinfo
+	 21:21:49 up 45 min,  2 users,  load average: 0.00, 0.03, 0.05
+	[root@gvnkansiblesrv tmp]#
+	[root@gvnkansiblesrv tmp]# uname -a >> srvinfo
+	[root@gvnkansiblesrv tmp]#
+	[root@gvnkansiblesrv tmp]# cat srvinfo
+	 21:21:49 up 45 min,  2 users,  load average: 0.00, 0.03, 0.05
+	Linux gvnkansiblesrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 		x86_64 x86_64 GNU/Linux
+	[root@gvnkansiblesrv tmp]#
