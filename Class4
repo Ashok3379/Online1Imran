@@ -1,0 +1,1053 @@
+Class 4 30/04/2025
+
+Basic Commands:
+==============
+
+ls ====> List of file and directories in current directory
+ls -l ====> detail information of the files and directories in current directory
+ls -li ===> the output shows details information along with Inode number
+ls -la =====> the output shows details information along with hidden files and directories
+ls -lR =====> It will provide the detail information of the files and directories along with sub directories
+ls -l directory name/directory path =====> the details information shown of the specified directory
+ls -ld directory name/directory path =====> details information of the specified directory
+
+mkdir directoryname ===> to create directory
+rmdir directoryname ====> to remove directory, but it should be emapty
+rm filename ======> this will remove the file with prompting confirmation
+rm -f file name  ====> this command remove the file with out asking confirmation
+rm -rf directory =====> This command removed the specified directory even though it's having files and directories
+rm -rf * ======> this command will remove all the files and directories in current directory
+
+cp source destination ======> this command copy the specified file from source to destination
+cp -p source destination ===> this command copy the specified file from source to destination along with timestamp
+cp -r source destination ====> this command copy the specified directory from source to destination
+cp -rp source destination =====> ths command copy the specified directory from source to destination with same timestamp
+
+Lab Session:
+============
+IPL-2025
+1) League
+	SRH ===captain, players
+	RCB ===captain, players
+	CSK ===captain, players
+	PBKS ===captain, players
+	KKR ===captain, players
+	MI ===captain, players
+	RR ===captain, players
+	DC ===captain, players
+2) Semifinal (without time stamp)
+	CSK ===captain, players
+	PBKS ===captain, players
+	KKR ===captain, players
+	MI ===captain, players
+3) Final (with time stamp)
+	PBKS ===captain, players
+	KKR ===captain, players
+
+
+
+Putty Outputs of Class
+========================
+
+Network error: Connection timed out
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+
+Network error: Connection timed out
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Thu May  1 18:54:58 2025
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# uname -a
+Linux gvnkansiblesrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 x86_64 x86_64 GNU/Linux
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /tmp/
+[root@gvnkansiblesrv tmp]# ls -lrt
+total 20
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cat file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls
+file1      gvnk               systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+file2      gvnkch             systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+file3      hsperfdata_tomcat  systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+file3.bkp  kumar
+ganaimp    srvinfo
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls
+file1      gvnk               systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+file2      gvnkch             systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+file3      hsperfdata_tomcat  systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+file3.bkp  kumar
+ganaimp    srvinfo
+[root@gvnkansiblesrv tmp]# cat file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -li
+total 20
+ 33554898 -rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+ 33554901 -rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+ 33554911 -rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+ 34127559 -rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+102184261 drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+102182155 drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+102182150 drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+101803684 drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+  8589971 dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+ 34127561 -rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+102185449 drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+  8455293 drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+  8467042 drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -la
+total 28
+drwxrwxrwt. 15 root   root   4096 May  1 19:34 .
+dr-xr-xr-x. 21 root   root   4096 Jul 10  2024 ..
+-rw-r--r--   1 root   root     89 Apr 29 21:14 file1
+-rw-r--r--   1 root   root     74 Apr 29 21:14 file2
+-rw-r--r--   1 root   root     74 Apr 29 21:18 file3
+-rw-r--r--   1 root   root     74 Apr 29 21:19 file3.bkp
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .font-unix
+drwxr-xr-x   3 root   root     18 May 29  2024 ganaimp
+drwxr-xr-x   3 root   root     18 May 29  2024 gvnk
+drwxr-xr-x   4 root   root     42 May 29  2024 gvnkch
+drwxr-xr-x   2 tomcat tomcat   18 May  1 18:53 hsperfdata_tomcat
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .ICE-unix
+dr-xr-xr-x   3 root   root    106 May 29  2024 kumar
+-rw-r--r--   1 root   root    178 Apr 29 21:22 srvinfo
+drwx------   3 root   root     17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------   3 root   root     17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------   3 root   root     17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .Test-unix
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .X11-unix
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .XIM-unix
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cat > .ashok
+hi this is ashok
+creating a new hidden file
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]# ls -la
+total 32
+drwxrwxrwt. 15 root   root   4096 May  1 19:40 .
+dr-xr-xr-x. 21 root   root   4096 Jul 10  2024 ..
+-rw-r--r--   1 root   root     44 May  1 19:41 .ashok
+-rw-r--r--   1 root   root     89 Apr 29 21:14 file1
+-rw-r--r--   1 root   root     74 Apr 29 21:14 file2
+-rw-r--r--   1 root   root     74 Apr 29 21:18 file3
+-rw-r--r--   1 root   root     74 Apr 29 21:19 file3.bkp
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .font-unix
+drwxr-xr-x   3 root   root     18 May 29  2024 ganaimp
+drwxr-xr-x   3 root   root     18 May 29  2024 gvnk
+drwxr-xr-x   4 root   root     42 May 29  2024 gvnkch
+drwxr-xr-x   2 tomcat tomcat   18 May  1 18:53 hsperfdata_tomcat
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .ICE-unix
+dr-xr-xr-x   3 root   root    106 May 29  2024 kumar
+-rw-r--r--   1 root   root    178 Apr 29 21:22 srvinfo
+drwx------   3 root   root     17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------   3 root   root     17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------   3 root   root     17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .Test-unix
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .X11-unix
+drwxrwxrwt.  2 root   root      6 Apr 29  2024 .XIM-unix
+[root@gvnkansiblesrv tmp]# cat .ashok
+hi this is ashok
+creating a new hidden file
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -lR
+.:
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+
+./ganaimp:
+total 0
+
+./gvnk:
+total 0
+
+./gvnkch:
+total 0
+drwxrwxrwx 3 root root 27 May 29  2024 ansible-playbook
+
+./gvnkch/ansible-playbook:
+total 0
+drwxr-xr-x 3 root root 25 May 25  2024 ansible-repo1
+
+./gvnkch/ansible-playbook/ansible-repo1:
+total 0
+drwxr-xr-x 3 root root 18 May 25  2024 ansiblerole
+
+./gvnkch/ansible-playbook/ansible-repo1/ansiblerole:
+total 0
+
+./hsperfdata_tomcat:
+total 32
+-rw------- 1 tomcat tomcat 32768 May  1 19:42 1086
+
+./kumar:
+total 85692
+-rw-r--r-- 1 root root 87748464 May 28  2024 boot.tar.gz
+-rw-r--r-- 1 root root        0 May 29  2024 gitconfig.yml
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU:
+total 0
+drwxrwxrwt 2 root root 6 May  1 18:53 tmp
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU/tmp:
+total 0
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2:
+total 0
+drwxrwxrwt 2 root root 6 May  1 18:53 tmp
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2/tmp:
+total 0
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB:
+total 0
+drwxrwxrwt 3 root root 25 May  1 18:53 tmp
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB/tmp:
+total 0
+drwx------ 2 root root 6 May  1 18:53 vmware-root
+
+./systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB/tmp/vmware-root:
+total 0
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd hsperfdata_tomcat
+[root@gvnkansiblesrv hsperfdata_tomcat]# ls -l
+total 32
+-rw------- 1 tomcat tomcat 32768 May  1 19:46 1086
+[root@gvnkansiblesrv hsperfdata_tomcat]#
+[root@gvnkansiblesrv hsperfdata_tomcat]# cd ..
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l hsperfdata_tomcat
+total 32
+-rw------- 1 tomcat tomcat 32768 May  1 19:47 1086
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l /tmp
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]# ls -ld /tmp
+drwxrwxrwt. 15 root root 4096 May  1 19:40 /tmp
+[root@gvnkansiblesrv tmp]# ls -ld /etc/ssh
+drwxr-xr-x. 2 root root 225 Apr 29  2024 /etc/ssh
+[root@gvnkansiblesrv tmp]# ls -l /etc/ssh
+total 604
+-rw-r--r--. 1 root root     581843 Sep 13  2017 moduli
+-rw-r--r--. 1 root root       2276 Sep 13  2017 ssh_config
+-rw-------. 1 root root       3907 Sep 13  2017 sshd_config
+-rw-r-----. 1 root ssh_keys    227 Apr 29  2024 ssh_host_ecdsa_key
+-rw-r--r--. 1 root root        162 Apr 29  2024 ssh_host_ecdsa_key.pub
+-rw-r-----. 1 root ssh_keys    387 Apr 29  2024 ssh_host_ed25519_key
+-rw-r--r--. 1 root root         82 Apr 29  2024 ssh_host_ed25519_key.pub
+-rw-r-----. 1 root ssh_keys   1679 Apr 29  2024 ssh_host_rsa_key
+-rw-r--r--. 1 root root        382 Apr 29  2024 ssh_host_rsa_key.pub
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls
+file1      gvnk               systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+file2      gvnkch             systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+file3      hsperfdata_tomcat  systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+file3.bkp  kumar
+ganaimp    srvinfo
+[root@gvnkansiblesrv tmp]# mkdir imran
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root     6 May  1 19:52 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# date
+Thu May  1 19:54:25 IST 2025
+[root@gvnkansiblesrv tmp]# cd imran
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cat > file34
+n;iIDvnojsd
+jdvisrhoMSD
+KDbvouash
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 34 May  1 19:55 file34
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root    20 May  1 19:55 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# rmdir imran
+rmdir: failed to remove ‘imran’: Directory not empty
+[root@gvnkansiblesrv tmp]# cd imran
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 34 May  1 19:55 file34
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# rm file34
+rm: remove regular file ‘file34’? yes
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root     6 May  1 19:56 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]# rmdir imran
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]# mkdir imran
+[root@gvnkansiblesrv tmp]# cd imran/
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]# cat > file88
+.dhbluhaDNcjdsjscbbdc
+>KHbfgiyBAC
+KABD;Iw
+akdhbfljhDOQSDBVLUYAHSDC
+
+[root@gvnkansiblesrv imran]# LS -L
+-bash: LS: command not found
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 68 May  1 20:00 file88
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# rm file88
+rm: remove regular file ‘file88’? n
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 68 May  1 20:00 file88
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# rm -f file88
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cat > file22
+,jhdbiyhsDbc
+.KCHBV;IYSAFH
+KzdhBVIASR
+ZDBVIYZFH
+zkrbgiyrhnva;rb
+
+jn
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 68 May  1 20:02 file22
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root    20 May  1 20:02 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# rm -rf imran
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# mkdir imran
+[root@gvnkansiblesrv tmp]# cd imran/
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cat > 33
+kschdbhurfbvisdnc
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cat > 44
+kshcbfvuhfsvgsv
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cat > 55
+.SBfvuhsrgin
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cat > 66
+.kndbvhbSI
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l
+total 16
+-rw-r--r-- 1 root root 18 May  1 20:05 33
+-rw-r--r-- 1 root root 16 May  1 20:05 44
+-rw-r--r-- 1 root root 13 May  1 20:05 55
+-rw-r--r-- 1 root root 12 May  1 20:06 66
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root    46 May  1 20:06 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd imran
+[root@gvnkansiblesrv imran]# ls -l
+total 16
+-rw-r--r-- 1 root root 18 May  1 20:05 33
+-rw-r--r-- 1 root root 16 May  1 20:05 44
+-rw-r--r-- 1 root root 13 May  1 20:05 55
+-rw-r--r-- 1 root root 12 May  1 20:06 66
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# pwd
+/tmp/imran
+[root@gvnkansiblesrv imran]# rm -rf *
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls
+ansible-playbook  bin   dev  home  lib64  mnt        opt   root  sbin  sys  usr  webdata1
+ansiroles         boot  etc  lib   media  nohup.out  proc  run   srv   tmp  var  webdata2
+[root@gvnkansiblesrv /]# cd tmp
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root     6 May  1 20:07 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd /home
+[root@gvnkansiblesrv home]# ls -l
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 2 ashok     ashok      76 May  1  2024 ashok
+drwx------ 2 gvnk      gvnk       76 May  9  2024 gvnk
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# cd ashok/
+[root@gvnkansiblesrv ashok]# ls -l
+total 0
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# pwd
+/home/ashok
+[root@gvnkansiblesrv ashok]# cp /tmp/imran /home/ashok
+cp: omitting directory ‘/tmp/imran’
+[root@gvnkansiblesrv ashok]# cp /tmp/file1 /home/ashok
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 May  1 20:13 file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cat file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cat /tmp/file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 May  1 20:13 file1
+[root@gvnkansiblesrv ashok]# date
+Thu May  1 20:15:25 IST 2025
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 May  1 20:13 file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# rm -f file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 0
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cp -p /tmp/file1 /home/ashok
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+[root@gvnkansiblesrv ashok]# date
+Thu May  1 20:16:35 IST 2025
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cd /tmp/
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root     6 May  1 20:07 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l imran/
+total 0
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd imran/
+[root@gvnkansiblesrv imran]# cat > file55
+jhsdbchsbd
+jdhbcusv
+kzhbvisf
+sldjbvrso
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 39 May  1 20:18 file55
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 1 root   root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root   root    74 Apr 29 21:14 file2
+-rw-r--r-- 1 root   root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root   root    74 Apr 29 21:19 file3.bkp
+drwxr-xr-x 3 root   root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root    18 May 29  2024 gvnk
+drwxr-xr-x 4 root   root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat tomcat  18 May  1 18:53 hsperfdata_tomcat
+drwxr-xr-x 2 root   root    20 May  1 20:18 imran
+dr-xr-xr-x 3 root   root   106 May 29  2024 kumar
+-rw-r--r-- 1 root   root   178 Apr 29 21:22 srvinfo
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-httpd.service-ckjrJU
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vgauthd.service-aJWXv2
+drwx------ 3 root   root    17 May  1 18:53 systemd-private-f2301839611d4c55894cc80826ba36d3-vmtoolsd.service-ffhDbB
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd /home/ash
+-bash: cd: /home/ash: No such file or directory
+[root@gvnkansiblesrv tmp]# cd /home/ashok/
+[root@gvnkansiblesrv ashok]# ls -lrt
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cp -r /tmp/imran /home/ashok
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+drwxr-xr-x 2 root root 20 May  1 20:19 imran
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cd imran/
+[root@gvnkansiblesrv imran]# ls -l
+total 4
+-rw-r--r-- 1 root root 39 May  1 20:19 file55
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+drwxr-xr-x 2 root root 20 May  1 20:19 imran
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# rm -rf imran
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cp -pr /tmp/imran /home/ashok
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+drwxr-xr-x 2 root root 20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]# date
+Thu May  1 20:21:12 IST 2025
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+drwxr-xr-x 2 root root 20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cp -p file1 /var/tmp
+[root@gvnkansiblesrv ashok]# ls -l /var/tmp/file1
+-rw-r--r-- 1 root root 89 Apr 29 21:14 /var/tmp/file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cat >> file1
+jhfdbviyhshvf
+FHBvuof
+Fvbof
+lsjfnbputbpirv
+lfjnbouadvs
+jlfnb ojadtb
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cat fil1
+cat: fil1: No such file or directory
+[root@gvnkansiblesrv ashok]# cat file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+jhfdbviyhshvf
+FHBvuof
+Fvbof
+lsjfnbputbpirv
+lfjnbouadvs
+jlfnb ojadtb
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 157 May  1 20:26 file1
+drwxr-xr-x 2 root root  20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cat > file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 May  1 20:27 file1
+drwxr-xr-x 2 root root 20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]# cat file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 May  1 20:27 file1
+drwxr-xr-x 2 root root 20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]# rm -f file1
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# ls -l
+total 0
+drwxr-xr-x 2 root root 20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]# cp -p /var/tmp/file1 /home/ashok
+[root@gvnkansiblesrv ashok]# ls -l
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+drwxr-xr-x 2 root root 20 May  1 20:18 imran
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# cat file1
+SIUsDCHBDC
+SAIA;UHNsm KJDSNVm FJVNL
+MZjDHVS lJNFZOIVMS
+ZKVIAN LZDnPVIF
+ZX KJVSHIRUNSDLKV
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# pwd
+/home/ashok
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]# /app/home/ashok
+-bash: /app/home/ashok: No such file or directory
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
+[root@gvnkansiblesrv ashok]#
