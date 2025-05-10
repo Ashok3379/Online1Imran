@@ -1,0 +1,1100 @@
+Class 9 10/05/2025
+
+User attributes modification:
+=============================
+
+* usermod <option> <arguments> <username> 
+
+[root@gvnkansiblesrv ~]# grep -i imran /etc/passwd
+imran:x:1490:1200:imran@google.com:/home/imran:/bin/bash
+[root@gvnkansiblesrv ~]#
+
+# id username ======> To check users tagged primary and secondar groups
+# usermod -g newGID username ===> This command is used for modify user primary group
+# usermod -G oldGId,NewGID... username ====> This command is used for modify user secondarygroups
+# usermod -d NewHomeDirectory username ====> This command is used for modify user homedirectory
+	# mkdir NewHomeDirectory
+	# chown ownername:groupname username
+	# chmod 700 NewHomeDirectory
+	# cp -pr oldhomedirectory/* NewHomeDirectory/
+# usermod -c NewComment username ======> This command is used for modify user comment field
+# usermod -l NewUsername currentusername =====> This command is used for modify username
+	# usermod -c "newUserinformation" username
+	# usermod -d NewuserHomeDirectory username
+	# mv oldusernamehomedirectory newusernamehomedirectory
+# usermod -u NewUID username ======> This command is used for modify user UID
+# usermod -s newshell username =====> This command is used for modify user shell
+
+# usermod -L username ======> This command is used for lock the account
+# usermod -U username ======> This command is used for unlock the account
+
+[root@gvnkansiblesrv ~]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:ashokk@yahoo.com:/export/home/ashokk:/bin/sh
+[root@gvnkansiblesrv ~]#
+
+# userdel username  =====> This command is used to remove the user without home directory
+# userdel -r username =====> This command is used to remove the user along home directory
+
+Group attributes modification:
+==============================
+
+* groupmod <option> <arguments> <groupname> 
+
+# groupmod -n NewGroupname groupname ======> This command is used for modify groupname
+# groupmod -g NewGID groupname ======> This command is used for modify groupID
+
+Adding single or multiple users to the group: 
+=============================================
+
+* gpasswd < option> <arguments> <group name> 
+
+# gpasswd -M username,username,username groupname =======> This command is used to tag a new secondary group to all users at once
+# gpasswd -a username groupname =======> This command is used to tag a new secondary group to specified user 
+# gpasswd -d username groupname =======> This command is used to remove secondary group to specified user
+
+# groupdel groupname ====> This command is used to remove the group
+
+Remote Account Setup Used Softwares:
+====================================
+1) NIS (Naming Information Service) Unix
+2) LDAP (Lightweight Directory Access Protocol) Windows
+3) AD (Active Directory) Windows
+4) RBAC (Role-Based Access Control) Windows
+
+
+Class Session Logs:
+====================
+
+Network error: Connection timed out
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+
+Network error: Connection timed out
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Fri May  9 19:03:28 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i imran /etc/passwd
+imran:x:1490:1200:imran@google.com:/home/imran:/bin/bash
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i imran /etc/group
+[root@gvnkansiblesrv ~]# grep -i admins /etc/group
+admins:x:1200:
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id imran
+uid=1490(imran) gid=1200(admins) groups=1200(admins)
+[root@gvnkansiblesrv ~]# tail /etc/group
+ansiadmin:x:1000:
+ashok:x:5200:
+rpc:x:32:
+rpcuser:x:29:
+nfsnobody:x:65534:
+admin:x:5301:
+gvnk:x:5302:
+apache:x:48:
+tomcat:x:91:
+admins:x:1200:
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -g 5200 imran
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# su - imran
+Last login: Fri May  9 20:15:26 IST 2025 from 192.168.29.79 on pts/2
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ cd /tmp/
+[imran@gvnkansiblesrv tmp]$ ls -l
+total 20
+-rw-r--r-- 3 root      root    14 May  5 19:46 file
+-rw-r--r-- 1 root      root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root      root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root      root     0 May  2 19:52 file33
+-rw-r--r-- 1 root      root    10 May  2 19:52 file34
+lrwxrwxrwx 1 root      root    27 May  5 19:37 file55 -> /home/ashok/imran_md/file55
+drwxr-xr-x 3 root      root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root      root    18 May 29  2024 gvnk
+-rw-rw-r-- 1 gvnk      gvnk    21 May  7 19:46 gvnk1
+drwxr-xr-x 4 root      root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat    tomcat  18 May 10 18:44 hsperfdata_tomcat
+drwxr-xr-x 2 imran     admins   6 May  7 20:51 imrandir1
+-rw-r--r-- 1 imran     admins   0 May  7 20:51 imranfile23
+dr-xr-xr-x 3 root      root   128 May  5 20:42 kumar
+drwxr-xr-x 3 root      root    21 May  5 19:42 oracle
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-httpd.service-tAoI4L
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-vgauthd.service-OrieUo
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-vmtoolsd.service-CGufRs
+drwxr-xr-x 2 unixuser1 admins   6 May  7 20:36 unixdir1
+-rw-r--r-- 1 unixuser1 admins   0 May  7 20:36 unixfile23
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$ mkdir newdir22
+[imran@gvnkansiblesrv tmp]$ touch newfile22
+[imran@gvnkansiblesrv tmp]$ ls -l
+total 20
+-rw-r--r-- 3 root      root    14 May  5 19:46 file
+-rw-r--r-- 1 root      root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root      root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root      root     0 May  2 19:52 file33
+-rw-r--r-- 1 root      root    10 May  2 19:52 file34
+lrwxrwxrwx 1 root      root    27 May  5 19:37 file55 -> /home/ashok/imran_md/file55
+drwxr-xr-x 3 root      root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root      root    18 May 29  2024 gvnk
+-rw-rw-r-- 1 gvnk      gvnk    21 May  7 19:46 gvnk1
+drwxr-xr-x 4 root      root    42 May 29  2024 gvnkch
+drwxr-xr-x 2 tomcat    tomcat  18 May 10 18:44 hsperfdata_tomcat
+drwxr-xr-x 2 imran     admins   6 May  7 20:51 imrandir1
+-rw-r--r-- 1 imran     admins   0 May  7 20:51 imranfile23
+dr-xr-xr-x 3 root      root   128 May  5 20:42 kumar
+drwxr-xr-x 2 imran     ashok    6 May 10 19:11 newdir22
+-rw-r--r-- 1 imran     ashok    0 May 10 19:11 newfile22
+drwxr-xr-x 3 root      root    21 May  5 19:42 oracle
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-httpd.service-tAoI4L
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-vgauthd.service-OrieUo
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-vmtoolsd.service-CGufRs
+drwxr-xr-x 2 unixuser1 admins   6 May  7 20:36 unixdir1
+-rw-r--r-- 1 unixuser1 admins   0 May  7 20:36 unixfile23
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$ grep -i imran /etc/passwd
+imran:x:1490:5200:imran@google.com:/home/imran:/bin/bash
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$ cd tomcat
+-bash: cd: tomcat: No such file or directory
+[imran@gvnkansiblesrv tmp]$ cd hsperfdata_tomcat
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ ls -l
+total 32
+-rw------- 1 tomcat tomcat 32768 May 10 19:13 1091
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ mkdir dir1
+mkdir: cannot create directory ‘dir1’: Permission denied
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ ls -l
+total 32
+-rw------- 1 tomcat tomcat 32768 May 10 19:13 1091
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ id
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok)
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ logout
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# chmod 775 /tmp/hsperfdata_tomcat
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls -l
+total 4
+-rw-------. 1 root root 1517 Apr 29  2024 anaconda-ks.cfg
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /tmp/
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-r--r-- 3 root      root    14 May  5 19:46 file
+-rw-r--r-- 1 root      root    89 Apr 29 21:14 file1
+-rw-r--r-- 1 root      root    74 Apr 29 21:18 file3
+-rw-r--r-- 1 root      root     0 May  2 19:52 file33
+-rw-r--r-- 1 root      root    10 May  2 19:52 file34
+lrwxrwxrwx 1 root      root    27 May  5 19:37 file55 -> /home/ashok/imran_md/file55
+drwxr-xr-x 3 root      root    18 May 29  2024 ganaimp
+drwxr-xr-x 3 root      root    18 May 29  2024 gvnk
+-rw-rw-r-- 1 gvnk      gvnk    21 May  7 19:46 gvnk1
+drwxr-xr-x 4 root      root    42 May 29  2024 gvnkch
+drwxrwxr-x 2 tomcat    tomcat  18 May 10 18:44 hsperfdata_tomcat
+drwxr-xr-x 2 imran     admins   6 May  7 20:51 imrandir1
+-rw-r--r-- 1 imran     admins   0 May  7 20:51 imranfile23
+dr-xr-xr-x 3 root      root   128 May  5 20:42 kumar
+drwxr-xr-x 2 imran     ashok    6 May 10 19:11 newdir22
+-rw-r--r-- 1 imran     ashok    0 May 10 19:11 newfile22
+drwxr-xr-x 3 root      root    21 May  5 19:42 oracle
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-httpd.service-tAoI4L
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-vgauthd.service-OrieUo
+drwx------ 3 root      root    17 May 10 18:44 systemd-private-1115d79f60b548ffbdf94b6b6950ac8d-vmtoolsd.service-CGufRs
+drwxr-xr-x 2 unixuser1 admins   6 May  7 20:36 unixdir1
+-rw-r--r-- 1 unixuser1 admins   0 May  7 20:36 unixfile23
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok)
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# usermod -G tomcat imran
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),91(tomcat)
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# su - imran
+Last login: Sat May 10 19:11:15 IST 2025 on pts/0
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ cd /tmp/hsperfdata_tomcat/
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ ls -lrt
+total 32
+-rw------- 1 tomcat tomcat 32768 May 10 19:27 1091
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ mkdir imran_dir1
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ ls -lrt
+total 32
+-rw------- 1 tomcat tomcat 32768 May 10 19:27 1091
+drwxr-xr-x 2 imran  ashok      6 May 10 19:27 imran_dir1
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ id
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),91(tomcat)
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ cd ..
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$ id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),91(tomcat)
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$
+[imran@gvnkansiblesrv tmp]$ logout
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# useermod -G admins imran
+-bash: useermod: command not found
+[root@gvnkansiblesrv tmp]# usermod -G admins imran
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),1200(admins)
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# su - imran
+Last login: Sat May 10 19:26:57 IST 2025 on pts/0
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ cd /tmp/hsperfdata_tomcat/
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ ls -lrt
+total 32
+drwxr-xr-x 2 imran  ashok      6 May 10 19:27 imran_dir1
+-rw------- 1 tomcat tomcat 32768 May 10 19:29 1091
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ touch imranfile1
+touch: cannot touch ‘imranfile1’: Permission denied
+[imran@gvnkansiblesrv hsperfdata_tomcat]$
+[imran@gvnkansiblesrv hsperfdata_tomcat]$ logout
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),1200(admins)
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# usermod -G 1200,91 imran
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),91(tomcat),1200(admins)
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# usermod -G 91,1200,gvnk imran
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),1200(admins)
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i imran /etc/passwd
+imran:x:1490:5200:imran@google.com:/home/imran:/bin/bash
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls -ld /home/imran
+drwx------ 3 imran ashok 126 May  7 21:01 /home/imran
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.1G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.7M  231M   2% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /home/
+[root@gvnkansiblesrv home]# ls -l
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 3 ashok     ashok     105 May  5 19:34 ashok
+drwx------ 3 gvnk      gvnk      113 May  7 19:43 gvnk
+drwx------ 3 imran     ashok     126 May  7 21:01 imran
+drwx------ 3 unixuser1 admins    126 May  8 19:58 unixuser1
+drwx------ 2 unixuser2 admins     76 May  7 20:39 unixuser2
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# df -h .
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   47G  6.1G   41G  13% /
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.1G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.7M  231M   2% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkdir /export/home
+mkdir: cannot create directory ‘/export/home’: No such file or directory
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkdir -p /export/home
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkdir /export/home/imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -ld /export/home/imran
+drwxr-xr-x 2 root root 6 May 10 19:41 /export/home/imran
+[root@gvnkansiblesrv /]# ls -ld /home/imran/
+drwx------ 3 imran ashok 126 May  7 21:01 /home/imran/
+[root@gvnkansiblesrv /]# ls -l /home/imran/
+total 0
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/passwd
+imran:x:1490:5200:imran@google.com:/home/imran:/bin/bash
+[root@gvnkansiblesrv /]# usermod -d /export/home/imran imran
+[root@gvnkansiblesrv /]# grep -i imran /etc/passwd
+imran:x:1490:5200:imran@google.com:/export/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -ld /export/home/imran
+drwxr-xr-x 2 root root 6 May 10 19:41 /export/home/imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# su - imran
+Last login: Sat May 10 19:29:20 IST 2025 on pts/0
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ pwd
+/export/home/imran
+-bash-4.2$
+-bash-4.2$ ls -l
+total 0
+-bash-4.2$
+-bash-4.2$ mkdir dir1
+mkdir: cannot create directory ‘dir1’: Permission denied
+-bash-4.2$
+-bash-4.2$ ls -l
+total 0
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ logout
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chmod 700 /export/home/imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -ld /export/home/imran
+drwx------ 2 root root 6 May 10 19:41 /export/home/imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chown imran:ashok /export/home/imran
+[root@gvnkansiblesrv /]# ls -ld /export/home/imran
+drwx------ 2 imran ashok 6 May 10 19:41 /export/home/imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# su - imran
+Last login: Sat May 10 19:43:28 IST 2025 on pts/0
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ pwd
+/export/home/imran
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ ls -l
+total 0
+-bash-4.2$
+-bash-4.2$ mkdir dir1
+-bash-4.2$ dir2
+-bash: dir2: command not found
+-bash-4.2$ ls -l
+total 0
+drwxr-xr-x 2 imran ashok 6 May 10 19:45 dir1
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ rmdir dir1
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ ls -lrt
+total 0
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ logout
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /home/imran/
+total 0
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /export/home/imran/
+total 0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cp -rp /home/imran/* /export/home/imran/
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /export/home/imran/
+total 0
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# su - imran
+Last login: Sat May 10 19:45:23 IST 2025 on pts/0
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ ls -l
+total 0
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+-bash-4.2$
+-bash-4.2$ mkdir dir1
+-bash-4.2$
+-bash-4.2$ ls -l
+total 0
+drwxr-xr-x 2 imran ashok 6 May 10 19:48 dir1
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ pwd
+/export/home/imran
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ ls -la
+total 4
+drwx------ 4 imran ashok 68 May 10 19:48 .
+drwxr-xr-x 3 root  root  19 May 10 19:41 ..
+-rw------- 1 imran ashok 51 May 10 19:45 .bash_history
+drwxr-xr-x 2 imran ashok  6 May 10 19:48 dir1
+-rw-r--r-- 1 imran ashok  0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok  6 May  7 20:51 testdir1
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ logout
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /export/home/imran/
+total 0
+drwxr-xr-x 2 imran ashok 6 May 10 19:48 dir1
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cp -pr /home/imran/ /export/home/imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /export/home/imran/
+total 0
+drwxr-xr-x 2 imran ashok   6 May 10 19:48 dir1
+-rw-r--r-- 1 imran ashok   0 May  7 20:51 file1
+drwx------ 3 imran ashok 126 May  7 21:01 imran
+drwxr-xr-x 2 imran ashok   6 May  7 20:51 testdir1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /export/home/imran/
+[root@gvnkansiblesrv imran]# ls -l
+
+total 0
+drwxr-xr-x 2 imran ashok   6 May 10 19:48 dir1
+-rw-r--r-- 1 imran ashok   0 May  7 20:51 file1
+drwx------ 3 imran ashok 126 May  7 21:01 imran
+drwxr-xr-x 2 imran ashok   6 May  7 20:51 testdir1
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd imran/
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# pwd
+/export/home/imran/imran
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd ..
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l
+total 0
+drwxr-xr-x 2 imran ashok   6 May 10 19:48 dir1
+-rw-r--r-- 1 imran ashok   0 May  7 20:51 file1
+drwx------ 3 imran ashok 126 May  7 21:01 imran
+drwxr-xr-x 2 imran ashok   6 May  7 20:51 testdir1
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# rm -rf imran
+[root@gvnkansiblesrv imran]# ls -lrt
+total 0
+drwxr-xr-x 2 imran ashok 6 May  7 20:51 testdir1
+-rw-r--r-- 1 imran ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 imran ashok 6 May 10 19:48 dir1
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# ls -l /home/
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 3 ashok     ashok     105 May  5 19:34 ashok
+drwx------ 3 gvnk      gvnk      113 May  7 19:43 gvnk
+drwx------ 3 imran     ashok     126 May  7 21:01 imran
+drwx------ 3 unixuser1 admins    126 May  8 19:58 unixuser1
+drwx------ 2 unixuser2 admins     76 May  7 20:39 unixuser2
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# pwd
+/export/home/imran
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]#
+[root@gvnkansiblesrv imran]# cd /home/
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# ls -l
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 3 ashok     ashok     105 May  5 19:34 ashok
+drwx------ 3 gvnk      gvnk      113 May  7 19:43 gvnk
+drwx------ 3 imran     ashok     126 May  7 21:01 imran
+drwx------ 3 unixuser1 admins    126 May  8 19:58 unixuser1
+drwx------ 2 unixuser2 admins     76 May  7 20:39 unixuser2
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# mv imran imran.old
+[root@gvnkansiblesrv home]# ls -lrt
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 3 ashok     ashok     105 May  5 19:34 ashok
+drwx------ 3 gvnk      gvnk      113 May  7 19:43 gvnk
+drwx------ 2 unixuser2 admins     76 May  7 20:39 unixuser2
+drwx------ 3 imran     ashok     126 May  7 21:01 imran.old
+drwx------ 3 unixuser1 admins    126 May  8 19:58 unixuser1
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# ls -lrt
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 3 ashok     ashok     105 May  5 19:34 ashok
+drwx------ 3 gvnk      gvnk      113 May  7 19:43 gvnk
+drwx------ 2 unixuser2 admins     76 May  7 20:39 unixuser2
+drwx------ 3 imran     ashok     126 May  7 21:01 imran.old
+drwx------ 3 unixuser1 admins    126 May  8 19:58 unixuser1
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]#
+[root@gvnkansiblesrv home]# cd
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),1200(admins)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/passwd
+imran:x:1490:5200:imran@google.com:/export/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# usermod -c "imran@yahoo.com" imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/passwd
+imran:x:1490:5200:imran@yahoo.com:/export/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id imran
+uid=1490(imran) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),1200(admins)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# usermod -u 565 imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id imran
+uid=565(imran) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),1200(admins)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id imran
+uid=565(imran) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),1200(admins)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# usermod -l ashok imran
+usermod: user 'ashok' already exists
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# usermod -l ashokk imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id imran
+id: imran: no such user
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id ashokk
+uid=565(ashokk) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),1200(admins)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:imran@yahoo.com:/export/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# usermod -c "ashokk@yahoo.com" ashokk
+[root@gvnkansiblesrv /]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:ashokk@yahoo.com:/export/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# usermod -d /export/home/ashokk ashokk
+[root@gvnkansiblesrv /]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:ashokk@yahoo.com:/export/home/ashokk:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /export/home/
+total 0
+drwx------ 4 ashokk ashok 68 May 10 19:52 imran
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mv /export/home/imran/ /export/home/ashokk
+[root@gvnkansiblesrv /]# ls -l /export/home/
+total 0
+drwx------ 4 ashokk ashok 68 May 10 19:52 ashokk
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# su - ashokk
+Last login: Sat May 10 19:48:07 IST 2025 on pts/0
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ pwd
+/export/home/ashokk
+-bash-4.2$
+-bash-4.2$ ls -l
+total 0
+drwxr-xr-x 2 ashokk ashok 6 May 10 19:48 dir1
+-rw-r--r-- 1 ashokk ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 ashokk ashok 6 May  7 20:51 testdir1
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ logout
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# logout
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Sat May 10 18:48:36 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:ashokk@yahoo.com:/export/home/ashokk:/bin/bash
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -s /bin/sh ashokk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:ashokk@yahoo.com:/export/home/ashokk:/bin/sh
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# su - ashokk
+Last login: Sat May 10 20:07:35 IST 2025 on pts/0
+-sh-4.2$
+-sh-4.2$
+-sh-4.2$ ls -l
+total 0
+drwxr-xr-x 2 ashokk ashok 6 May 10 19:48 dir1
+-rw-r--r-- 1 ashokk ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 ashokk ashok 6 May  7 20:51 testdir1
+-sh-4.2$
+-sh-4.2$
+-sh-4.2$
+-sh-4.2$ logout
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# passwd -S ashokk
+ashokk PS 2025-05-09 0 120 5 -1 (Password set, SHA512 crypt.)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# passwd -l ashokk
+Locking password for user ashokk.
+passwd: Success
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# passwd -S ashokk
+ashokk LK 2025-05-09 0 120 5 -1 (Password locked.)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# passwd -u ashokk
+Unlocking password for user ashokk.
+passwd: Success
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# passwd -S ashokk
+ashokk PS 2025-05-09 0 120 5 -1 (Password set, SHA512 crypt.)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -L ashokk
+[root@gvnkansiblesrv ~]# passwd -S ashokk
+ashokk LK 2025-05-09 0 120 5 -1 (Password locked.)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -U ashokk
+[root@gvnkansiblesrv ~]# passwd -S ashokk
+ashokk PS 2025-05-09 0 120 5 -1 (Password set, SHA512 crypt.)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashokk /etc/passwd
+ashokk:x:565:5200:ashokk@yahoo.com:/export/home/ashokk:/bin/sh
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# passwd -S ashokk
+ashokk PS 2025-05-09 0 120 5 -1 (Password set, SHA512 crypt.)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i admins /etc/group
+admins:x:1200:ashokk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# groupmod -g 4210 admins
+[root@gvnkansiblesrv ~]# grep -i admins /etc/group
+admins:x:4210:ashokk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# groupmod -n administrator admins
+[root@gvnkansiblesrv ~]# grep -i admins /etc/group
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i administrator /etc/group
+administrator:x:4210:ashokk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashokk
+uid=565(ashokk) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -G 5302,4210,91
+Usage: usermod [options] LOGIN
+
+Options:
+  -c, --comment COMMENT         new value of the GECOS field
+  -d, --home HOME_DIR           new home directory for the user account
+  -e, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE
+  -f, --inactive INACTIVE       set password inactive after expiration
+                                to INACTIVE
+  -g, --gid GROUP               force use GROUP as new primary group
+  -G, --groups GROUPS           new list of supplementary GROUPS
+  -a, --append                  append the user to the supplemental GROUPS
+                                mentioned by the -G option without removing
+                                him/her from other groups
+  -h, --help                    display this help message and exit
+  -l, --login NEW_LOGIN         new value of the login name
+  -L, --lock                    lock the user account
+  -m, --move-home               move contents of the home directory to the
+                                new location (use only with -d)
+  -o, --non-unique              allow using duplicate (non-unique) UID
+  -p, --password PASSWORD       use encrypted password for the new password
+  -R, --root CHROOT_DIR         directory to chroot into
+  -s, --shell SHELL             new login shell for the user account
+  -u, --uid UID                 new UID for the user account
+  -U, --unlock                  unlock the user account
+  -Z, --selinux-user SEUSER     new SELinux user mapping for the user account
+
+[root@gvnkansiblesrv ~]# usermod -G 5302,4210,91 ashok
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]# id ashokk
+uid=565(ashokk) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id gvnk
+uid=5302(gvnk) gid=5302(gvnk) groups=5302(gvnk)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -G 5302,4210,91 gvnk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id gvnk
+uid=5302(gvnk) gid=5302(gvnk) groups=5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i admin /etc/group
+ansiadmin:x:1000:
+admin:x:5301:
+administrator:x:4210:ashokk,ashok,gvnk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashokk
+uid=565(ashokk) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -G 5302,91,4210,1000 ashokk
+[root@gvnkansiblesrv ~]# id ashokk
+uid=565(ashokk) gid=5200(ashok) groups=5200(ashok),1000(ansiadmin),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# gpasswd -M ashok,gvnk ansiadmin
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),1000(ansiadmin),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]# id gvnk
+uid=5302(gvnk) gid=5302(gvnk) groups=5302(gvnk),1000(ansiadmin),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),1000(ansiadmin),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# gpasswd -a ashok admin
+Adding user ashok to group admin
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),1000(ansiadmin),5301(admin),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -G 5301,5302,91,4210 ashok
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),5301(admin),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# gpasswd -d ashok gvnk
+Removing user ashok from group gvnk
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),5301(admin),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashokk
+uid=565(ashokk) gid=5200(ashok) groups=5200(ashok),5302(gvnk),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# userdel ashokk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashokk
+id: ashokk: no such user
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashokk /etc/passwd
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashokk /etc/shadow
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls -l /home/
+admin/     ansiadmin/ ashok/     gvnk/      imran.old/ unixuser1/ unixuser2/
+[root@gvnkansiblesrv ~]# ls -l /export/home/ashokk/
+total 0
+drwxr-xr-x 2 565 ashok 6 May 10 19:48 dir1
+-rw-r--r-- 1 565 ashok 0 May  7 20:51 file1
+drwxr-xr-x 2 565 ashok 6 May  7 20:51 testdir1
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+uid=5300(ashok) gid=5200(ashok) groups=5200(ashok),5301(admin),91(tomcat),4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashok /etc/passwd
+\ashok:x:5300:5200:ashok@outlook.com:/home/ashok:/bin/bash
+[root@gvnkansiblesrv ~]# grep -i ashok /etc/shadow
+ashok:!!:19844:0:99999:7:::
+[root@gvnkansiblesrv ~]# ls -l /home/ashok
+total 4
+-rw-r--r-- 1 root root 89 Apr 29 21:14 file1
+drwxr-xr-x 2 root root 34 May  5 19:29 imran_md
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# userdel -r ashok
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id ashok
+id: ashok: no such user
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i ashok /etc/passwd
+[root@gvnkansiblesrv ~]# grep -i ashok /etc/shadow
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls -ld /home/ashok
+ls: cannot access /home/ashok: No such file or directory
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls -l /home/
+total 0
+drwx------ 2 admin     admin      76 May  9  2024 admin
+drwx------ 6 ansiadmin ansiadmin 172 May 29  2024 ansiadmin
+drwx------ 3 gvnk      gvnk      113 May  7 19:43 gvnk
+drwx------ 3      1490      5200 126 May  7 21:01 imran.old
+drwx------ 3 unixuser1      1200 126 May  8 19:58 unixuser1
+drwx------ 2 unixuser2      1200  76 May  7 20:39 unixuser2
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i administrator /etc/group
+administrator:x:4210:gvnk
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# groupdel administrator
+groupdel: cannot remove the primary group of user 'unixuser1'
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id unixuser1
+uid=1235(unixuser1) gid=4210(administrator) groups=4210(administrator)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -g admin unixuser1
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id unixuser1
+uid=1235(unixuser1) gid=5301(admin) groups=5301(admin)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# groupdel administrator
+groupdel: cannot remove the primary group of user 'unixuser2'
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# usermod -g admin unixuser2
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# groupdel administrator
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# grep -i administrator /etc/group
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# id gvnk
+uid=5302(gvnk) gid=5302(gvnk) groups=5302(gvnk),1000(ansiadmin),91(tomcat)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
