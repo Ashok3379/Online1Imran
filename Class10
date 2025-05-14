@@ -1,0 +1,535 @@
+Class 10 14/05/2025
+
+ls -l file/directory
+
+rwx rwx rwx
+owner group others
+
+File & Directory Permissions: Permissions are applied on three levels
+============================= 
+Owner or User level 
+Group level 
+Others level 
+ 
+Access modes are of three types for file:-
+==========================================
+r ======> view the file cat/head/tail/more
+w ======> write/edit/delete/append 
+x ======> execute/run a script 
+ 
+Access modes are different on file and directory: 
+
+Access modes are of three types for directory:-
+===============================================
+r =====> This permission allow to run 'ls -l' the contents of directory
+w =====> Write, edit, append, delete file Add/Del/Rename contents
+x =====> is used to switch the directory and this permission is needed along with r and w permissions.
+
+
+Permission can be set on any file/dir by two methods:- 
+1 Symbolic method (ugo) 
+2 Absolute methods (numbers)
+  
+Symbolic mode: General form of symbolic mode is:
+================================================ 
+* chmod [who] [+/-/=] [permissions] file 
+          who =====> To whom the permissions to be assigned
+  User/owner (u); group (g); others (o)  
+
+#chmod u+x file (Adding execute permission to user only) 
+#chmod go-wx file (Removing write and execute permissions from group and other) 
+#chmod go+wx file (Adding write and execute permissions from group and other) 
+#chmod go=r file (Giving only read permission to group and other) 
+
+2 Absolute Method (numbers):In Absolute method we use numbers instead of using symbols i.e.
+============================  
+Read=4 
+Write=2 
+Execute=1 
+
+* chmod User Group Other file/directory
+
+# chmod 755 directory
+
+user = rwx 4+2+1=7
+group = r,x 4+1=5
+others = r,x 4+1=5
+
+Assigning different permissions to the file (user=rwx, group=rw and others=r) 
+#chmod 764 file (where 7 means rwx i.e. 4+2+1, rw=6 i.e. 4+2 and 1 indicates x)
+
+Removing all permissions from others
+=====================================
+#chmod 770 ktfile (where 0 indicates no permissions) 
+Note: All the above permissions and procedure is same for files and directories. 
+
+Default permissions for file/directory
+=======================================
+
+umask 022 (user group other)      directory full 777 - 022 = 755 default directory permissions
+				  file full 666 - 022 = 644 default file permissions
+
+umask command will tell you the configured value:
+=================================================
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+
+umask <value> will do the modification of the umask:
+====================================================
+[root@gvnkansiblesrv ~]# umask
+0022
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# umask 0002
+[root@gvnkansiblesrv ~]# umask
+0002
+[root@gvnkansiblesrv ~]#
+
+1) umask value is the value which used to generate default permission for file/directory
+2) By default < 200 UID users will get 0022 umask value, which will reflect 755 for directory and 644 for file.
+3) If the UID is > 200 users will get 0002 umask value, which will reflect 775 for directory and 664 for file.
+4) Normally root user umask value will be 0022 and it won't modify at anytime
+5) If any user specific umask value can be modified with umask command and add entry in .bash_profile file for make it persistant.
+
+[ashok@gvnkansiblesrv ~]$ cat .bash_profile
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/.local/bin:$HOME/bin
+
+export PATH
+umask 0022
+[ashok@gvnkansiblesrv ~]$
+
+Class session Output:
+=====================
+
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Wed May 14 18:42:20 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l
+total 36
+drwxrwxrwx    5 root root 4096 May 29  2024 ansible-playbook
+drwxrwxrwx    3 root root   24 May 22  2024 ansiroles
+lrwxrwxrwx.   1 root root    7 Apr 29  2024 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Apr 29  2024 boot
+drwxr-xr-x   21 root root 3440 May 13 19:18 dev
+drwxr-xr-x.  88 root root 8192 May 13 19:53 etc
+drwxr-xr-x    3 root root   18 May 10 19:41 export
+drwxr-xr-x.  10 root root  125 May 13 19:52 home
+drwxr-xr-x    2 root root   19 May  5 21:06 Imran_md
+drwxr-xr-x    5 root root   50 May  1 20:49 IPL-2025
+lrwxrwxrwx.   1 root root    7 Apr 29  2024 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Apr 29  2024 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Mar 10  2016 media
+drwxr-xr-x.   2 root root    6 Mar 10  2016 mnt
+-rw-------.   1 root root    0 Apr 29  2024 nohup.out
+drwxr-xr-x.   4 root root   42 May 29  2024 opt
+drwxr-xr-x    3 root root   21 May  5 19:42 oracle
+drwxr-xr-x    2 root root    6 May  5 21:01 private
+dr-xr-xr-x  208 root root    0 May 13 19:17 proc
+drwxr-xr-x    2 root root    6 May  5 21:00 public
+dr-xr-x---.   6 root root  239 May 29  2024 root
+drwxr-xr-x   26 root root  800 May 13 19:18 run
+lrwxrwxrwx.   1 root root    8 Apr 29  2024 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Mar 10  2016 srv
+dr-xr-xr-x   13 root root    0 May 13 19:17 sys
+drwxrwxrwt.  17 root root 4096 May 13 20:31 tmp
+drwxr-xr-x.  13 root root  155 Apr 29  2024 usr
+drwxr-xr-x.  21 root root 4096 May 11  2024 var
+drwxrwsr-x    3 root root 4096 May  6  2024 webdata1
+drwxrwsr-x    2 root root    6 May  6  2024 webdata2
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# pwd
+/
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /tmp
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-rw-r-- 1 ashok  ashok    88 May 13 19:26 ashok_file23
+-rw-rw-r-- 1 gvnk   gvnk   2489 May 13 20:10 checkout
+-rw-r--r-- 3 root   root     14 May  5 19:46 file
+-rw-r--r-- 1 root   root     74 Apr 29 21:18 file3
+lrwxrwxrwx 1 root   root     27 May  5 19:37 file55 -> /home/ashok/imran_md/file55
+drwxr-xr-x 3 root   root     18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root     18 May 29  2024 gvnk
+-rw-rw-r-- 1 gvnk   gvnk     21 May  7 19:46 gvnk1
+drwxr-xr-x 4 root   root     42 May 29  2024 gvnkch
+drwxrwxr-x 3 tomcat tomcat   36 May 10 19:27 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root    128 May  5 20:42 kumar
+drwxr-xr-x 3 root   root     21 May  5 19:42 oracle
+drwxrwxrwx 3 root   root     31 May 13 20:32 public
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-httpd.service-h0NSiF
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-vgauthd.service-Bk0vru
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-vmtoolsd.service-67a50O
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l
+total 20
+-rw-rw-r-- 1 ashok  ashok    88 May 13 19:26 ashok_file23
+-rw-rw-r-- 1 gvnk   gvnk   2489 May 13 20:10 checkout
+-rw-r--r-- 3 root   root     14 May  5 19:46 file
+-rw-r--r-- 1 root   root     74 Apr 29 21:18 file3
+lrwxrwxrwx 1 root   root     27 May  5 19:37 file55 -> /home/ashok/imran_md/file55
+drwxr-xr-x 3 root   root     18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root     18 May 29  2024 gvnk
+-rw-rw-r-- 1 gvnk   gvnk     21 May  7 19:46 gvnk1
+drwxr-xr-x 4 root   root     42 May 29  2024 gvnkch
+drwxrwxr-x 3 tomcat tomcat   36 May 10 19:27 hsperfdata_tomcat
+dr-xr-xr-x 3 root   root    128 May  5 20:42 kumar
+drwxr-xr-x 3 root   root     21 May  5 19:42 oracle
+drwxrwxrwx 3 root   root     31 May 13 20:32 public
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-httpd.service-h0NSiF
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-vgauthd.service-Bk0vru
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-vmtoolsd.service-67a50O
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod g+w file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-rw-rw-r-- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod g-w file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-rw-r--r-- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod g+w,o+w file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-rw-rw-rw- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod ugo=r file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-r--r--r-- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod u+w,g+w,o+w file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-rw-rw-rw- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod u-w,g-w,o-w file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-r--r--r-- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 664 file3
+[root@gvnkansiblesrv tmp]# ls -l file3
+-rw-rw-r-- 1 root root 74 Apr 29 21:18 file3
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# touch ashok
+[root@gvnkansiblesrv tmp]# ls -l ashok
+-rw-r--r-- 1 root root 0 May 14 19:28 ashok
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# mkdir ashokdir1
+[root@gvnkansiblesrv tmp]# ls -l ashokdir1
+total 0
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-xr-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]# chmod 777 ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxrwxrwx 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 755 ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-xr-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 765 ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxrw-r-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 775 ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxrwxr-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 555 ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+dr-xr-xr-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 750 ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-x--- 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 754 ashokdir1/
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-xr-- 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 755 ashokdir1/
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-xr-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod 707 ashokdir1/
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwx---rwx 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod g+rx,o-w ashokdir1
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-xr-x 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod o-rx ashokdir1/
+[root@gvnkansiblesrv tmp]# ls -ld ashokdir1
+drwxr-x--- 2 root root 6 May 14 19:28 ashokdir1
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l ashok
+-rw-r--r-- 1 root root 0 May 14 19:28 ashok
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cat ashok
+[root@gvnkansiblesrv tmp]# cat > ashok
+adding entry in t ashok file
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cat ashok
+adding entry in t ashok file
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l ashok
+-rw-r--r-- 1 root root 29 May 14 19:50 ashok
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# chmod g+w,o+w ashok
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# ls -l ashok
+-rw-rw-rw- 1 root root 29 May 14 19:50 ashok
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# touch imran
+[root@gvnkansiblesrv tmp]# ls -l imran
+-rw-r--r-- 1 root root 0 May 14 19:53 imran
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# umask 0002
+[root@gvnkansiblesrv tmp]# umask
+0002
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# touch imran2
+[root@gvnkansiblesrv tmp]# ls -l imran2
+-rw-rw-r-- 1 root root 0 May 14 19:56 imran2
+[root@gvnkansiblesrv tmp]# mkdir dir3
+[root@gvnkansiblesrv tmp]# ls -l dir3/
+total 0
+[root@gvnkansiblesrv tmp]# ls -ld dir3/
+drwxrwxr-x 2 root root 6 May 14 19:57 dir3/
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# umask
+0002
+[root@gvnkansiblesrv tmp]# umask 0022
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cat /etc/profile
+# /etc/profile
+
+# System wide environment and startup programs, for login setup
+# Functions and aliases go in /etc/bashrc
+
+# It's NOT a good idea to change this file unless you know what you
+# are doing. It's much better to create a custom.sh shell script in
+# /etc/profile.d/ to make custom changes to your environment, as this
+# will prevent the need for merging in future updates.
+
+pathmunge () {
+    case ":${PATH}:" in
+        *:"$1":*)
+            ;;
+        *)
+            if [ "$2" = "after" ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}
+
+
+if [ -x /usr/bin/id ]; then
+    if [ -z "$EUID" ]; then
+        # ksh workaround
+        EUID=`/usr/bin/id -u`
+        UID=`/usr/bin/id -ru`
+    fi
+    USER="`/usr/bin/id -un`"
+    LOGNAME=$USER
+    MAIL="/var/spool/mail/$USER"
+fi
+
+# Path manipulation
+if [ "$EUID" = "0" ]; then
+    pathmunge /usr/sbin
+    pathmunge /usr/local/sbin
+else
+    pathmunge /usr/local/sbin after
+    pathmunge /usr/sbin after
+fi
+
+HOSTNAME=`/usr/bin/hostname 2>/dev/null`
+HISTSIZE=1000
+if [ "$HISTCONTROL" = "ignorespace" ] ; then
+    export HISTCONTROL=ignoreboth
+else
+    export HISTCONTROL=ignoredups
+fi
+
+export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE HISTCONTROL
+
+# By default, we want umask to get set. This sets it for login shell
+# Current threshold for system reserved uid/gids is 200
+# You could check uidgid reservation validity in
+# /usr/share/doc/setup-*/uidgid file
+if [ $UID -gt 199 ] && [ "`/usr/bin/id -gn`" = "`/usr/bin/id -un`" ]; then
+    umask 002
+else
+    umask 022
+fi
+
+for i in /etc/profile.d/*.sh ; do
+    if [ -r "$i" ]; then
+        if [ "${-#*i}" != "$-" ]; then
+            . "$i"
+        else
+            . "$i" >/dev/null
+        fi
+    fi
+done
+
+unset i
+unset -f pathmunge
+[root@gvnkansiblesrv tmp]# id
+uid=0(root) gid=0(root) groups=0(root)
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# umask
+0022
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# tail /etc/passwd
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+admin:x:5301:5301::/home/admin:/bin/bash
+gvnk:x:5302:5302::/home/gvnk:/bin/bash
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+tomcat:x:91:91:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+unixuser1:x:1235:5301:unixuser1@google.comEMID-20645:/home/unixuser1:/bin/bash
+unixuser2:x:1237:5301:unixuser1@google.com;EMID-2045:/home/unixuser2:/bin/bash
+ashok:x:5303:5303::/home/ashok:/bin/bash
+imran:x:5304:5304::/home/imran:/bin/bash
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:997:User for polkitd:/:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+ansiadmin:x:1000:1000::/home/ansiadmin:/bin/bash
+rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+admin:x:5301:5301::/home/admin:/bin/bash
+gvnk:x:5302:5302::/home/gvnk:/bin/bash
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+tomcat:x:91:91:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+unixuser1:x:1235:5301:unixuser1@google.comEMID-20645:/home/unixuser1:/bin/bash
+unixuser2:x:1237:5301:unixuser1@google.com;EMID-2045:/home/unixuser2:/bin/bash
+ashok:x:5303:5303::/home/ashok:/bin/bash
+imran:x:5304:5304::/home/imran:/bin/bash
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]#
+[root@gvnkansiblesrv tmp]# cd
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# umask
+0022
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# umask 0002
+[root@gvnkansiblesrv ~]# umask
+0002
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+
+
+
+
