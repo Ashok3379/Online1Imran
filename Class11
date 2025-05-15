@@ -1,0 +1,1448 @@
+Class 11 15/05/2025
+
+Advanced Permissions:
+=====================
+
+1. Special Permissions  
+2. Access Control List (ACL) 
+
+1. Special Permissions or Advanced Permission 
+=============================================
+There are three special permissions that can be assigned to a file or directory apart from basic file permissions(rwx)
+ 
+
+SUID – SET USER ID      Owner Privilleges  indicate with "s" & applicable for only executables files
+
+-rwsr-xr-x. 1 root root 27832 Jan 30  2014 /usr/bin/passwd
+
+Whenver the user executed setUID applied file, the process will start with Owner of the excutable file insted of who started the process. 
+
+SGID – SET GROUP ID 	Group Privilleges  indicate with "s" & applicable for executables files & directories
+
+-r-xr-sr-x.   1 root tty      15344 Jan 27  2014 wall
+
+Whenever the user executed setGID applied file, the process will start with Owner is executable person ID, but group will be inherit of the  of the excutable file insted of who started the process.
+Whenever the user create a file/directory which is applied setGID the new file/directory group inhert from Parent Directory group insted of user associated group.
+
+STICKY BIT 		Others Privilleges indicate with "t" & applicable for only directories
+
+drwxrwxrwt. 19 root root 4096 May 15 17:50 /tmp
+
+Public sharable directory applied by stickybit. So that everyone can able write the data in that directory, but no one modify/edit/remove others data evethough all users have the write privilleges.
+
+
+Class Session Logs:
+===================
+
+Network error: Connection timed out
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Wed May 14 19:05:24 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# tail /etc/passwd
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+admin:x:5301:5301::/home/admin:/bin/bash
+gvnk:x:5302:5302::/home/gvnk:/bin/bash
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+tomcat:x:91:91:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+unixuser1:x:1235:5301:unixuser1@google.comEMID-20645:/home/unixuser1:/bin/bash
+unixuser2:x:1237:5301:unixuser1@google.com;EMID-2045:/home/unixuser2:/bin/bash
+ashok:x:5303:5303::/home/ashok:/bin/bash
+imran:x:5304:5304::/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /etc/shadow
+---------- 1 root root 1461 May 13 19:53 /etc/shadow
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cat /etc/shadow
+root:$6$LVDqrJ.1$QVk91xIv6dS9wgt1Zn8bB/xB8wKJuft4DkMCDVsBLnbps4izbPYOyK66TimdH2mLdPEbxDbRyB57.l9bzvAk3/:20207:0:99999:7:::
+bin:*:16925:0:99999:7:::
+daemon:*:16925:0:99999:7:::
+adm:*:16925:0:99999:7:::
+lp:*:16925:0:99999:7:::
+sync:*:16925:0:99999:7:::
+shutdown:*:16925:0:99999:7:::
+halt:*:16925:0:99999:7:::
+mail:*:16925:0:99999:7:::
+operator:*:16925:0:99999:7:::
+games:*:16925:0:99999:7:::
+ftp:*:16925:0:99999:7:::
+nobody:*:16925:0:99999:7:::
+systemd-network:!!:19842::::::
+dbus:!!:19842::::::
+polkitd:!!:19842::::::
+postfix:!!:19842::::::
+sshd:!!:19842::::::
+ansiadmin:$6$gTTTyFSK$2qBT0cLXdPC3XPoMof5wOmyGDJK4qIRAWYw8lzBu/akf2OCym30PB/usMr/9obi4LU/JfgRSkpITiVUKBA5tJ1:19843:0:99999:7:::
+rpc:!!:19844:0:99999:7:::
+rpcuser:!!:19844::::::
+nfsnobody:!!:19844::::::
+admin:$6$kt7/AAWR$uy.TSQ4P.35PyrwlkOlR3.zXq5hgp3P6lmyIcun4i64QMbPaiXczckkexXhlgjtQK/1FZU8ayTWXl0xVskq3a0:20221:0:99999:7:::
+gvnk:$6$4/C2oLYy$NEsqBqiT3L8kFVpu9kXe6Mz/IEa71EKksxDP/GXTp4UXJQuVSc4xuvq9Tm2iCjuvljwpcq8LY3XxX5knR0GXa/:20221:0:99999:7:::
+apache:!!:19854::::::
+tomcat:!!:19861::::::
+unixuser1:$6$ht1wbGBV$8RoamElVey/tps/dldlcNiTghApvXHgDjcj1gkxLSFpuFPFqexAy4jIxGiiYV.2a5ydxcqUTMdmCWKPijlXYg1:20215:0:99999:7:::
+unixuser2:!!:20215:0:99999:7:::
+ashok:$6$LuTkBOVe$HEEvVg7ZBCVDRvCw9Ia0Zcxeq9M/CqC328bBUyh3dMbOTrgMGK.zSPSwCM0Mzl6z2qR8bO1W/LGVuy/y2pQ1Z0:20218:0:99999:7:::
+imran:$6$ZVqAeqAR$Nnwom8KyxOMtuCLg9raV.7bJaXIZlETl1CPkT1sXS2Lpp8tkIPQ9Vj.Xjhhc8T.U.ELHXFanI/nCdgHgbR1Mj0:20221:0:99999:7:::
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/passwd
+imran:x:5304:5304::/home/imran:/bin/bash
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/shadow
+imran:$6$ZVqAeqAR$Nnwom8KyxOMtuCLg9raV.7bJaXIZlETl1CPkT1sXS2Lpp8tkIPQ9Vj.Xjhhc8T.U.ELHXFanI/nCdgHgbR1Mj0:20221:0:99999:7:::
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l
+total 36
+drwxrwxrwx    5 root root 4096 May 29  2024 ansible-playbook
+drwxrwxrwx    3 root root   24 May 22  2024 ansiroles
+lrwxrwxrwx.   1 root root    7 Apr 29  2024 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Apr 29  2024 boot
+drwxr-xr-x   21 root root 3440 May 13 19:18 dev
+drwxr-xr-x.  88 root root 8192 May 13 19:53 etc
+drwxr-xr-x    3 root root   18 May 10 19:41 export
+drwxr-xr-x.  10 root root  125 May 13 19:52 home
+drwxr-xr-x    2 root root   19 May  5 21:06 Imran_md
+drwxr-xr-x    5 root root   50 May  1 20:49 IPL-2025
+lrwxrwxrwx.   1 root root    7 Apr 29  2024 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Apr 29  2024 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Mar 10  2016 media
+drwxr-xr-x.   2 root root    6 Mar 10  2016 mnt
+-rw-------.   1 root root    0 Apr 29  2024 nohup.out
+drwxr-xr-x.   4 root root   42 May 29  2024 opt
+drwxr-xr-x    3 root root   21 May  5 19:42 oracle
+drwxr-xr-x    2 root root    6 May  5 21:01 private
+dr-xr-xr-x  189 root root    0 May 13 19:17 proc
+drwxr-xr-x    2 root root    6 May  5 21:00 public
+dr-xr-x---.   6 root root  239 May 29  2024 root
+drwxr-xr-x   26 root root  800 May 13 19:18 run
+lrwxrwxrwx.   1 root root    8 Apr 29  2024 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Mar 10  2016 srv
+dr-xr-xr-x   13 root root    0 May 13 19:17 sys
+drwxrwxrwt.  19 root root 4096 May 15 17:50 tmp
+drwxr-xr-x.  13 root root  155 Apr 29  2024 usr
+drwxr-xr-x.  21 root root 4096 May 11  2024 var
+drwxrwsr-x    3 root root 4096 May  6  2024 webdata1
+drwxrwsr-x    2 root root    6 May  6  2024 webdata2
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/shadow
+imran:$6$ZVqAeqAR$Nnwom8KyxOMtuCLg9raV.7bJaXIZlETl1CPkT1sXS2Lpp8tkIPQ9Vj.Xjhhc8T.U.ELHXFanI/nCdgHgbR1Mj0:20221:0:99999:7:::
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /etc/shadow
+---------- 1 root root 1461 May 13 19:53 /etc/shadow
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# grep -i imran /etc/shadow
+imran:$6$xxl3gJxd$ZFtuIiHwGSqJk5fyf35UcvxLYbtG3y91sLwTERUYRZjNnWvX2CcXsHVO37atBBh5FaRLi.wf5g1SQJwquB23/1:20223:0:99999:7:::
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /etc/shadow
+---------- 1 root root 1461 May 15 19:28 /etc/shadow
+[root@gvnkansiblesrv /]# date
+Thu May 15 19:29:25 IST 2025
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# which passwd
+/usr/bin/passwd
+[root@gvnkansiblesrv /]# ls -l /usr/bin/passwd
+-rwsr-xr-x. 1 root root 27832 Jan 30  2014 /usr/bin/passwd
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# top
+top - 19:32:32 up  8:05,  2 users,  load average: 0.10, 0.04, 0.05
+Tasks: 178 total,   1 running, 177 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.3 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   482556 total,   118868 free,   165580 used,   198108 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.   265804 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+   520 root      20   0       0      0      0 S  0.3  0.0   0:22.24 xfsaild/dm-0
+  1084 tomcat    20   0 2184132  58784  14136 S  0.3 12.2   2:36.49 java
+  2447 root      20   0       0      0      0 S  0.3  0.0   0:00.73 kworker/0:0
+     1 root      20   0  125336   3848   2500 S  0.0  0.8   0:15.88 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.18 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:01.89 ksoftirqd/0
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.07 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:05.71 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:11.65 watchdog/0
+    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    14 root      20   0       0      0      0 S  0.0  0.0   0:00.15 khungtaskd
+    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md
+    25 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kswapd0
+    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd
+    27 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto
+    35 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld
+    37 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd
+    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused
+    40 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ipv6_addrconf
+    59 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 deferwq
+    91 root      20   0       0      0      0 S  0.0  0.0   0:00.02 kauditd
+   273 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt_poll_0
+   274 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt/0
+   275 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ata_sff
+   283 root      20   0       0      0      0 S  0.0  0.0   0:00.00 scsi_eh_0
+   284 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_0
+   286 root      20   0       0      0      0 S  0.0  0.0   0:00.10 scsi_eh_1
+   287 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_1
+   288 root      20   0       0      0      0 S  0.0  0.0   0:00.03 scsi_eh_2
+   289 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_2
+   303 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ttm_swap
+   350 root      20   0       0      0      0 S  0.0  0.0   0:00.00 scsi_eh_3
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ps -ef |grep -i passwd
+root       2454   2409  0 19:31 pts/1    00:00:00 passwd
+root       2457   2382  0 19:32 pts/0    00:00:00 grep --color=auto -i passwd
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /usr/bin/passwd
+-rwsr-xr-x. 1 root root 27832 Jan 30  2014 /usr/bin/passwd
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chmod u-s /usr/bin/passwd
+[root@gvnkansiblesrv /]# ls -l /usr/bin/passwd
+-rwxr-xr-x. 1 root root 27832 Jan 30  2014 /usr/bin/passwd
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ps -ef |grep -i passwd
+imran      2465   2409  5 19:37 pts/1    00:00:00 passwd
+root       2468   2382  0 19:37 pts/0    00:00:00 grep --color=auto -i passwd
+[root@gvnkansiblesrv /]# chmod u+s /usr/bin/passwd
+[root@gvnkansiblesrv /]# ls -l /usr/bin/passwd
+-rwsr-xr-x. 1 root root 27832 Jan 30  2014 /usr/bin/passwd
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ps -ef |grep -i passwd
+root       2471   2409  0 19:39 pts/1    00:00:00 passwd
+root       2473   2382  0 19:40 pts/0    00:00:00 grep --color=auto -i passwd
+[root@gvnkansiblesrv /]# ls -l /usr/bin/
+total 71128
+-rwxr-xr-x.   1 root root     41496 Jun 30  2016 [
+-rwxr-xr-x    1 root root    107856 Mar  2  2017 a2p
+-rwxr-xr-x    1 root root     52640 Oct  3  2017 ab
+-rwxr-xr-x    1 root root      1661 Jul  2  2015 abs2rel
+-rwxr-xr-x.   1 root root     29112 Nov 21  2017 addr2line
+-rwxr-xr-x.   1 root root        29 Aug  3  2017 alias
+lrwxrwxrwx    1 root root        20 Apr 29  2024 ansible -> /usr/bin/ansible-2.7
+lrwxrwxrwx    1 root root        20 Apr 29  2024 ansible-2 -> /usr/bin/ansible-2.7
+-rwxr-xr-x    1 root root      5933 Jan 16  2022 ansible-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-config -> ansible
+-rwxr-xr-x    1 root root     13432 Jan 16  2022 ansible-connection
+lrwxrwxrwx    1 root root        28 Apr 29  2024 ansible-console -> /usr/bin/ansible-console-2.7
+lrwxrwxrwx    1 root root        28 Apr 29  2024 ansible-console-2 -> /usr/bin/ansible-console-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-console-2.7 -> ansible
+lrwxrwxrwx    1 root root        24 Apr 29  2024 ansible-doc -> /usr/bin/ansible-doc-2.7
+lrwxrwxrwx    1 root root        24 Apr 29  2024 ansible-doc-2 -> /usr/bin/ansible-doc-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-doc-2.7 -> ansible
+lrwxrwxrwx    1 root root        27 Apr 29  2024 ansible-galaxy -> /usr/bin/ansible-galaxy-2.7
+lrwxrwxrwx    1 root root        27 Apr 29  2024 ansible-galaxy-2 -> /usr/bin/ansible-galaxy-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-galaxy-2.7 -> ansible
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-inventory -> ansible
+lrwxrwxrwx    1 root root        29 Apr 29  2024 ansible-playbook -> /usr/bin/ansible-playbook-2.7
+lrwxrwxrwx    1 root root        29 Apr 29  2024 ansible-playbook-2 -> /usr/bin/ansible-playbook-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-playbook-2.7 -> ansible
+lrwxrwxrwx    1 root root        25 Apr 29  2024 ansible-pull -> /usr/bin/ansible-pull-2.7
+lrwxrwxrwx    1 root root        25 Apr 29  2024 ansible-pull-2 -> /usr/bin/ansible-pull-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-pull-2.7 -> ansible
+lrwxrwxrwx    1 root root        26 Apr 29  2024 ansible-vault -> /usr/bin/ansible-vault-2.7
+lrwxrwxrwx    1 root root        26 Apr 29  2024 ansible-vault-2 -> /usr/bin/ansible-vault-2.7
+lrwxrwxrwx    1 root root         7 Apr 29  2024 ansible-vault-2.7 -> ansible
+-rwxr-xr-x.   1 root root     70176 Jan 25  2014 applydeltarpm
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 apropos -> whatis
+-rwxr-xr-x.   1 root root     62680 Nov 21  2017 ar
+-rwxr-xr-x.   1 root root     33080 Jun 30  2016 arch
+-rwxr-xr-x.   1 root root    365392 Nov 21  2017 as
+-rwxr-xr-x.   1 root root     28808 Mar  1  2017 aserver
+-rwxr-xr-x.   1 root root     19880 Jun 13  2017 aulast
+-rwxr-xr-x.   1 root root     11544 Jun 13  2017 aulastlog
+-rwxr-xr-x.   1 root root     11376 Jun 13  2017 ausyscall
+-rwxr-xr-x    1 root root     14768 Dec 27  2013 autoconf
+-rwxr-xr-x    1 root root      8534 Dec 27  2013 autoheader
+-rwxr-xr-x    1 root root     32181 Dec 27  2013 autom4te
+-rwxr-xr-x    1 root root     26572 Mar 15  2017 autopoint
+-rwxr-xr-x    1 root root     21066 Dec 27  2013 autoreconf
+-rwxr-xr-x    1 root root     17123 Dec 27  2013 autoscan
+-rwxr-xr-x    1 root root     33872 Dec 27  2013 autoupdate
+-rwxr-xr-x.   1 root root     36808 Jun 13  2017 auvirt
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 awk -> gawk
+-rwxr-xr-x.   1 root root     37352 Jun 30  2016 base64
+-rwxr-xr-x.   1 root root     29032 Jun 30  2016 basename
+-rwxr-xr-x.   1 root root    960632 Aug  3  2017 bash
+lrwxrwxrwx.   1 root root        10 Apr 29  2024 bashbug -> bashbug-64
+-rwxr-xr-x.   1 root root      6964 Aug  3  2017 bashbug-64
+-rwxr-xr-x    1 root root     11352 May 12  2015 bdftopcf
+-rwxr-xr-x    1 root root     11376 May 12  2015 bdftruncate
+-rwxr-xr-x.   1 root root        26 Aug  3  2017 bg
+-rwxr-xr-x.   1 root root     23289 Apr 15  2016 bond2team
+-rwxr-xr-x.   1 root root     58152 Jan  9  2018 bootctl
+-rwxr-xr-x    1 root root      1537 Jul  2  2015 build-classpath
+-rwxr-xr-x    1 root root       383 Jul  2  2015 build-classpath-directory
+-rwxr-xr-x    1 root root      1571 Jul  2  2015 build-jar-repository
+-rwxr-xr-x.   1 root root    362536 Jan  9  2018 busctl
+-rwxr-xr-x    2 root root     36607 Mar  2  2017 c2ph
+-rwxr-xr-x    1 root root       224 Sep 22  2017 c89
+-rwxr-xr-x    1 root root       215 Sep 22  2017 c99
+-rwxr-xr-x.   1 root root     33528 Nov  9  2017 cal
+-rwxr-xr-x.   1 root root      1638 May  5  2017 ca-legacy
+lrwxrwxrwx.   1 root root         3 Apr 29  2024 captoinfo -> tic
+-rwxr-xr-x.   1 root root     54080 Jun 30  2016 cat
+-rwxr-xr-x.   1 root root      3336 Nov 23  2017 catchsegv
+-rwxr-xr-x.   1 root root     37528 Mar 17  2014 catman
+lrwxrwxrwx    1 root root         3 May 29  2024 cc -> gcc
+-rwxr-xr-x.   1 root root        26 Aug  3  2017 cd
+-rwxr-xr-x.   1 root root      6280 Jan 14  2018 centrino-decode
+-rwxr-xr-x.   1 root root    171504 Sep 27  2017 certutil
+-rwxr-xr-x.   1 root root     28600 Nov 21  2017 c++filt
+-rwxr-xr-x.   1 root root     15624 Jan 28  2014 chacl
+-rwsr-xr-x.   1 root root     64232 Jun 28  2016 chage
+-rwxr-xr-x    1 root root       693 Jul 14  2017 chainsaw
+-rwxr-xr-x    1 root root       307 Jun 19  2015 chardetect
+-rwxr-xr-x.   1 root root     11544 Mar 16  2017 chattr
+-rwxr-xr-x.   1 root root     62928 Jun 30  2016 chcon
+-rwxr-xr-x    1 root root      3328 Jul  2  2015 check-binary-files
+-rwxr-xr-x    1 root root      7168 Jun 27  2016 checksctp
+-rws--x--x.   1 root root     23960 Nov  9  2017 chfn
+-rwxr-xr-x.   1 root root     62800 Jun 30  2016 chgrp
+-rwxr-xr-x.   1 root root     58584 Jun 30  2016 chmod
+-rwxr-xr-x.   1 root root     62840 Jun 30  2016 chown
+-rwxr-xr-x.   1 root root     32888 Nov  9  2017 chrt
+-rws--x--x.   1 root root     23872 Nov  9  2017 chsh
+-rwxr-xr-x.   1 root root     11408 Feb 22  2017 chvt
+-rwxr-xr-x.   1 root root     33144 Jun 30  2016 cksum
+-rwxr-xr-x    1 root root     13220 Jul  2  2015 clean-binary-files
+-rwxr-xr-x.   1 root root      7192 Aug 15  2017 clear
+-rwxr-xr-x.   1 root root     45184 Jan 25  2014 cmp
+-rwxr-xr-x.   1 root root    104872 Sep 27  2017 cmsutil
+-rwxr-xr-x.   1 root root     24408 Nov  9  2017 col
+-rwxr-xr-x.   1 root root     11560 Nov  9  2017 colcrt
+-rwxr-xr-x.   1 root root     20192 Nov  9  2017 colrm
+-rwxr-xr-x.   1 root root     28592 Nov  9  2017 column
+-rwxr-xr-x.   1 root root     53352 Jan 25  2014 combinedeltarpm
+-rwxr-xr-x.   1 root root     37408 Jun 30  2016 comm
+-rwxr-xr-x.   1 root root        31 Aug  3  2017 command
+-rwxr-xr-x    1 root root      1480 Mar 16  2017 compile_et
+-rwxr-xr-x.   1 root root      7096 Jan 28  2014 consolehelper
+-rwxr-xr-x.   1 root root    129008 Jan  9  2018 coredumpctl
+-rwxr-xr-x.   1 root root    155168 Jun 30  2016 cp
+-rwxr-xr-x.   1 root root    141672 Aug 21  2017 cpio
+-rwxr-xr-x    1 root root    768592 Sep 22  2017 cpp
+-rwxr-xr-x.   1 root root     67928 Jan 14  2018 cpupower
+-rwxr-xr-x    1 root root      4657 Jul  2  2015 create-jar-links
+-rwxr-xr-x.   1 root root        60 Jan 26  2011 createrepo
+-rwxr-xr-x.   1 root root    117600 Sep 27  2017 crlutil
+-rwsr-xr-x.   1 root root     57576 Mar 29  2017 crontab
+-rwxr-xr-x.   1 root root     49992 Jun 30  2016 csplit
+-rwxr-xr-x.   1 root root     20024 Feb 10  2017 csslint-0.6
+-rwxr-xr-x.   1 root root    156640 Oct 23  2017 curl
+-rwxr-xr-x    1 root root      4178 Oct 23  2017 curl-config
+-rwxr-xr-x.   1 root root     41568 Jun 30  2016 cut
+-rwxr-xr-x.   1 root root     62200 Jun 30  2016 date
+-rwxr-xr-x.   1 root root     11488 Dec 18  2017 db_archive
+-rwxr-xr-x.   1 root root     11576 Dec 18  2017 db_checkpoint
+-rwxr-xr-x.   1 root root     15672 Dec 18  2017 db_deadlock
+-rwxr-xr-x.   1 root root     15696 Dec 18  2017 db_dump
+-rwxr-xr-x.   1 root root     65992 Dec 18  2017 db_dump185
+-rwxr-xr-x.   1 root root     15704 Dec 18  2017 db_hotbackup
+-rwxr-xr-x.   1 root root     28152 Dec 18  2017 db_load
+-rwxr-xr-x.   1 root root     15696 Dec 18  2017 db_log_verify
+-rwxr-xr-x.   1 root root     33024 Dec 18  2017 db_printlog
+-rwxr-xr-x.   1 root root     11600 Dec 18  2017 db_recover
+-rwxr-xr-x.   1 root root     15704 Dec 18  2017 db_replicate
+-rwxr-xr-x.   1 root root     15616 Dec 18  2017 db_stat
+-rwxr-xr-x.   1 root root     19792 Dec 18  2017 db_tuner
+-rwxr-xr-x.   1 root root     11504 Dec 18  2017 db_upgrade
+-rwxr-xr-x.   1 root root     96760 Jan 25  2014 dbus-binding-tool
+-rwxr-xr-x.   1 root root     11256 Sep 12  2016 dbus-cleanup-sockets
+-rwxr-xr-x.   1 root root    442056 Sep 12  2016 dbus-daemon
+-rwxr-xr-x.   1 root root     19536 Sep 12  2016 dbus-monitor
+-rwxr-xr-x.   1 root root     23592 Sep 12  2016 dbus-send
+-rwxr-xr-x.   1 root root     11240 Sep 12  2016 dbus-uuidgen
+-rwxr-xr-x.   1 root root     11520 Dec 18  2017 db_verify
+-rwxr-xr-x.   1 root root     74896 Jun 30  2016 dd
+-rwxr-xr-x.   1 root root     11424 Feb 22  2017 deallocvt
+-rwxr-xr-x    1 root root      8071 Mar 21  2017 debuginfo-install
+lrwxrwxrwx.   1 root root        20 Apr 29  2024 desktop-file-edit -> desktop-file-install
+-rwxr-xr-x.   1 root root     76424 Feb 21  2017 desktop-file-install
+-rwxr-xr-x.   1 root root     64096 Feb 21  2017 desktop-file-validate
+-rwxr-xr-x.   1 root root    100888 Jun 30  2016 df
+-rwxr-xr-x.   1 root root    514168 Jun 13  2017 dgawk
+-rwxr-xr-x.   1 root root    200096 Jan 25  2014 diff
+-rwxr-xr-x.   1 root root     62072 Jan 25  2014 diff3
+-rwxr-xr-x    1 root root      1236 Jul  2  2015 diff-jars
+-rwxr-xr-x.   1 root root    117656 Jun 30  2016 dir
+-rwxr-xr-x.   1 root root     41416 Jun 30  2016 dircolors
+-rwxr-xr-x.   1 root root     28992 Jun 30  2016 dirname
+-rwxr-xr-x.   1 root root     49640 Nov  9  2017 dmesg
+lrwxrwxrwx.   1 root root         8 Apr 29  2024 dnsdomainname -> hostname
+lrwxrwxrwx.   1 root root         8 Apr 29  2024 domainname -> hostname
+-rwxr-xr-x.   1 root root     53193 Dec 18  2017 dracut
+-rwxr-xr-x    1 root root     16776 Dec  4  2017 dtrace
+-rwxr-xr-x.   1 root root    112960 Jun 30  2016 du
+-rwxr-xr-x.   1 root root     79360 Feb 22  2017 dumpkeys
+-rwxr-xr-x.   1 root root   3073696 Nov 21  2017 dwp
+-rwxr-xr-x    1 root root       320 Feb 15  2017 easy_install
+-rwxr-xr-x    1 root root       328 Feb 15  2017 easy_install-2.7
+-rwxr-xr-x.   1 root root     33072 Jun 30  2016 echo
+-rwxr-xr-x    1 root root       117 Jan 30  2017 ecj
+-rwxr-xr-x.   1 root root       290 Mar 24  2017 egrep
+-rwxr-xr-x.   1 root root     49952 Nov  9  2017 eject
+-rwxr-xr-x.   1 root root     32960 Nov 21  2017 elfedit
+-rwxr-xr-x.   1 root root     28992 Jun 30  2016 env
+-rwxr-xr-x.   1 root root     36872 Mar 15  2017 envsubst
+-rwxr-xr-x.   1 root root    147880 Jan 29  2014 eqn
+lrwxrwxrwx.   1 root root         2 Apr 29  2024 ex -> vi
+-rwxr-xr-x.   1 root root     33240 Jun 30  2016 expand
+-rwxr-xr-x.   1 root root     37432 Jun 30  2016 expr
+-rwxr-xr-x.   1 root root     95520 Jun 30  2016 factor
+-rwxr-xr-x.   1 root root     24312 Nov  9  2017 fallocate
+-rwxr-xr-x.   1 root root     28920 Jun 30  2016 false
+-rwxr-xr-x.   1 root root        26 Aug  3  2017 fc
+-rwxr-xr-x    1 root root     15736 Feb 24  2017 fc-cache
+-rwxr-xr-x    1 root root     15672 Feb 24  2017 fc-cat
+-rwxr-xr-x    1 root root     11432 Feb 24  2017 fc-list
+-rwxr-xr-x    1 root root     11504 Feb 24  2017 fc-match
+-rwxr-xr-x    1 root root     11432 Feb 24  2017 fc-pattern
+-rwxr-xr-x    1 root root     11392 Feb 24  2017 fc-query
+-rwxr-xr-x    1 root root     11440 Feb 24  2017 fc-scan
+-rwxr-xr-x    1 root root     11464 Feb 24  2017 fc-validate
+-rwxr-xr-x.   1 root root        26 Aug  3  2017 fg
+-rwxr-xr-x.   1 root root     11432 Feb 22  2017 fgconsole
+-rwxr-xr-x.   1 root root       290 Mar 24  2017 fgrep
+-rwxr-xr-x.   1 root root     19752 Jun 27  2016 file
+-rwxr-xr-x.   1 root root    199176 Jun  1  2015 find
+-rwxr-xr-x    1 root root     23614 Mar  2  2017 find2perl
+-rwxr-xr-x    1 root root       748 Jul  2  2015 find-jar
+-rwxr-xr-x.   1 root root     59680 Nov  9  2017 findmnt
+-rwxr-xr-x    1 root root      4371 Mar 21  2017 find-repos-of-install
+-rwxr-xr-x.   1 root root     15736 Feb 21  2017 fipscheck
+-rwxr-xr-x.   1 root root     11576 Feb 21  2017 fipshmac
+-rwxr-xr-x.   1 root root    115082 Jun 12  2017 firewall-cmd
+-rwxr-xr-x.   1 root root    102329 Jun 12  2017 firewall-offline-cmd
+-rwxr-xr-x.   1 root root     24400 Nov  9  2017 flock
+-rwxr-xr-x.   1 root root     37368 Jun 30  2016 fmt
+-rwxr-xr-x.   1 root root     37320 Jun 30  2016 fold
+-rwxr-xr-x    1 root root     36752 May 12  2015 fonttosfnt
+-rwxr-xr-x.   1 root root     19784 Jun  1  2017 free
+-rwxr-xr-x    1 root root     32136 Apr 15  2016 funzip
+-rwsr-xr-x.   1 root root     32008 May  2  2017 fusermount
+-rwxr-xr-x.   1 root root     19944 Jun  6  2017 gapplication
+-rwxr-xr-x.   1 root root    428584 Jun 13  2017 gawk
+-rwxr-xr-x    2 root root    768592 Sep 22  2017 gcc
+-rwxr-xr-x    1 root root     27088 Sep 22  2017 gcc-ar
+-rwxr-xr-x    1 root root     27088 Sep 22  2017 gcc-nm
+-rwxr-xr-x    1 root root     27088 Sep 22  2017 gcc-ranlib
+-rwxr-xr-x    1 root root    318928 Sep 22  2017 gcov
+-rwxr-xr-x.   1 root root     36936 Jun  6  2017 gdbus
+-rwxr-xr-x.   1 root root     23064 Nov 23  2017 gencat
+-rwxr-xr-x.   2 root root     11544 Apr 18  2017 genl-ctrl-list
+-rwxr-xr-x.   1 root root     15648 Jun 29  2016 geoiplookup
+-rwxr-xr-x.   1 root root     11432 Jun 29  2016 geoiplookup6
+-rwxr-xr-x.   1 root root     11496 Jun 29  2016 geoipupdate
+lrwxrwxrwx.   1 root root         3 Apr 29  2024 geqn -> eqn
+-rwxr-xr-x.   1 root root     22848 Nov 23  2017 getconf
+-rwxr-xr-x.   1 root root     27832 Nov 23  2017 getent
+-rwxr-xr-x.   1 root root     24848 Jan 28  2014 getfacl
+-rwxr-xr-x.   1 root root     11424 Feb 22  2017 getkeycodes
+-rwxr-xr-x.   1 root root     15752 Nov  9  2017 getopt
+-rwxr-xr-x.   1 root root        31 Aug  3  2017 getopts
+-rwxr-xr-x.   1 root root     36800 Mar 15  2017 gettext
+-rwxr-xr-x    1 root root     43718 Mar 15  2017 gettextize
+-rwxr-xr-x.   1 root root      4629 Mar 15  2017 gettext.sh
+-rwxr-xr-x.   1 root root     75072 Jun  6  2017 gio
+-rwxr-xr-x.   1 root root     11472 Jun  6  2017 gio-querymodules-64
+-rwxr-xr-x  112 root root   1515056 Aug 11  2017 git
+-rwxr-xr-x  112 root root   1515056 Aug 11  2017 git-receive-pack
+-rwxr-xr-x    2 root root    730912 Aug 11  2017 git-shell
+-rwxr-xr-x  112 root root   1515056 Aug 11  2017 git-upload-archive
+-rwxr-xr-x    2 root root    806160 Aug 11  2017 git-upload-pack
+-rwxr-xr-x.   1 root root     45416 Jun  6  2017 glib-compile-schemas
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 gmake -> make
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 gneqn -> neqn
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 gnroff -> nroff
+-rwsr-xr-x.   1 root root     78168 Jun 28  2016 gpasswd
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 gpg -> gpg2
+-rwxr-xr-x.   1 root root    750072 Mar 24  2016 gpg2
+-rwxr-xr-x.   1 root root    300744 Mar 24  2016 gpg-agent
+-rwxr-xr-x.   1 root root    143584 Mar 24  2016 gpgconf
+-rwxr-xr-x.   1 root root    156208 Mar 24  2016 gpg-connect-agent
+-rwxr-xr-x.   1 root root     23736 Jan 26  2014 gpg-error
+-rwxr-xr-x.   1 root root     24176 Mar 24  2016 gpgparsemail
+-rwxr-xr-x.   1 root root     49944 Mar 24  2016 gpgsplit
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 gpgv -> gpgv2
+-rwxr-xr-x.   1 root root    353560 Mar 24  2016 gpgv2
+-rwxr-xr-x.   1 root root      3307 Mar 24  2016 gpg-zip
+lrwxrwxrwx.   1 root root         3 Apr 29  2024 gpic -> pic
+-rwxr-xr-x.   1 root root    100760 Nov 21  2017 gprof
+-rwxr-xr-x.   1 root root    159024 Mar 24  2017 grep
+-rwxr-xr-x.   1 root root     83584 Jan 29  2014 groff
+-rwxr-xr-x.   1 root root    144248 Jan 29  2014 grops
+-rwxr-xr-x.   1 root root    100944 Jan 29  2014 grotty
+-rwxr-xr-x.   1 root root     33192 Jun 30  2016 groups
+-rwxr-xr-x.   1 root root    401368 Oct  9  2017 grub2-editenv
+-rwxr-xr-x.   1 root root    833792 Oct  9  2017 grub2-file
+-rwxr-xr-x.   1 root root   1062712 Oct  9  2017 grub2-fstest
+-rwxr-xr-x.   1 root root    260808 Oct  9  2017 grub2-glue-efi
+-rwxr-xr-x.   1 root root      1668 Oct  9  2017 grub2-kbdcomp
+-rwxr-xr-x.   1 root root    243440 Oct  9  2017 grub2-menulst2cfg
+-rwxr-xr-x.   1 root root    290336 Oct  9  2017 grub2-mkfont
+-rwxr-xr-x.   1 root root    384056 Oct  9  2017 grub2-mkimage
+-rwxr-xr-x.   1 root root    267072 Oct  9  2017 grub2-mklayout
+-rwxr-xr-x.   1 root root    431200 Oct  9  2017 grub2-mknetdir
+-rwxr-xr-x.   1 root root    273640 Oct  9  2017 grub2-mkpasswd-pbkdf2
+-rwxr-xr-x.   1 root root    260504 Oct  9  2017 grub2-mkrelpath
+-rwxr-xr-x.   1 root root   1021536 Oct  9  2017 grub2-mkrescue
+-rwxr-xr-x.   1 root root    534600 Oct  9  2017 grub2-mkstandalone
+-rwxr-xr-x.   1 root root    842856 Oct  9  2017 grub2-render-label
+-rwxr-xr-x.   1 root root    298296 Oct  9  2017 grub2-script-check
+-rwxr-xr-x.   1 root root    769504 Oct  9  2017 grub2-syslinux2cfg
+-rwxr-xr-x.   1 root root     24352 Jun  6  2017 gsettings
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 gsoelim -> soelim
+-rwxr-xr-x    1 root root     23728 Apr 29  2017 gss-client
+lrwxrwxrwx.   1 root root         3 Apr 29  2024 gtar -> tar
+lrwxrwxrwx.   1 root root         3 Apr 29  2024 gtbl -> tbl
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 gtroff -> troff
+-rwxr-xr-x.   1 root root      2253 Feb 28  2017 gunzip
+-rwxr-xr-x.   1 root root      5931 Feb 28  2017 gzexe
+-rwxr-xr-x.   1 root root    100800 Feb 28  2017 gzip
+-rwxr-xr-x    1 root root     28310 Mar  2  2017 h2ph
+-rwxr-xr-x    1 root root     60565 Mar  2  2017 h2xs
+-rwxr-xr-x.   1 root root     11440 Jun  7  2016 hdsploader
+-rwxr-xr-x.   1 root root     41472 Jun 30  2016 head
+-rwxr-xr-x.   1 root root     32744 Nov  9  2017 hexdump
+-rwxr-xr-x.   1 root root     28984 Jun 30  2016 hostid
+-rwxr-xr-x.   1 root root     15768 Jan 25  2014 hostname
+-rwxr-xr-x.   1 root root    287984 Jan  9  2018 hostnamectl
+-rwxr-xr-x    1 root root     23656 Oct  3  2017 htdbm
+-rwxr-xr-x    1 root root     15432 Oct  3  2017 htdigest
+-rwxr-xr-x    1 root root     19560 Oct  3  2017 htpasswd
+-rwxr-xr-x    1 root root     11256 Oct  3  2017 httxt2dbm
+lrwxrwxrwx.   1 root root         7 Apr 29  2024 i386 -> setarch
+-rwxr-xr-x.   1 root root     60312 Nov 23  2017 iconv
+-rwxr-xr-x.   1 root root     41472 Jun 30  2016 id
+-rwxr-xr-x.   1 root root     11608 Apr 18  2017 idiag-socket-details
+-rwxr-xr-x.   1 root root     33232 Aug 22  2014 idn
+-rwxr-xr-x    1 root root      4128 Dec 27  2013 ifnames
+-rwxr-xr-x.   1 root root      3188 Jun 13  2017 igawk
+-rwxr-xr-x.   1 root root    271480 Jan 27  2014 info
+-rwxr-xr-x.   1 root root     57416 Aug 15  2017 infocmp
+-rwxr-xr-x.   1 root root     21976 Jan 27  2014 infokey
+lrwxrwxrwx.   1 root root         3 Apr 29  2024 infotocap -> tic
+-rwxr-xr-x.   1 root root    142936 Jun 30  2016 install
+-rwxr-xr-x    1 root root      4247 Dec 29  2013 instmodsh
+-rwxr-xr-x.   1 root root     24400 Nov  9  2017 ionice
+-rwxr-xr-x.   1 root root     15408 Nov  3  2017 ipcalc
+-rwxr-xr-x.   1 root root     24520 Nov  9  2017 ipcmk
+-rwxr-xr-x.   1 root root     24376 Nov  9  2017 ipcrm
+-rwxr-xr-x.   1 root root     49488 Nov  9  2017 ipcs
+lrwxrwxrwx.   1 root root        23 Apr 29  2024 iptables-xml -> /usr/sbin/xtables-multi
+-rwxr-xr-x.   1 root root     24336 Nov  9  2017 isosize
+lrwxrwxrwx    1 root root        22 May 18  2024 java -> /etc/alternatives/java
+lrwxrwxrwx    1 root root        21 May 18  2024 jjs -> /etc/alternatives/jjs
+-rwxr-xr-x.   1 root root        28 Aug  3  2017 jobs
+-rwxr-xr-x.   1 root root     49904 Jun 30  2016 join
+-rwxr-xr-x.   1 root root    483272 Jan  9  2018 journalctl
+lrwxrwxrwx    1 root root         7 Apr 29  2024 jp.py -> jp.py-2
+lrwxrwxrwx    1 root root         9 Apr 29  2024 jp.py-2 -> jp.py-2.7
+-rwxr-xr-x    1 root root      1678 Apr 23  2020 jp.py-2.7
+-rwxr-xr-x    1 root root      1737 Jul  2  2015 jvmjar
+-rwxr-xr-x.   1 root root     11448 Feb 22  2017 kbdinfo
+-rwxr-xr-x.   1 root root     11424 Feb 22  2017 kbd_mode
+-rwxr-xr-x.   1 root root     11480 Feb 22  2017 kbdrate
+-rwxr-xr-x.   1 root root     29577 Sep 26  2017 kdumpctl
+-rwxr-xr-x.   1 root root      4489 Jan  9  2018 kernel-install
+-rwxr-xr-x    1 root root     28608 Jan 26  2014 keyctl
+lrwxrwxrwx    1 root root        25 May 18  2024 keytool -> /etc/alternatives/keytool
+-rwxr-xr-x.   1 root root     29448 Nov  9  2017 kill
+-rwxr-xr-x.   1 root root    146696 Dec 13  2017 kmod
+-rwxr-xr-x    1 root root      7123 Apr 29  2017 krb5-config
+-rwxr-xr-x.   1 root root     19568 Jan 27  2014 last
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 lastb -> last
+-rwxr-xr-x.   1 root root     19584 Jun 28  2016 lastlog
+-rwxr-xr-x.   1 root root     19912 Jul  8  2015 lchfn
+-rwxr-xr-x.   1 root root     15776 Jul  8  2015 lchsh
+lrwxrwxrwx.   1 root root        20 Apr 29  2024 ld -> /etc/alternatives/ld
+-rwxr-xr-x.   1 root root    873960 Nov 21  2017 ld.bfd
+-rwxr-xr-x.   1 root root      5302 Nov 23  2017 ldd
+-rwxr-xr-x.   1 root root   4859400 Nov 21  2017 ld.gold
+-rwxr-xr-x.   1 root root    158248 May 25  2015 less
+-rwxr-xr-x.   1 root root     11376 May 25  2015 lessecho
+-rwxr-xr-x.   1 root root     17056 May 25  2015 lesskey
+-rwxr-xr-x.   1 root root      2291 May 25  2015 lesspipe.sh
+-rwxr-xr-x.   1 root root     87024 Mar 17  2014 lexgrog
+-rwxr-xr-x    1 root root     15724 Mar  2  2017 libnetcfg
+-rwxr-xr-x.   1 root root     28984 Jun 30  2016 link
+lrwxrwxrwx.   1 root root         7 Apr 29  2024 linux32 -> setarch
+lrwxrwxrwx.   1 root root         7 Apr 29  2024 linux64 -> setarch
+-rwxr-xr-x.   1 root root      5995 Sep 16  2016 linux-boot-prober
+-rwxr-xr-x.   1 root root     58608 Jun 30  2016 ln
+-rwxr-xr-x.   1 root root    113128 Feb 22  2017 loadkeys
+-rwxr-xr-x.   1 root root     24448 Feb 22  2017 loadunimap
+-rwxr-xr-x.   1 root root     38680 Nov 23  2017 locale
+-rwxr-xr-x.   1 root root    292152 Jan  9  2018 localectl
+-rwxr-xr-x.   1 root root    318792 Nov 23  2017 localedef
+-rwxr-xr-x    1 root root       533 Jul 14  2017 logfactor5
+-rwxr-xr-x.   1 root root     29224 Nov  9  2017 logger
+-rwxr-xr-x.   1 root root     37200 Nov  9  2017 login
+-rwxr-xr-x.   1 root root    429832 Jan  9  2018 loginctl
+-rwxr-xr-x.   1 root root     28992 Jun 30  2016 logname
+-rwxr-xr-x    1 root root     11256 Oct  3  2017 logresolve
+-rwxr-xr-x.   1 root root     11536 Nov  9  2017 look
+-rwxr-xr-x.   1 root root    117656 Jun 30  2016 ls
+-rwxr-xr-x.   1 root root     11528 Mar 16  2017 lsattr
+-rwxr-xr-x.   1 root root     76856 Nov  9  2017 lsblk
+-rwxr-xr-x.   1 root root    100568 Nov  9  2017 lscpu
+-rwxr-xr-x.   1 root root      6408 Dec 18  2017 lsinitrd
+-rwxr-xr-x.   1 root root     96544 Nov  9  2017 lsipc
+-rwxr-xr-x.   1 root root     41864 Nov  9  2017 lslocks
+-rwxr-xr-x.   1 root root     88312 Nov  9  2017 lslogins
+-rwxr-xr-x.   1 root root     75576 Nov  9  2017 lsns
+-rwxr-xr-x.   1 root root     57832 Mar 15  2017 lsscsi
+-rwxr-xr-x.   1 root root     15848 Sep  6  2016 lua
+-rwxr-xr-x.   1 root root    121888 Sep  6  2016 luac
+-rwxr-xr-x    1 root root    154808 Aug 15  2014 m4
+-rwxr-xr-x.   1 root root    475336 Jan  9  2018 machinectl
+lrwxrwxrwx.   1 root root        27 Apr 29  2024 mailq -> /etc/alternatives/mta-mailq
+lrwxrwxrwx.   1 root root        31 Apr 29  2024 mailq.postfix -> ../../usr/sbin/sendmail.postfix
+-rwxr-xr-x.   1 root root    182768 Jul  8  2016 make
+-rwxr-xr-x.   1 root root     19032 Nov 23  2017 makedb
+-rwxr-xr-x.   1 root root     70032 Jan 25  2014 makedeltarpm
+-rwxr-xr-x.   1 root root    102736 Mar 17  2014 man
+-rwxr-xr-x.   1 root root    125088 Mar 17  2014 mandb
+-rwxr-xr-x.   1 root root     33224 Mar 17  2014 manpath
+-rwxr-xr-x.   1 root root     20248 Feb 22  2017 mapscrn
+-rwxr-xr-x.   1 root root     15808 Nov  9  2017 mcookie
+-rwxr-xr-x.   1 root root     41504 Jun 30  2016 md5sum
+-rwxr-xr-x.   1 root root        55 Jan 26  2011 mergerepo
+-rwxr-xr-x.   1 root root     11240 Jan 27  2014 mesg
+-rwxr-xr-x.   1 root root     15736 Jun  7  2016 mixartloader
+-rwxr-xr-x.   1 root root     79760 Jun 30  2016 mkdir
+-rwxr-xr-x.   1 root root     63056 Jun 30  2016 mkfifo
+-rwxr-xr-x    1 root root        65 May 12  2015 mkfontdir
+-rwxr-xr-x    1 root root     33128 May 12  2015 mkfontscale
+-rwxr-xr-x.   1 root root      3013 Dec 18  2017 mkinitrd
+-rwxr-xr-x.   1 root root     67200 Jun 30  2016 mknod
+-rwxr-xr-x.   1 root root     41632 Jun 30  2016 mktemp
+-rwxr-xr-x.   1 root root        56 Jan 26  2011 modifyrepo
+-rwxr-xr-x.   1 root root    157288 Sep 27  2017 modutil
+-rwxr-xr-x.   1 root root     41120 Nov  9  2017 more
+-rwsr-xr-x.   1 root root     44232 Nov  9  2017 mount
+-rwxr-xr-x.   1 root root     15680 Nov  9  2017 mountpoint
+-rwxr-xr-x.   1 root root     23920 Mar 15  2017 msgattrib
+-rwxr-xr-x.   1 root root     23880 Mar 15  2017 msgcat
+-rwxr-xr-x.   1 root root     24144 Mar 15  2017 msgcmp
+-rwxr-xr-x.   1 root root     23872 Mar 15  2017 msgcomm
+-rwxr-xr-x.   1 root root     19760 Mar 15  2017 msgconv
+-rwxr-xr-x.   1 root root     19760 Mar 15  2017 msgen
+-rwxr-xr-x.   1 root root     15696 Mar 15  2017 msgexec
+-rwxr-xr-x.   1 root root     28224 Mar 15  2017 msgfilter
+-rwxr-xr-x.   1 root root     78984 Mar 15  2017 msgfmt
+-rwxr-xr-x.   1 root root     36816 Mar 15  2017 msggrep
+-rwxr-xr-x.   1 root root     12751 Mar 15  2017 msghack
+-rwxr-xr-x.   1 root root     45440 Mar 15  2017 msginit
+-rwxr-xr-x.   1 root root     53848 Mar 15  2017 msgmerge
+-rwxr-xr-x.   1 root root     32448 Mar 15  2017 msgunfmt
+-rwxr-xr-x.   1 root root     19776 Mar 15  2017 msguniq
+-rwxr-xr-x.   1 root root    130352 Jun 30  2016 mv
+-rwxr-xr-x.   1 root root     28584 Nov  9  2017 namei
+-rwxr-xr-x.   1 root root     20056 May 18  2016 ndptool
+-rwxr-xr-x    1 root root      8347 Mar 21  2017 needs-restarting
+-rwxr-xr-x.   1 root root       271 Jan 29  2014 neqn
+-rwxr-xr-x.   1 root root    155000 Mar 29  2017 netstat
+lrwxrwxrwx.   1 root root        32 Apr 29  2024 newaliases -> /etc/alternatives/mta-newaliases
+lrwxrwxrwx.   1 root root        31 Apr 29  2024 newaliases.postfix -> ../../usr/sbin/sendmail.postfix
+-rwsr-xr-x.   1 root root     41752 Jun 28  2016 newgrp
+-rwxr-xr-x.   1 root root     12088 Apr 18  2017 nf-ct-add
+-rwxr-xr-x.   1 root root     16216 Apr 18  2017 nf-ct-list
+-rwxr-xr-x.   1 root root     16600 Apr 18  2017 nf-exp-add
+-rwxr-xr-x.   1 root root     16376 Apr 18  2017 nf-exp-delete
+-rwxr-xr-x.   1 root root     12088 Apr 18  2017 nf-exp-list
+-rwxr-xr-x.   1 root root     11504 Apr 18  2017 nf-log
+-rwxr-xr-x.   1 root root     11448 Apr 18  2017 nf-monitor
+-rwxr-xr-x.   1 root root     11544 Apr 18  2017 nf-queue
+-rwxr-xr-x.   1 root root     36816 Mar 15  2017 ngettext
+-rwxr-xr-x.   1 root root     33088 Jun 30  2016 nice
+lrwxrwxrwx.   1 root root         8 Apr 29  2024 nisdomainname -> hostname
+-rwxr-xr-x.   1 root root     41568 Jun 30  2016 nl
+-rwxr-xr-x.   1 root root     11928 Apr 18  2017 nl-addr-add
+-rwxr-xr-x.   1 root root     12016 Apr 18  2017 nl-addr-delete
+-rwxr-xr-x.   1 root root     16256 Apr 18  2017 nl-addr-list
+-rwxr-xr-x.   2 root root     11976 Apr 18  2017 nl-class-add
+-rwxr-xr-x.   2 root root     11824 Apr 18  2017 nl-class-delete
+-rwxr-xr-x.   2 root root     11560 Apr 18  2017 nl-classid-lookup
+-rwxr-xr-x.   2 root root     11752 Apr 18  2017 nl-class-list
+-rwxr-xr-x.   2 root root     12040 Apr 18  2017 nl-cls-add
+-rwxr-xr-x.   2 root root     11960 Apr 18  2017 nl-cls-delete
+-rwxr-xr-x.   2 root root     11856 Apr 18  2017 nl-cls-list
+-rwxr-xr-x.   1 root root     11688 Apr 18  2017 nl-fib-lookup
+-rwxr-xr-x.   1 root root      7216 Apr 18  2017 nl-link-enslave
+-rwxr-xr-x.   1 root root      7232 Apr 18  2017 nl-link-ifindex2name
+-rwxr-xr-x.   2 root root     11800 Apr 18  2017 nl-link-list
+-rwxr-xr-x.   1 root root      7224 Apr 18  2017 nl-link-name2ifindex
+-rwxr-xr-x.   1 root root      7216 Apr 18  2017 nl-link-release
+-rwxr-xr-x.   1 root root     11920 Apr 18  2017 nl-link-set
+-rwxr-xr-x.   1 root root     11664 Apr 18  2017 nl-link-stats
+-rwxr-xr-x.   1 root root     11344 Apr 18  2017 nl-list-caches
+-rwxr-xr-x.   1 root root      7232 Apr 18  2017 nl-list-sockets
+-rwxr-xr-x.   1 root root     11464 Apr 18  2017 nl-monitor
+-rwxr-xr-x.   1 root root     11784 Apr 18  2017 nl-neigh-add
+-rwxr-xr-x.   1 root root     11848 Apr 18  2017 nl-neigh-delete
+-rwxr-xr-x.   1 root root     11736 Apr 18  2017 nl-neigh-list
+-rwxr-xr-x.   1 root root     11536 Apr 18  2017 nl-neightbl-list
+-rwxr-xr-x.   2 root root     11632 Apr 18  2017 nl-pktloc-lookup
+-rwxr-xr-x.   2 root root     11880 Apr 18  2017 nl-qdisc-add
+-rwxr-xr-x.   2 root root     11816 Apr 18  2017 nl-qdisc-delete
+-rwxr-xr-x.   2 root root     11904 Apr 18  2017 nl-qdisc-list
+-rwxr-xr-x.   1 root root     12024 Apr 18  2017 nl-route-add
+-rwxr-xr-x.   1 root root     16240 Apr 18  2017 nl-route-delete
+-rwxr-xr-x.   1 root root     11448 Apr 18  2017 nl-route-get
+-rwxr-xr-x.   1 root root     12056 Apr 18  2017 nl-route-list
+-rwxr-xr-x.   1 root root     11568 Apr 18  2017 nl-rule-list
+-rwxr-xr-x.   1 root root     11808 Apr 18  2017 nl-tctree-list
+-rwxr-xr-x.   1 root root      7200 Apr 18  2017 nl-util-addr
+-rwxr-xr-x.   1 root root     42392 Nov 21  2017 nm
+-rwxr-xr-x.   1 root root    718912 Oct  7  2017 nmcli
+-rwxr-xr-x.   1 root root     15528 Oct  7  2017 nm-online
+-rwxr-xr-x.   1 root root    244888 Oct  7  2017 nmtui
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 nmtui-connect -> nmtui
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 nmtui-edit -> nmtui
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 nmtui-hostname -> nmtui
+-rwxr-xr-x.   1 root root     33184 Jun 30  2016 nohup
+-rwxr-xr-x.   1 root root     33128 Jun 30  2016 nproc
+-rwxr-xr-x.   1 root root      3392 Jan 29  2014 nroff
+-rwxr-xr-x.   1 root root     28864 Nov  9  2017 nsenter
+-rwxr-xr-x.   1 root root     66264 Jun 30  2016 numfmt
+-rwxr-xr-x.   1 root root    228528 Nov 21  2017 objcopy
+-rwxr-xr-x.   1 root root    387376 Nov 21  2017 objdump
+-rwxr-xr-x.   1 root root     66368 Jun 30  2016 od
+-rwxr-xr-x.   1 root root    190800 Jun  1  2015 oldfind
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 open -> openvt
+-rwxr-xr-x.   1 root root    555288 May 17  2017 openssl
+-rwxr-xr-x.   1 root root     19944 Feb 22  2017 openvt
+lrwxrwxrwx    1 root root        22 May 18  2024 orbd -> /etc/alternatives/orbd
+-rwxr-xr-x.   1 root root      5643 Sep 16  2016 os-prober
+-rwxr-xr-x.   1 root root     32944 Jun 15  2017 p11-kit
+lrwxrwxrwx    1 root root        25 May 18  2024 pack200 -> /etc/alternatives/pack200
+-rwxr-xr-x    1 root root     15458 Mar 21  2017 package-cleanup
+-rwsr-xr-x.   1 root root     27832 Jan 30  2014 passwd
+-rwxr-xr-x.   1 root root     33128 Jun 30  2016 paste
+-rwxr-xr-x.   1 root root     33080 Jun 30  2016 pathchk
+-rwxr-xr-x.   1 root root      4024 Jul  5  2016 pchrt
+-rwxr-xr-x    1 root root      2138 Feb  6  2017 pcre-config
+-rwxr-xr-x    2 root root     11400 Mar  2  2017 perl
+-rwxr-xr-x    2 root root     11400 Mar  2  2017 perl5.16.3
+-rwxr-xr-x    2 root root     43873 Mar  2  2017 perlbug
+-rwxr-xr-x    1 root root       203 Dec 29  2013 perldoc
+-rwxr-xr-x    1 root root     10772 Mar  2  2017 perlivp
+-rwxr-xr-x    2 root root     43873 Mar  2  2017 perlthanks
+-rwxr-xr-x.   1 root root      1860 Aug 24  2016 pflags
+-rwxr-xr-x.   1 root root    428704 Jun 13  2017 pgawk
+-rwxr-xr-x.   1 root root     28336 Jun  1  2017 pgrep
+-rwxr-xr-x.   1 root root    184720 Jan 29  2014 pic
+-rwxr-xr-x    1 root root      8177 Jan 27  2014 piconv
+-rwxr-xr-x.   1 root root      2602 Mar 17  2016 pinentry
+-rwxr-xr-x.   1 root root     50328 Mar 17  2016 pinentry-curses
+-rwxr-xr-x.   1 root root     66168 May 22  2017 ping
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 ping6 -> ping
+-rwxr-xr-x.   1 root root     37448 Jun 30  2016 pinky
+-rwxr-xr-x.   1 root root     93168 Sep 27  2017 pk12util
+-rwxr-xr-x.   1 root root     15352 Apr  7  2017 pkaction
+-rwxr-xr-x.   1 root root     23576 Apr  7  2017 pkcheck
+-rwsr-xr-x.   1 root root     27680 Apr  7  2017 pkexec
+-rwxr-xr-x.   1 root root     45448 Jan 27  2014 pkg-config
+-rwxr-xr-x.   1 root root     28336 Jun  1  2017 pkill
+-rwxr-xr-x.   1 root root     19688 Jan 27  2014 pkla-admin-identities
+-rwxr-xr-x.   1 root root     27960 Jan 27  2014 pkla-check-authorization
+-rwxr-xr-x.   1 root root     15320 Apr  7  2017 pkttyagent
+-rwxr-xr-x    1 root root      4531 Mar  2  2017 pl2pm
+-rwxr-xr-x.   1 root root     14808 Nov 23  2017 pldd
+-rwxr-xr-x.   1 root root     40720 May 11  2017 plymouth
+-rwxr-xr-x.   1 root root     28264 Jun  1  2017 pmap
+-rwxr-xr-x    1 root root      4096 Mar  2  2017 pod2html
+-rwxr-xr-x    1 root root     13581 Dec 29  2013 pod2man
+-rwxr-xr-x    1 root root     11004 Dec 29  2013 pod2text
+-rwxr-xr-x    1 root root      3755 Dec 29  2013 pod2usage
+lrwxrwxrwx    1 root root        28 May 18  2024 policytool -> /etc/alternatives/policytool
+-rwxr-xr-x.   1 root root    192040 Jan 29  2014 post-grohtml
+-rwxr-xr-x.   1 root root      6296 Jan 14  2018 powernow-k8-decode
+-rwxr-xr-x.   1 root root     66664 Jun 30  2016 pr
+-rwxr-xr-x.   1 root root     41864 Jan 29  2014 preconv
+-rwxr-xr-x.   1 root root     88312 Jan 29  2014 pre-grohtml
+-rwxr-xr-x.   1 root root     28976 Jun 30  2016 printenv
+-rwxr-xr-x.   1 root root     49784 Jun 30  2016 printf
+-rwxr-xr-x.   1 root root     42072 Nov  9  2017 prlimit
+-rwxr-xr-x    1 root root     13444 May  4  2015 prove
+-rwxr-xr-x.   1 root root    100120 Jun  1  2017 ps
+-rwxr-xr-x    2 root root     53329 Mar  2  2017 psed
+lrwxrwxrwx.   1 root root         9 Apr 29  2024 psfaddtable -> psfxtable
+lrwxrwxrwx.   1 root root         9 Apr 29  2024 psfgettable -> psfxtable
+lrwxrwxrwx.   1 root root         9 Apr 29  2024 psfstriptable -> psfxtable
+-rwxr-xr-x.   1 root root     19936 Feb 22  2017 psfxtable
+-rwxr-xr-x    2 root root     36607 Mar  2  2017 pstruct
+-rwxr-xr-x.   1 root root      3891 Jul  5  2016 ptaskset
+-rwxr-xr-x.   1 root root     66648 Jun 30  2016 ptx
+-rwxr-xr-x.   1 root root     33232 Jun 30  2016 pwd
+-rwxr-xr-x.   1 root root     11528 Jun  1  2017 pwdx
+-rwxr-xr-x.   1 root root     11384 Jan 26  2014 pwmake
+-rwxr-xr-x.   1 root root     11376 Jan 26  2014 pwscore
+-rwxr-xr-x.   1 root root        78 May  3  2017 pydoc
+lrwxrwxrwx.   1 root root         7 Apr 29  2024 python -> python2
+lrwxrwxrwx.   1 root root         9 Apr 29  2024 python2 -> python2.7
+-rwxr-xr-x.   1 root root      7136 May  3  2017 python2.7
+-rwxr-xr-x    1 root root     85336 Mar 10  2016 quota
+-rwxr-xr-x    1 root root     72568 Mar 10  2016 quotasync
+-rwxr-xr-x.   1 root root     62680 Nov 21  2017 ranlib
+-rwxr-xr-x.   1 root root     15640 Nov  9  2017 raw
+-rwxr-xr-x.   1 root root      1707 Sep  1  2017 rct
+-rwxr-xr-x.   1 root root        28 Aug  3  2017 read
+-rwxr-xr-x.   1 root root    493192 Nov 21  2017 readelf
+-rwxr-xr-x.   1 root root     41800 Jun 30  2016 readlink
+-rwxr-xr-x.   1 root root     62704 Jun 30  2016 realpath
+-rwxr-xr-x    1 root root      1803 Jul  2  2015 rebuild-jar-repository
+-rwxr-xr-x.   1 root root     15648 Mar 15  2017 recode-sr-latin
+-rwxr-xr-x.   1 root root     12011 May 31  2017 redhat-support-tool
+-rwxr-xr-x.   1 root root     11528 Nov  9  2017 rename
+-rwxr-xr-x.   1 root root     11472 Nov  9  2017 renice
+-rwxr-xr-x    1 root root     11699 Mar 21  2017 repoclosure
+-rwxr-xr-x    1 root root     14301 Mar 21  2017 repodiff
+-rwxr-xr-x    1 root root      4191 Mar 21  2017 repo-graph
+-rwxr-xr-x    1 root root      7043 Mar 21  2017 repomanage
+-rwxr-xr-x    1 root root     57013 Mar 21  2017 repoquery
+-rwxr-xr-x    1 root root     10315 Mar 21  2017 repo-rss
+-rwxr-xr-x    1 root root     13040 Mar 21  2017 reposync
+-rwxr-xr-x    1 root root      8735 Mar 21  2017 repotrack
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 reset -> tset
+-rwxr-xr-x.   1 root root     20088 Feb 22  2017 resizecons
+-rwxr-xr-x.   1 root root     11528 Nov  9  2017 rev
+lrwxrwxrwx.   1 root root        13 Apr 29  2024 rhn_register -> consolehelper
+-rwxr-xr-x.   1 root root     20088 Sep  1  2017 rhsmcertd
+-rwxr-xr-x.   1 root root      2585 Sep  1  2017 rhsm-debug
+-rwxr-xr-x.   1 root root     62864 Jun 30  2016 rm
+lrwxrwxrwx.   1 root root        27 Apr 29  2024 rmail -> /etc/alternatives/mta-rmail
+-rwxr-xr-x.   1 root root       262 Jan 27  2014 rmail.postfix
+-rwxr-xr-x.   1 root root     45528 Jun 30  2016 rmdir
+lrwxrwxrwx    1 root root        22 May 18  2024 rmid -> /etc/alternatives/rmid
+lrwxrwxrwx    1 root root        29 May 18  2024 rmiregistry -> /etc/alternatives/rmiregistry
+-rwxr-xr-x.   1 root root     93080 Nov 23  2017 rpcgen
+-rwxr-xr-x.   1 root root     16120 Mar 17  2017 rpm
+-rwxr-xr-x.   1 root root     11408 Mar 17  2017 rpm2cpio
+-rwxr-xr-x.   1 root root     12000 Mar 17  2017 rpmdb
+-rwxr-xr-x.   1 root root     11360 Jan 25  2014 rpmdumpheader
+-rwxr-xr-x.   1 root root     12008 Mar 17  2017 rpmkeys
+lrwxrwxrwx.   1 root root        13 Apr 29  2024 rpmquery -> ../../bin/rpm
+lrwxrwxrwx.   1 root root        13 Apr 29  2024 rpmverify -> ../../bin/rpm
+-rwxr-xr-x    1 root root    448344 Feb 14  2017 rsync
+-rwxr-xr-x.   1 root root      6098 May 10  2017 rsyslog-recover-qi.pl
+-rwxr-xr-x.   1 root root     33248 Jun 30  2016 runcon
+-rwxr-xr-x.   1 root root      2086 Dec 28  2013 run-parts
+lrwxrwxrwx.   1 root root         2 Apr 29  2024 rvi -> vi
+lrwxrwxrwx.   1 root root         2 Apr 29  2024 rview -> vi
+-rwxr-xr-x    2 root root     53329 Mar  2  2017 s2p
+-rwxr-xr-x.   1 root root     91408 Sep 13  2017 scp
+-rwxr-xr-x.   1 root root     20080 Nov  9  2017 script
+-rwxr-xr-x.   1 root root     15648 Nov  9  2017 scriptreplay
+-rwxr-xr-x    1 root root     45592 Jun 27  2016 sctp_darn
+-rwxr-xr-x    1 root root     24224 Jun 27  2016 sctp_status
+-rwxr-xr-x    1 root root     32528 Jun 27  2016 sctp_test
+-rwxr-xr-x.   1 root root     49536 Jan 25  2014 sdiff
+-rwxr-xr-x.   1 root root     24648 May 26  2017 secon
+-rwxr-xr-x.   1 root root     76016 Feb 10  2014 sed
+-rwxr-xr-x.   1 root root     49632 Jun 30  2016 seq
+lrwxrwxrwx    1 root root        28 May 18  2024 servertool -> /etc/alternatives/servertool
+-rwxr-xr-x.   1 root root     15640 Nov  9  2017 setarch
+-rwxr-xr-x.   1 root root     37576 Jan 28  2014 setfacl
+-rwxr-xr-x.   1 root root     41344 Feb 22  2017 setfont
+-rwxr-xr-x.   1 root root     11424 Feb 22  2017 setkeycodes
+-rwxr-xr-x.   1 root root     11432 Feb 22  2017 setleds
+-rwxr-xr-x.   1 root root     11472 Feb 22  2017 setmetamode
+-rwxr-xr-x.   1 root root     36888 Nov  9  2017 setpriv
+-rwxr-xr-x.   1 root root     11496 Nov  9  2017 setsid
+-rwxr-xr-x.   1 root root     28144 Nov  9  2017 setterm
+lrwxrwxrwx.   1 root root        19 Apr 29  2024 setup-nsssysinit -> setup-nsssysinit.sh
+-rwxr-xr-x.   1 root root      1539 Sep 27  2017 setup-nsssysinit.sh
+-rwxr-xr-x.   1 root root     11600 Feb 22  2017 setvtrgb
+-rwxr-xr-x.   1 root root    145440 Sep 13  2017 sftp
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 sg -> newgrp
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 sh -> bash
+-rwxr-xr-x.   1 root root     37440 Jun 30  2016 sha1sum
+-rwxr-xr-x.   1 root root     41600 Jun 30  2016 sha224sum
+-rwxr-xr-x.   1 root root     41600 Jun 30  2016 sha256sum
+-rwxr-xr-x.   1 root root     41600 Jun 30  2016 sha384sum
+-rwxr-xr-x.   1 root root     41600 Jun 30  2016 sha512sum
+-rwxr-xr-x    1 root root     10371 Mar 21  2017 show-changed-rco
+-rwxr-xr-x.   1 root root     15832 Feb 22  2017 showconsolefont
+-rwxr-xr-x    1 root root     16572 Mar 21  2017 show-installed
+-rwxr-xr-x.   1 root root     15608 Feb 22  2017 showkey
+-rwxr-xr-x.   1 root root     54216 Jun 30  2016 shred
+-rwxr-xr-x.   1 root root     50320 Jun 30  2016 shuf
+-rwxr-xr-x.   1 root root    171984 Sep 27  2017 signtool
+-rwxr-xr-x.   1 root root     92552 Sep 27  2017 signver
+-rwxr-xr-x    1 root root     15328 Apr 29  2017 sim_client
+-rwxr-xr-x.   1 root root     33128 Nov 21  2017 size
+-rwxr-xr-x.   1 root root     24184 Jun  1  2017 skill
+-rwxr-xr-x.   1 root root     19984 Jun  1  2017 slabtop
+-rwxr-xr-x.   1 root root     33112 Jun 30  2016 sleep
+lrwxrwxrwx.   1 root root         5 Apr 29  2024 slogin -> ./ssh
+-rwxr-xr-x.   1 root root     24184 Jun  1  2017 snice
+-rwxr-xr-x.   1 root root     33368 Jan 29  2014 soelim
+-rwxr-xr-x.   1 root root    117720 Jun 30  2016 sort
+-rwxr-xr-x.   1 root root      4341 Nov 23  2017 sotruss
+-rwxr-xr-x    1 root root     18459 Mar  2  2017 splain
+-rwxr-xr-x.   1 root root     71128 Jun 30  2016 split
+-rwxr-xr-x.   1 root root     23152 Nov 23  2017 sprof
+-rwxr-xr-x.   1 root root     56240 Jul 23  2015 sqlite3
+-rwxr-xr-x.   1 root root    778752 Sep 13  2017 ssh
+-rwxr-xr-x.   1 root root    360912 Sep 13  2017 ssh-add
+---x--s--x.   1 root nobody  382232 Sep 13  2017 ssh-agent
+-rwxr-xr-x.   1 root root     10469 Sep 13  2017 ssh-copy-id
+-rwxr-xr-x.   1 root root    419224 Sep 13  2017 ssh-keygen
+-rwxr-xr-x.   1 root root    441088 Sep 13  2017 ssh-keyscan
+-rwxr-xr-x    1 root root     15736 Feb  2  2017 sshpass
+-rwxr-xr-x.   1 root root    112904 Sep 27  2017 ssltap
+-rwxr-xr-x.   1 root root     74904 Jun 30  2016 stat
+-rwxr-xr-x.   1 root root     66448 Jun 30  2016 stdbuf
+-rwxr-xr-x.   1 root root     29088 Nov 21  2017 strings
+-rwxr-xr-x.   1 root root    228528 Nov 21  2017 strip
+-rwxr-xr-x.   1 root root     70264 Jun 30  2016 stty
+-rwsr-xr-x.   1 root root     32096 Nov  9  2017 su
+lrwxrwxrwx.   1 root root        22 Apr 29  2024 subscription-manager -> /usr/bin/consolehelper
+---s--x--x.   1 root root    143192 Aug 18  2017 sudo
+lrwxrwxrwx.   1 root root         4 Apr 29  2024 sudoedit -> sudo
+---x--x--x.   1 root root     48912 Aug 18  2017 sudoreplay
+-rwxr-xr-x.   1 root root     37432 Jun 30  2016 sum
+-rwxr-xr-x.   1 root root     28976 Jun 30  2016 sync
+-rwxr-xr-x.   1 root root    641808 Jan  9  2018 systemctl
+-rwxr-xr-x.   1 root root   1440560 Jan  9  2018 systemd-analyze
+-rwxr-xr-x.   1 root root     49512 Jan  9  2018 systemd-ask-password
+-rwxr-xr-x.   1 root root     32904 Jan  9  2018 systemd-cat
+-rwxr-xr-x.   1 root root    283904 Jan  9  2018 systemd-cgls
+-rwxr-xr-x.   1 root root     66464 Jan  9  2018 systemd-cgtop
+lrwxrwxrwx.   1 root root        11 Apr 29  2024 systemd-coredumpctl -> coredumpctl
+-rwxr-xr-x.   1 root root     62192 Jan  9  2018 systemd-delta
+-rwxr-xr-x.   1 root root     32872 Jan  9  2018 systemd-detect-virt
+-rwxr-xr-x.   1 root root     37096 Jan  9  2018 systemd-escape
+-rwxr-xr-x.   1 root root     83176 Jan  9  2018 systemd-firstboot
+-rwxr-xr-x.   1 root root     70720 Jan  9  2018 systemd-hwdb
+-rwxr-xr-x.   1 root root    275432 Jan  9  2018 systemd-inhibit
+lrwxrwxrwx.   1 root root         8 Apr 29  2024 systemd-loginctl -> loginctl
+-rwxr-xr-x.   1 root root     41248 Jan  9  2018 systemd-machine-id-setup
+-rwxr-xr-x.   1 root root     37032 Jan  9  2018 systemd-notify
+-rwxr-xr-x.   1 root root    483560 Jan  9  2018 systemd-nspawn
+-rwxr-xr-x.   1 root root     41256 Jan  9  2018 systemd-path
+-rwxr-xr-x.   1 root root    350160 Jan  9  2018 systemd-run
+-rwxr-xr-x.   1 root root    271328 Jan  9  2018 systemd-stdio-bridge
+-rwxr-xr-x.   1 root root      3979 Jan  9  2018 systemd-sysv-convert
+-rwxr-xr-x.   1 root root    120560 Jan  9  2018 systemd-tmpfiles
+-rwxr-xr-x.   1 root root     66192 Jan  9  2018 systemd-tty-ask-password-agent
+-rwxr-xr-x.   1 root root     15680 Aug 15  2017 tabs
+-rwxr-xr-x.   1 root root     33256 Jun 30  2016 tac
+-rwxr-xr-x.   1 root root     66808 Jun 30  2016 tail
+-rwxr-xr-x.   1 root root     24408 Nov  9  2017 tailf
+-rwxr-xr-x.   1 root root    346096 Mar  1  2017 tar
+-rwxr-xr-x.   1 root root     28856 Nov  9  2017 taskset
+-rwxr-xr-x.   1 root root    118744 Jan 29  2014 tbl
+-rwxr-xr-x.   1 root root    154600 Mar 27  2017 teamd
+-rwxr-xr-x.   1 root root     29664 Mar 27  2017 teamdctl
+-rwxr-xr-x.   1 root root     19568 Mar 27  2017 teamnl
+-rwxr-xr-x.   1 root root     33160 Jun 30  2016 tee
+-rwxr-xr-x.   1 root root     37328 Jun 30  2016 test
+-rwxr-xr-x.   1 root root     30488 Jan 25  2014 testgdbm
+-rwxr-xr-x.   1 root root     65800 Aug 15  2017 tic
+-rwxr-xr-x.   1 root root    296200 Jan  9  2018 timedatectl
+-rwxr-xr-x.   1 root root     54592 Jun 30  2016 timeout
+-rwxr-xr-x.   1 root root     15736 Jun  1  2017 tload
+-rwxr-xr-x.   1 root root     31856 Jan 14  2018 tmon
+lrwxrwxrwx    1 root root        27 May 18  2024 tnameserv -> /etc/alternatives/tnameserv
+-rwxr-xr-x.   1 root root     15800 Aug 15  2017 toe
+-rwxr-xr-x    1 root root      1123 Oct 13  2017 tomcat-digest
+-rwxr-xr-x    1 root root      1039 Oct 13  2017 tomcat-tool-wrapper
+-rwxr-xr-x.   1 root root    106848 Jun  1  2017 top
+-rwxr-xr-x.   1 root root     62488 Jun 30  2016 touch
+-rwxr-xr-x.   1 root root     15792 Aug 15  2017 tput
+-rwxr-xr-x.   1 root root     45656 Jun 30  2016 tr
+-rwxr-xr-x.   1 root root     15408 May 22  2017 tracepath
+-rwxr-xr-x.   1 root root     15408 May 22  2017 tracepath6
+-rwxr-xr-x.   1 root root    525304 Jan 29  2014 troff
+-rwxr-xr-x.   1 root root     28920 Jun 30  2016 true
+-rwxr-xr-x.   1 root root     53944 Jun 30  2016 truncate
+-rwxr-xr-x.   1 root root    183376 Jun 15  2017 trust
+-rwxr-xr-x.   1 root root     20072 Aug 15  2017 tset
+-rwxr-xr-x.   1 root root     37344 Jun 30  2016 tsort
+-rwxr-xr-x    1 root root    101416 Aug  7  2014 ttmkfdir
+-rwxr-xr-x.   1 root root     28960 Jun 30  2016 tty
+-rwxr-xr-x.   1 root root     83800 Jan 14  2018 turbostat
+-rwxr-xr-x.   1 root root      7339 Nov 23  2017 tzselect
+-rwxr-xr-x    1 root root     19832 May 12  2015 ucs2any
+-rwxr-xr-x.   1 root root    373696 Jan  9  2018 udevadm
+-rwxr-xr-x.   1 root root     19944 Nov  9  2017 ul
+-rwxr-xr-x.   1 root root     15392 May  2  2017 ulockmgr_server
+-rwxr-xr-x.   1 root root        29 Aug  3  2017 umask
+-rwsr-xr-x.   1 root root     31968 Nov  9  2017 umount
+-rwxr-xr-x.   1 root root        31 Aug  3  2017 unalias
+-rwxr-xr-x.   1 root root     33080 Jun 30  2016 uname
+-rwxr-xr-x.   1 root root     33240 Jun 30  2016 unexpand
+-rwxr-xr-x.   1 root root      2555 Feb 22  2017 unicode_start
+-rwxr-xr-x.   1 root root       363 Feb 22  2017 unicode_stop
+-rwxr-xr-x.   1 root root     45784 Jun 30  2016 uniq
+-rwxr-xr-x.   1 root root     28984 Jun 30  2016 unlink
+lrwxrwxrwx    1 root root        27 May 18  2024 unpack200 -> /etc/alternatives/unpack200
+-rwxr-xr-x.   1 root root     15824 Nov  9  2017 unshare
+lrwxrwxrwx.   1 root root         2 Apr 29  2024 unxz -> xz
+-rwxr-xr-x    2 root root    185488 Apr 15  2016 unzip
+-rwxr-xr-x    1 root root     90728 Apr 15  2016 unzipsfx
+-rwxr-xr-x.   1 root root      1054 May  5  2017 update-ca-trust
+-rwxr-xr-x.   1 root root     20096 Feb 21  2017 update-desktop-database
+-rwxr-xr-x.   1 root root     54080 Mar 22  2017 update-mime-database
+-rwxr-xr-x.   1 root root     11480 Jun  1  2017 uptime
+-rwxr-xr-x.   1 root root     12465 Jun 30  2016 urlgrabber
+-rwxr-xr-x.   1 root root     33192 Jun 30  2016 users
+-rwxr-xr-x.   1 root root     11208 Nov  3  2017 usleep
+-rwxr-xr-x.   1 root root     15760 Jun  7  2016 usx2yloader
+-rwxr-xr-x.   1 root root     15824 Nov  9  2017 utmpdump
+-rwxr-xr-x    1 root root     15320 Apr 29  2017 uuclient
+-rwxr-xr-x.   1 root root     11472 Nov  9  2017 uuidgen
+-rwxr-xr-x.   1 root root    117656 Jun 30  2016 vdir
+-rwxr-xr-x    1 root root     10820 Mar 21  2017 verifytree
+-rwxr-xr-x.   1 root root    128424 Mar 28  2017 VGAuthService
+-rwxr-xr-x.   1 root root    910088 Jan 20  2017 vi
+lrwxrwxrwx.   1 root root         2 Apr 29  2024 view -> vi
+-rwxr-xr-x.   1 root root     16104 Feb 22  2017 vlock
+-rwxr-xr-x.   1 root root     49944 Mar 28  2017 vmhgfs-fuse
+-rwxr-xr-x.   1 root root     32224 Jun  1  2017 vmstat
+-rwxr-xr-x.   1 root root      9727 Mar 28  2017 vm-support
+-rwxr-xr-x.   1 root root     48896 Mar 28  2017 vmtoolsd
+-rwxr-xr-x.   1 root root     11328 Mar 28  2017 vmware-checkvm
+-rwxr-xr-x.   1 root root     32536 Mar 28  2017 vmware-guestproxycerttool
+-rwxr-xr-x.   1 root root     11464 Mar 28  2017 vmware-hgfsclient
+-rwxr-xr-x.   1 root root     19488 Mar 28  2017 vmware-namespace-cmd
+-rwxr-xr-x.   1 root root     49088 Mar 28  2017 vmware-rpctool
+-rwxr-xr-x.   1 root root     40672 Mar 28  2017 vmware-toolbox-cmd
+-rwxr-xr-x.   1 root root     15360 Mar 28  2017 vmware-vgauth-cmd
+-rwxr-xr-x.   1 root root     11336 Mar 28  2017 vmware-xferlogs
+-rwxr-xr-x.   1 root root     15728 Jun  7  2016 vxloader
+-rwxr-xr-x.   1 root root     19904 Jun  1  2017 w
+-rwxr-xr-x.   1 root root        28 Aug  3  2017 wait
+-r-xr-sr-x.   1 root tty      15344 Jan 27  2014 wall
+-rwxr-xr-x.   1 root root     24720 Jun  1  2017 watch
+-rwxr-xr-x.   1 root root     15640 Mar 24  2016 watchgnupg
+-rwxr-xr-x.   1 root root     41640 Jun 30  2016 wc
+-rwxr-xr-x.   1 root root     41568 Nov  9  2017 wdctl
+-rwxr-xr-x    1 root root    418736 Oct 24  2017 wget
+-rwxr-xr-x.   1 root root     46456 Mar 17  2014 whatis
+-rwxr-xr-x.   1 root root     20664 Nov  9  2017 whereis
+-rwxr-xr-x.   1 root root     24336 Jan 28  2014 which
+-rwxr-xr-x.   1 root root     28504 Jan 26  2014 whiptail
+-rwxr-xr-x.   1 root root     49872 Jun 30  2016 who
+-rwxr-xr-x.   1 root root     28984 Jun 30  2016 whoami
+-rwxr-xr-x    1 root root       229 Jun 27  2016 withsctp
+-rwxr-sr-x.   1 root tty      19536 Nov  9  2017 write
+lrwxrwxrwx.   1 root root         7 Apr 29  2024 x86_64 -> setarch
+-rwxr-xr-x    2 root root    768592 Sep 22  2017 x86_64-redhat-linux-gcc
+-rwxr-xr-x.   1 root root     10480 Jan 14  2018 x86_energy_perf_policy
+-rwxr-xr-x.   1 root root     62264 Jun  1  2015 xargs
+-rwxr-xr-x.   1 root root     19511 Mar 16  2016 xdg-desktop-icon
+-rwxr-xr-x.   1 root root     42913 Mar 16  2016 xdg-desktop-menu
+-rwxr-xr-x.   1 root root     23964 Mar 16  2016 xdg-email
+-rwxr-xr-x.   1 root root     28727 Mar 16  2016 xdg-icon-resource
+-rwxr-xr-x.   1 root root     39354 Mar 16  2016 xdg-mime
+-rwxr-xr-x.   1 root root     19296 Mar 16  2016 xdg-open
+-rwxr-xr-x.   1 root root     28532 Mar 16  2016 xdg-screensaver
+-rwxr-xr-x.   1 root root     33576 Mar 16  2016 xdg-settings
+-rwxr-xr-x    1 root root       430 Sep 11  2014 xerces-j2-constants
+-rwxr-xr-x    1 root root       424 Sep 11  2014 xerces-j2-version
+-rwxr-xr-x.   1 root root    271784 Mar 15  2017 xgettext
+-rwxr-xr-x.   1 root root     19752 Jun  7  2016 xmlcatalog
+-rwxr-xr-x.   1 root root     63408 Jun  7  2016 xmllint
+-rwxr-xr-x    1 root root       513 Dec 29  2013 xml-resolver
+-rwxr-xr-x.   1 root root     61368 Aug  9  2017 xmlsec1
+-rwxr-xr-x.   1 root root     24568 Nov 25  2016 xmlwf
+-rwxr-xr-x    1 root root       507 Dec 29  2013 xml-xparse
+-rwxr-xr-x    1 root root       505 Dec 29  2013 xml-xread
+-rwxr-xr-x    1 root root      1063 Jul  2  2015 xmvn-builddep
+-rwxr--r--    1 root root      1322 May 12  2015 xorg-x11-fonts-update-dirs
+-rwxr-xr-x.   1 root root     24056 Jan 26  2014 xsltproc
+-rwxr-xr-x    1 root root      4557 Feb  8  2017 xsubpp
+-rwxr-xr-x.   1 root root     75240 Mar  4  2016 xz
+lrwxrwxrwx.   1 root root         2 Apr 29  2024 xzcat -> xz
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 xzcmp -> xzdiff
+-rwxr-xr-x.   1 root root     11448 Mar  4  2016 xzdec
+-rwxr-xr-x.   1 root root      6632 Mar  4  2016 xzdiff
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 xzegrep -> xzgrep
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 xzfgrep -> xzgrep
+-rwxr-xr-x.   1 root root      5628 Mar  4  2016 xzgrep
+-rwxr-xr-x.   1 root root      1802 Mar  4  2016 xzless
+-rwxr-xr-x.   1 root root      2161 Mar  4  2016 xzmore
+-rwxr-xr-x.   1 root root     28984 Jun 30  2016 yes
+lrwxrwxrwx.   1 root root         8 Apr 29  2024 ypdomainname -> hostname
+-rwxr-xr-x.   1 root root       801 Mar 27  2017 yum
+-rwxr-xr-x    1 root root      9429 Mar 21  2017 yum-builddep
+-rwxr-xr-x    1 root root      9039 Mar 21  2017 yum-config-manager
+-rwxr-xr-x    1 root root      7609 Mar 21  2017 yum-debug-dump
+-rwxr-xr-x    1 root root      7903 Mar 21  2017 yum-debug-restore
+-rwxr-xr-x    1 root root     10999 Mar 21  2017 yumdownloader
+-rwxr-xr-x    1 root root     11031 Mar 21  2017 yum-groups-manager
+-rwxr-xr-x.   1 root root      1941 Feb 28  2017 zcat
+-rwxr-xr-x.   1 root root      1760 Feb 28  2017 zcmp
+-rwxr-xr-x.   1 root root      5768 Feb 28  2017 zdiff
+-rwxr-xr-x.   1 root root       123 Feb 28  2017 zegrep
+-rwxr-xr-x.   1 root root       123 Feb 28  2017 zfgrep
+-rwxr-xr-x.   1 root root      2144 Feb 28  2017 zforce
+-rwxr-xr-x.   1 root root      5916 Feb 28  2017 zgrep
+-rwxr-xr-x    1 root root    215840 Apr 15  2016 zip
+-rwxr-xr-x    1 root root    100456 Apr 15  2016 zipcloak
+-rwxr-xr-x    1 root root      2953 Oct 10  2008 zipgrep
+-rwxr-xr-x    2 root root    185488 Apr 15  2016 zipinfo
+-rwxr-xr-x    1 root root     95984 Apr 15  2016 zipnote
+-rwxr-xr-x    1 root root    100096 Apr 15  2016 zipsplit
+-rwxr-xr-x.   1 root root      2041 Feb 28  2017 zless
+-rwxr-xr-x.   1 root root      2859 Feb 28  2017 zmore
+-rwxr-xr-x.   1 root root      5343 Feb 28  2017 znew
+-rwxr-xr-x    1 root root    736336 Feb 16  2017 zsh
+lrwxrwxrwx.   1 root root         6 Apr 29  2024 zsoelim -> soelim
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# wall
+This server is going to reboot in next 30 min...
+
+Broadcast message from root@gvnkansiblesrv (pts/0) (Thu May 15 19:45:19 2025):
+
+This server is going to reboot in next 30 min...
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# id
+uid=0(root) gid=0(root) groups=0(root)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l wall
+ls: cannot access wall: No such file or directory
+[root@gvnkansiblesrv /]# ls -l /usr/bin/wall
+-r-xr-sr-x. 1 root tty 15344 Jan 27  2014 /usr/bin/wall
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkdir /jupiter
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /jupiter
+total 0
+[root@gvnkansiblesrv /]# ls -ld /jupiter
+drwxr-xr-x 2 root root 6 May 15 19:51 /jupiter
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chmod 777 /jupiter
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /jupiter/
+[root@gvnkansiblesrv jupiter]# ls -lrt
+total 0
+drwxrwxr-x 2 imran imran 6 May 15 19:52 imrandir1
+drwxr-xr-x 2 ashok ashok 6 May 15 19:53 ashokdir1
+-rw-r--r-- 1 ashok ashok 0 May 15 19:53 ashokfile1
+[root@gvnkansiblesrv jupiter]#
+[root@gvnkansiblesrv jupiter]#
+[root@gvnkansiblesrv jupiter]#
+[root@gvnkansiblesrv jupiter]# id
+uid=0(root) gid=0(root) groups=0(root)
+[root@gvnkansiblesrv jupiter]#
+[root@gvnkansiblesrv jupiter]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /jupiter/
+total 0
+drwxr-xr-x 2 ashok ashok 6 May 15 19:53 ashokdir1
+-rw-r--r-- 1 ashok ashok 0 May 15 19:53 ashokfile1
+drwxrwxr-x 2 imran imran 6 May 15 19:52 imrandir1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -ld /jupiter/
+drwxrwxrwx 4 root root 58 May 15 19:53 /jupiter/
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chmod o+s /jupiter
+[root@gvnkansiblesrv /]# ls -ld /jupiter/
+drwxrwxrwx 4 root root 58 May 15 19:53 /jupiter/
+[root@gvnkansiblesrv /]# chmod g+s /jupiter
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -ld /jupiter/
+drwxrwsrwx 4 root root 58 May 15 19:53 /jupiter/
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# rm -rf /jupiter/*
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -lrt /public
+total 0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chmod 777 /public
+[root@gvnkansiblesrv /]# ls -ld /public
+drwxrwxrwx 2 root root 6 May  5 21:00 /public
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# chmod o+t /public
+[root@gvnkansiblesrv /]# ls -ld /public
+drwxrwxrwt 2 root root 6 May 15 20:02 /public
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# ls -l /tmp
+total 24
+-rw-rw-rw- 1 root   root     29 May 14 19:50 ashok
+drwxr-x--- 2 root   root      6 May 14 19:28 ashokdir1
+-rw-rw-r-- 1 ashok  ashok    88 May 13 19:26 ashok_file23
+-rw-rw-r-- 1 gvnk   gvnk   2489 May 13 20:10 checkout
+drwxrwxr-x 2 root   root      6 May 14 19:57 dir3
+-rw-r--r-- 3 root   root     14 May  5 19:46 file
+-rw-rw-r-- 1 root   root     74 Apr 29 21:18 file3
+lrwxrwxrwx 1 root   root     27 May  5 19:37 file55 -> /home/ashok/imran_md/file55
+drwxr-xr-x 3 root   root     18 May 29  2024 ganaimp
+drwxr-xr-x 3 root   root     18 May 29  2024 gvnk
+-rw-rw-r-- 1 gvnk   gvnk     21 May  7 19:46 gvnk1
+drwxr-xr-x 4 root   root     42 May 29  2024 gvnkch
+drwxrwxr-x 3 tomcat tomcat   36 May 10 19:27 hsperfdata_tomcat
+-rw-r--r-- 1 root   root      0 May 14 19:53 imran
+-rw-rw-r-- 1 root   root      0 May 14 19:56 imran2
+dr-xr-xr-x 3 root   root    128 May  5 20:42 kumar
+drwxr-xr-x 3 root   root     21 May  5 19:42 oracle
+drwxrwxrwx 3 root   root     31 May 13 20:32 public
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-httpd.service-h0NSiF
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-vgauthd.service-Bk0vru
+drwx------ 3 root   root     17 May 13 19:18 systemd-private-fa77216df19e4bc08b6c6789f8307e9d-vmtoolsd.service-67a50O
+[root@gvnkansiblesrv /]# ls -ld /tmp
+drwxrwxrwt. 19 root root 4096 May 15 17:50 /tmp
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+
+
+
+login as: imran
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to imran@192.168.29.176                                ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Tue May 13 19:53:22 2025 from 192.168.29.79
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ passwd
+Changing password for user imran.
+Changing password for imran.
+(current) UNIX password:
+New password:
+BAD PASSWORD: The password is too similar to the old one
+New password:
+Retype new password:
+passwd: all authentication tokens updated successfully.
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ passwd
+Changing password for user imran.
+Changing password for imran.
+(current) UNIX password:
+New password:
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ passwd
+Changing password for user imran.
+Changing password for imran.
+(current) UNIX password:
+passwd: Authentication token manipulation error
+[imran@gvnkansiblesrv ~]$ passwd
+Changing password for user imran.
+Changing password for imran.
+(current) UNIX password:
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ passwd
+Changing password for user imran.
+Changing password for imran.
+(current) UNIX password:
+New password:
+Broadcast message from root@gvnkansiblesrv (pts/0) (Thu May 15 19:45:19 2025):
+
+This server is going to reboot in next 30 min...
+
+BAD PASSWORD: No password supplied
+New password:
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ cd /jupiter/
+[imran@gvnkansiblesrv jupiter]$ ls -lrt
+total 0
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$ mkdir imrandir1
+[imran@gvnkansiblesrv jupiter]$ ls -l
+total 0
+drwxrwxr-x 2 imran imran 6 May 15 19:52 imrandir1
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$ ls -l
+total 0
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$ mkdir imrandir1
+[imran@gvnkansiblesrv jupiter]$ touch imranfile1
+[imran@gvnkansiblesrv jupiter]$ ls -l
+total 0
+drwxrwsr-x 2 imran root 6 May 15 19:56 imrandir1
+-rw-rw-r-- 1 imran root 0 May 15 19:56 imranfile1
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$
+[imran@gvnkansiblesrv jupiter]$ id
+uid=5304(imran) gid=5304(imran) groups=5304(imran)
+[imran@gvnkansiblesrv jupiter]$ cd
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$
+[imran@gvnkansiblesrv ~]$ cd /public/
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$ touch imranfile1
+[imran@gvnkansiblesrv public]$ mkdir imrandir1
+[imran@gvnkansiblesrv public]$ ls -lrt
+total 0
+-rw-rw-r-- 1 imran imran 0 May 15 20:00 imranfile1
+drwxrwxr-x 2 imran imran 6 May 15 20:00 imrandir1
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$ ls -l
+total 0
+drwxr-xr-x 2 ashok ashok 6 May 15 20:01 ashokdir1
+-rw-r--r-- 1 ashok ashok 0 May 15 20:01 ashokfile1
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$ rm -f ashokfile1
+[imran@gvnkansiblesrv public]$ rmdir ashokdir1
+[imran@gvnkansiblesrv public]$ ls -l
+total 0
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$ mkdir imrandir1
+[imran@gvnkansiblesrv public]$ touch imranfile1
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$ ls -l
+total 0
+drwxrwxr-x 2 imran imran 6 May 15 20:03 imrandir1
+-rw-rw-r-- 1 imran imran 0 May 15 20:03 imranfile1
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$ top
+top - 20:19:46 up  8:52,  3 users,  load average: 0.00, 0.01, 0.05
+Tasks: 182 total,   1 running, 181 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  0.3 sy,  0.0 ni, 99.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   482556 total,   110564 free,   171604 used,   200388 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.   258820 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+   846 root      20   0  469696   8964   6548 S  0.3  1.9   0:14.89 NetworkManager
+  1084 tomcat    20   0 2184132  58784  14136 S  0.3 12.2   2:48.24 java
+  2592 imran     20   0  157732   2292   1544 R  0.3  0.5   0:00.21 top
+     1 root      20   0  125336   3848   2500 S  0.0  0.8   0:16.15 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.18 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:02.05 ksoftirqd/0
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.07 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:05.84 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:11.71 watchdog/0
+    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    14 root      20   0       0      0      0 S  0.0  0.0   0:00.16 khungtaskd
+    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md
+    25 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kswapd0
+    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd
+    27 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto
+    35 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld
+    37 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd
+    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused
+    40 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ipv6_addrconf
+    59 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 deferwq
+    91 root      20   0       0      0      0 S  0.0  0.0   0:00.02 kauditd
+   273 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt_poll_0
+   274 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt/0
+   275 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ata_sff
+   283 root      20   0       0      0      0 S  0.0  0.0   0:00.00 scsi_eh_0
+   284 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_0
+   286 root      20   0       0      0      0 S  0.0  0.0   0:00.10 scsi_eh_1
+   287 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_1
+   288 root      20   0       0      0      0 S  0.0  0.0   0:00.03 scsi_eh_2
+   289 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_2
+   303 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ttm_swap
+   350 root      20   0       0      0      0 S  0.0  0.0   0:00.00 scsi_eh_3
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
+[imran@gvnkansiblesrv public]$
