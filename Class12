@@ -1,0 +1,99 @@
+Class 13 20/05/2025
+
+SUID – SET USER ID 
+===================
+Change user ID on execution. If SETUID bit is set, when the file will be executed by a user, the 
+process will have the same rights as the owner of the file being executed. Many of the system 
+commands are the best example for SUID, basically the owner of the commands will be root, 
+but still a normal user can execute it. 
+ 
+Example 
+By default ping command is having suid, so all users can run that command but if suid is 
+removed and a normal user wants to user execute it, then it will show 'operation not
+
+SGID – SET GROUP ID 
+===================
+Set group ID, used on executable files to allow the file to be run as if logged into the group 
+(like SUID but uses file group permissions) 
+SGID can also be used on a directory so that every file created in that directory will have the 
+directory group owner rather than the group owner of the user creating the file.
+
+STICKY BIT 
+==========
+If sticky bit is applied on a file or directory, then only root and owner of that file or directory can 
+delete it. Even if others are having full permissions they cannot delete the file or directory. 
+
+Permission Symbolic Form Numeric Form Syntax 
+SETUID s or S 4 #chmod u+s/u-s or #chmod 4766 
+SETGID s or S 2 #chmod g+s/g-s or #chmod 2766 
+STICKY BIT t or T 1 #chmod o+t/o-t or chmod 1766
+
+setUID = 4
+SetGID = 2
+Stickeybit = 1
+
+Note: Where s= setuid + execute permission and S= setuid only. Same is for SGID  and also for sticky bit .
+
+2. Access Control List (ACL) 
+============================
+Define more fine-grained discretionary access rights for files and directories. 
+Often, you want to share files among certain groups and specific users. It is a good practice to designate a directory for that purpose. You want to allow those groups and users to read, and write files in that directory, as well as create new files into the directory. Such special permissions can be given using ACL. 
+ACL can be applied on ACL enabled partition that means you need to enable ACL while mounting the partition. 
+
+* getfacl  <option> <dir/file name> 
+
+* setfacl <option> < argument > < file or directory name > 
+
+# setfacl –m g:<group name>:<permissions> <file or directory name>  ====> This will provide access for specified group people
+
+# setfacl –m u:<user name>:<permissions> <file or directory name>  ====> This will provide access for specified user
+		
+# setfacl –x u:<username> <dir name> =====> This will remove access for specified user
+
+# setfacl –x g:<groupname> <dir name> =====> This will remove access for specified group
+
+# setfacl –b <dir name> =====> This will remove all acl permissions for the directory
+
+# getfacl <directory name> ====> this command is used to view acl permissions of the directory
+
+Sudoers: Sudo stands for either "substitute user do" or "super user do"
+========
+What sudo does is incredibly important and crucial to many Linux distributions. Effectively, sudo allows a user to run a program as another user (most often the root user)
+
+/etc/sudoers
+
+visudo / vi /etc/sudoers
+
+## Allow root to run any commands anywhere
+root    ALL=(ALL)       ALL
+imran   ALL=(ALL)       /usr/sbin/useradd
+## Allows members of the 'sys' group to run networking, software,
+
+
+ashok ALL=(ALL) ALL
+
+unixgrp ALL=(ALL) ALL
+
+unixgrp ALL=(ALL) NOPASSWD:ALL
+
+Cmnd_Alias
+==========
+UNIXCMD = commands
+
+unixgrp ALL=(ALL) UNIXCMD
+
+User_Alias
+==========
+UNIXADM = users
+
+UNIXADM ALL=(ALL) UNIXCMD
+
+Lab Session:
+============
+ashok,imran,unixadm1,unixadm2,ansadmin
+
+group=unixgrp add ashok,imran
+
+create Cmnd_Alias and tag to unixgrp
+
+create User_Alias and tag all users
