@@ -1,0 +1,1082 @@
+Class 15 27/05/2025
+
+Disk Partitioning Criteria: 
+
+MBR = MASTER BOOT RECORD 
+P= PRIMARY PARTITION 
+EXTENDED= EXTENDED PARTITION 
+L= LOGICAL PARTITION  
+
+The Structure of Disk Partition 
+ 
+On the disk where O/S is installed, will have the first partition as MBR. 
+MBR is a Master Boot Record, which contains two important utilities, IPL (Initial Program Loader) and PTI (Partition Table information) 
+	IPL is responsible for booting the operating the system, because it contains the boot loader. In earlier versions of Linux i.e. up to RHEL 4, the default boot loader was LILO (Linux Loader). But, since RHEL5 onwards it has been changed to GRub (Grand Unified Boot loader), which is far more superior to LILO.
+ 
+	The PTI (Partition Table information) is the information about the number of partitions 
+on the disk, sizes of the partition and types of partitions. 
+ 
+THE CRITERIA OF DISK PARTITIONING:
+================================== 
+ 
+Every disk can have only 4 Primary Partitions. 
+
+Primary Partition: is a partition which usually holds the operating system. Only one 
+amongst the 3 primary partitions can be active which will be booted by MBR to load 
+the operating system. 
+
+Extended Partition: is a special type of primary partition which can be subdivided into 
+multiple logical partitions. As there can be only 3 primary partitions per disk, and if 
+the user is required to make further partitions then all the space remaining on the 
+disk should be allocated to extended partition, which can be used to create the logical 
+partitions later. There can be only one extended partition per disk. 
+
+Logical partition: is the partition which are created under extended partition, all 
+the space in the extended partition can be used to create "n" number of logical 
+partitions.  
+ 
+Disk Identification: 
+Different type of disks will be having different initials in Linux 
+ 
+IDE  drive will be shown as /dev/hda  
+SCSI drive will be shown as /dev/sda 
+Virtual drive will be shown as /dev/vda 
+ 
+FILE SYSTEM: 
+It is method of storing the data in an organized fashion on the disk. Every partition on 
+the disk except MBR and Extended partition should be assigned with some file system 
+in order to make them store the data. File system is applied on the partition by 
+formatting it with a particular type of file system. Ex: Ext3, Ext4 & Xfs
+
+File system creating with new disk:
+===================================
+
+# parted -l
+# parted /dev/sdb
+	parted> mklabel ===> gpt
+		mkpart ====>
+# perted -l
+# mkfs -t ext4 /dev/sdb1 
+# blkid
+# mkdir /webdata
+# mount -t ext4 /dev/sdb1 /webdata
+# df -h /webdata
+# cd /webdata
+# mkdir dir1; touch file34
+# ls -l
+# cd /
+
+Session Outputs:
+=================
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Thu May 22 19:23:46 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags
+
+
+Error: /dev/sdc: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 16.1GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  16.1GB  16.1GB               primary  lvm
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv2: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv1: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: NECVMWar VMware SATA CD01 (scsi)
+Disk /dev/sr0: 4374MB
+Sector size (logical/physical): 2048B/2048B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 2      1442MB  1479MB  36.8MB  primary
+
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted /dev/sdc
+GNU Parted 3.1
+Using /dev/sdc
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+(parted)
+(parted) print
+Error: /dev/sdc: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+(parted)
+(parted)
+(parted) mklabel gpt
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags
+
+(parted)
+(parted) mklabel msdos
+Warning: The existing disk label on /dev/sdc will be destroyed and all data on this disk will be lost. Do you
+Yes/No?
+Yes/No? yes
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start  End  Size  Type  File system  Flags
+
+(parted)
+(parted)
+(parted)
+(parted) mkpart
+Partition type?  primary/extended? primary
+File system type?  [ext2]?
+Start? 1
+End? 1024Mb
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+
+(parted) mkpart
+Partition type?  primary/extended? primary
+File system type?  [ext2]?
+Start? 1025
+End? 2048Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+
+(parted) mkpart
+Partition type?  primary/extended? primary
+File system type?  [ext2]?
+Start? 2049
+End? 3075Mb
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+
+(parted)
+(parted) mkpart
+Partition type?  primary/extended? primary
+File system type?  [ext2]?
+Start? 3076
+End? 4099Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  4099MB  1023MB  primary
+
+(parted)
+(parted) mkpart
+Error: Can't create any more partitions.
+(parted) rm
+Partition number? 4
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+
+(parted)
+(parted)
+(parted) mkpart
+Partition type?  primary/extended? extended
+Start? 3076
+End? 5369Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+
+(parted)
+(parted)
+(parted)
+(parted) mkpart
+Partition type?  [logical]?
+File system type?  [ext2]?
+Start? 3076
+End? 4099Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+
+(parted)
+(parted)
+(parted) rm
+Partition number? 5
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+
+(parted)
+(parted)
+(parted)
+(parted) mkpart
+Partition type?  [logical]?
+File system type?  [ext2]?
+Start? 3076
+End? 4099Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+
+(parted)
+(parted)
+(parted) mkpart
+Partition type?  [logical]?
+File system type?  [ext2]?
+Start? 4100
+End? 5125Mb
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+
+(parted)
+(parted)
+(parted)
+(parted)
+(parted) mkpart
+Partition type?  [logical]?
+File system type?  [ext2]?
+Start? 5126
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+ 7      5126MB  5368MB  241MB   logical
+
+(parted)
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l |more
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+ 7      5126MB  5368MB  241MB   logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 16.1GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+[root@gvnkansiblesrv ~]# parted /dev/sdb
+GNU Parted 3.1
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags
+
+(parted)
+(parted) mkpart
+Partition name?  []?
+File system type?  [ext2]?
+Start? 1
+End? 1024Mb
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+ 1      1049kB  1024MB  1023MB
+
+(parted) mkpart
+Partition name?  []? logical2
+File system type?  [ext2]?
+Start? 1025
+End? 2048Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+
+(parted) mkpart
+Partition name?  []? logical3
+File system type?  [ext2]?
+Start? 2049
+End? 3075Mb
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+ 3      2049MB  3075MB  1027MB               logical3
+
+(parted) mkpart
+Partition name?  []? logical4
+File system type?  [ext2]?
+Start? 3076
+End? 4099Mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? I
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+ 3      2049MB  3075MB  1027MB               logical3
+ 4      3076MB  4099MB  1023MB               logical4
+
+(parted)
+(parted) mkpart
+Partition name?  []? logical5
+File system type?  [ext2]?
+Start? 4100
+End? 5125Mb
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+ 3      2049MB  3075MB  1027MB               logical3
+ 4      3076MB  4099MB  1023MB               logical4
+ 5      4100MB  5125MB  1026MB               logical5
+
+(parted)
+(parted) mkpart
+Partition name?  []? logical6
+File system type?  [ext2]?
+Start? 5126
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+ 3      2049MB  3075MB  1027MB               logical3
+ 4      3076MB  4099MB  1023MB               logical4
+ 5      4100MB  5125MB  1026MB               logical5
+ 6      5126MB  5368MB  241MB                logical6
+
+(parted)
+(parted)
+(parted) mkpart
+Partition name?  []? ^C
+File system type?  [ext2]? ^C
+Error: Expecting a file system type.
+(parted)
+(parted)
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+ 3      2049MB  3075MB  1027MB               logical3
+ 4      3076MB  4099MB  1023MB               logical4
+ 5      4100MB  5125MB  1026MB               logical5
+ 6      5126MB  5368MB  241MB                logical6
+
+(parted)
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l |more
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB
+ 2      1025MB  2048MB  1023MB               logical2
+ 3      2049MB  3075MB  1027MB               logical3
+ 4      3076MB  4099MB  1023MB               logical4
+ 5      4100MB  5125MB  1026MB               logical5
+ 6      5126MB  5368MB  241MB                logical6
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+ 7      5126MB  5368MB  241MB   logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 16.1GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# blkid
+/dev/sda1: UUID="2e83314c-d3cc-4735-b3b0-c711cec2d699" TYPE="xfs"
+/dev/sda2: UUID="W26kJ5-d31U-9Xsi-CU3S-08qE-iDsx-sqaJpf" TYPE="LVM2_member"
+/dev/sdb1: UUID="fxZ3uY-s42g-eVk3-v3u5-TFdh-ZHmn-CfUJiT" TYPE="LVM2_member" PARTUUID="21ab8176-6739-4525-928d-2530e74d2ef1"
+/dev/sdb2: PARTLABEL="logical2" PARTUUID="066f6f2d-8643-4e42-8277-cc86f2e8e85e"
+/dev/sdb3: PARTLABEL="logical3" PARTUUID="b8b51c79-97e1-42b4-97e9-cf16afd6d046"
+/dev/sdb4: PARTLABEL="logical4" PARTUUID="fe8aea01-0f27-4436-b0e9-fe29cf5f8a73"
+/dev/sdb5: PARTLABEL="logical5" PARTUUID="49328522-61d3-4d50-9263-190945624287"
+/dev/sdb6: PARTLABEL="logical6" PARTUUID="997e0cad-4f71-483f-b0b2-302248c31252"
+/dev/sdd1: UUID="x3GVA9-7FDd-b2oL-yEnF-YkDp-PMro-IzjU5P" TYPE="LVM2_member" PARTLABEL="primary" PARTUUID="c4fc436c-9758-4ea2-aeb1-d085b9e7c78a"
+/dev/sr0: UUID="2018-01-19-09-23-44-00" LABEL="RHEL-7.4 Server.x86_64" TYPE="iso9660" PTTYPE="dos"
+/dev/mapper/rhel-root: UUID="a0ed92f2-a9b6-439e-9af7-9d0c31e0deb2" TYPE="xfs"
+/dev/mapper/rhel-swap: UUID="424d0bdb-d8b6-45fa-bd6b-811c444b0338" TYPE="swap"
+/dev/mapper/webdatavg-webdatalv1: UUID="e84723ec-0868-4833-8388-fe4d51cc4acd" TYPE="ext4"
+/dev/mapper/webdatavg-webdatalv2: UUID="077017df-b803-4a89-83f4-bc1394bc136a" TYPE="ext4"
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkfs -t ext4 /dev/sdb1
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+62464 inodes, 249856 blocks
+12492 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=255852544
+8 block groups
+32768 blocks per group, 32768 fragments per group
+7808 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# blkid
+/dev/sda1: UUID="2e83314c-d3cc-4735-b3b0-c711cec2d699" TYPE="xfs"
+/dev/sda2: UUID="W26kJ5-d31U-9Xsi-CU3S-08qE-iDsx-sqaJpf" TYPE="LVM2_member"
+/dev/sdb1: UUID="71a2a976-4fd4-4e92-a6ab-ca4ebbfd1ceb" TYPE="ext4" PARTUUID="21ab8176-6739-4525-928d-2530e74d2ef1"
+/dev/sdd1: UUID="x3GVA9-7FDd-b2oL-yEnF-YkDp-PMro-IzjU5P" TYPE="LVM2_member" PARTLABEL="primary" PARTUUID="c4fc436c-9758-4ea2-aeb1-d085b9e7c78a"
+/dev/sr0: UUID="2018-01-19-09-23-44-00" LABEL="RHEL-7.4 Server.x86_64" TYPE="iso9660" PTTYPE="dos"
+/dev/mapper/rhel-root: UUID="a0ed92f2-a9b6-439e-9af7-9d0c31e0deb2" TYPE="xfs"
+/dev/mapper/rhel-swap: UUID="424d0bdb-d8b6-45fa-bd6b-811c444b0338" TYPE="swap"
+/dev/mapper/webdatavg-webdatalv1: UUID="e84723ec-0868-4833-8388-fe4d51cc4acd" TYPE="ext4"
+/dev/mapper/webdatavg-webdatalv2: UUID="077017df-b803-4a89-83f4-bc1394bc136a" TYPE="ext4"
+/dev/sdb2: PARTLABEL="logical2" PARTUUID="066f6f2d-8643-4e42-8277-cc86f2e8e85e"
+/dev/sdb3: PARTLABEL="logical3" PARTUUID="b8b51c79-97e1-42b4-97e9-cf16afd6d046"
+/dev/sdb4: PARTLABEL="logical4" PARTUUID="fe8aea01-0f27-4436-b0e9-fe29cf5f8a73"
+/dev/sdb5: PARTLABEL="logical5" PARTUUID="49328522-61d3-4d50-9263-190945624287"
+/dev/sdb6: PARTLABEL="logical6" PARTUUID="997e0cad-4f71-483f-b0b2-302248c31252"
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkdir /webdata1
+mkdir: cannot create directory ‘/webdata1’: File exists
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls
+anaconda-ks.cfg
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /
+[root@gvnkansiblesrv /]# ls
+ansible-playbook  boot  export    IPL-2025  lib64  nohup.out  private  root  srv  usr       webdata2
+ansiroles         dev   home      jupiter   media  opt        proc     run   sys  var
+bin               etc   Imran_md  lib       mnt    oracle     public   sbin  tmp  webdata1
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkdir /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb1 /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/sdb1                         945M  2.4M  878M   1% /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /oradata1/
+[root@gvnkansiblesrv oradata1]# mkdir ashok
+[root@gvnkansiblesrv oradata1]# touch file1
+[root@gvnkansiblesrv oradata1]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/sdb1                         945M  2.4M  878M   1% /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /oradata1/
+[root@gvnkansiblesrv oradata1]# ls -l
+total 20
+drwxr-xr-x 2 root root  4096 May 27 20:15 ashok
+-rw-r--r-- 1 root root     0 May 27 20:15 file1
+drwx------ 2 root root 16384 May 27 20:02 lost+found
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/sdb1                         945M  2.4M  878M   1% /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /oradata1
+[root@gvnkansiblesrv oradata1]# ls -l
+total 20
+drwxr-xr-x 2 root root  4096 May 27 20:15 ashok
+-rw-r--r-- 1 root root     0 May 27 20:15 file1
+drwx------ 2 root root 16384 May 27 20:02 lost+found
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# umount oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /oradata1/
+[root@gvnkansiblesrv oradata1]# ls -l
+total 0
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]# df -h .
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   47G  6.0G   41G  13% /
+[root@gvnkansiblesrv oradata1]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb1 /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/sdb1                         945M  2.4M  878M   1% /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /oradata1
+[root@gvnkansiblesrv oradata1]# ls -l
+total 20
+drwxr-xr-x 2 root root  4096 May 27 20:15 ashok
+-rw-r--r-- 1 root root     0 May 27 20:15 file1
+drwx------ 2 root root 16384 May 27 20:02 lost+found
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]#
+[root@gvnkansiblesrv oradata1]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/sdb1                         945M  2.4M  878M   1% /oradata1
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkfs -t ext4 /dev/sdb2
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+62464 inodes, 249756 blocks
+12487 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=255852544
+8 block groups
+32768 blocks per group, 32768 fragments per group
+7808 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkfs -t ext4 /dev/sdb3
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+62720 inodes, 250624 blocks
+12531 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=257949696
+8 block groups
+32768 blocks per group, 32768 fragments per group
+7840 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv /]# mkfs -t ext4 /dev/sdb4
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+62464 inodes, 249756 blocks
+12487 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=255852544
+8 block groups
+32768 blocks per group, 32768 fragments per group
+7808 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv /]# mkfs -t ext4 /dev/sdb5
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+62592 inodes, 250368 blocks
+12518 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=257949696
+8 block groups
+32768 blocks per group, 32768 fragments per group
+7824 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv /]# mkfs -t ext4 /dev/sdb6
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+Stride=0 blocks, Stripe width=0 blocks
+58928 inodes, 235520 blocks
+11776 blocks (5.00%) reserved for the super user
+First data block=1
+Maximum filesystem blocks=33816576
+29 block groups
+8192 blocks per group, 8192 fragments per group
+2032 inodes per group
+Superblock backups stored on blocks:
+        8193, 24577, 40961, 57345, 73729, 204801, 221185
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mkdir /oradata2 /oradata3 /oradata4 /oradata5 /oradata6
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb2 /oradata2
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb3 /oradata3
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb4 /oradata4
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb5 /oradata5
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sdb6 /oradata6
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/sdb1                         945M  2.4M  878M   1% /oradata1
+/dev/sdb2                         945M  2.4M  878M   1% /oradata2
+/dev/sdb3                         948M  2.5M  881M   1% /oradata3
+/dev/sdb4                         945M  2.4M  878M   1% /oradata4
+/dev/sdb5                         947M  2.5M  880M   1% /oradata5
+/dev/sdb6                         219M  2.1M  202M   1% /oradata6
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+
