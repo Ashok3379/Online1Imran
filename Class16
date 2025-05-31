@@ -1,0 +1,59 @@
+Class 16 29/05/2025
+
+Logical Volume Manager (LVM)
+
+Components of LVM in Linux:
+=========================== 
+Physical Volumes (PV) 
+Physical Extent (PE) 
+Volume Group (VG) 
+Logical Volume (LV) 
+Logical Extent (LE)  
+
+Physical Volume (PV):
+===================== 
+It is the standard partition that you add to the LVM. Normally, a physical volume is a standard 
+primary or logical partition.
+ 
+Physical Extent (PE):
+=====================
+It is a chunk of disk space. Every PV is divided into a number of equal sized PEs.  
+ 
+Volume Group (VG):
+================== 
+It is composed of a group of PV’s and LV’s. It is the organizational group for LVM. 
+ 
+Logical Volume (LV):
+====================
+It is composed of a group of LEs. You can format and mount any file system 
+on an LV. The size of these LV’s can easily be increased or decreased as per the requirement. 
+ 
+Logical Extent (LE):
+====================
+It is also a chunk of disk space. Every LE is mapped to a specific PE. 
+
+Lab Session:
+=============
+# pvs
+# pvcreate <partition name> 
+# pvs
+# vgs
+# vgcreate <name for the VG> <partition name> 
+# vgs
+# lvs
+# lvcreate –L <size of LV> -n <name for LV> <VG name> 
+# lvs
+# mkfs.ext4 </dev/vgname/lvname> 
+# blkid
+# mount </dev/vgname/lvname> /mountpoint
+# df -h /mountpoint
+Add into /etc/fstab file to make file system perminent...
+
+Lab Session:
+============
+/dev/sdb ===5Gb ====> 5 file systems /webdata1, /webdata2, /webdata3
+/dev/sdc ===> 10Gb ====> create PV ===> Create oravg ===> oralv1(1Gb) ==>/oradata1
+						     ===> oralv2(1Gb) ==>/oradata2
+						     ===> oralv3(1Gb) ==>/oradata3
+						     .....
+						     ===> oralv10(1Gb) ==>/oradata10
