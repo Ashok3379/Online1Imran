@@ -1,15 +1,15 @@
 Class 17 03/06/2025
 
-FSTAB Entires:
-==============
-1) take the backup of existing file before editing
+Perminent file systems by adding FSTAB Entires:
+===============================================
+1) Take the backup of existing file before editing
 	# cp /etc/fstab /etc/fstab.<mountpoint>
-2) edit the file wih vi editor and add new file system entry
+2) Edit the file wih vi editor and add new file system entry
 	# vi /etc/fstab
 devicename		mountpoint	fstype		mountoptions 	dumpoptions 	fsckoptions
 /dev/</dev/vg/lv name>	</mountpoint>	ext4/xfs	defaults	0		0
 :wq!
-3) remount the file system
+3) Remount the file system
 	# umount </mountpoint>
 	# mount </mountpoint>
 	# df -h </mountpoint>
@@ -20,7 +20,7 @@ file system expansion will do in 2 methods 1) VG free space is available
 					   2) VG free space not available
 Method 1 file system expanstion:
 =================================
-1) verify free space in VG
+1) Verify free space in VG
 	# vgs
 2) Expand the LV with available free space
 	# lvextend –L <+addition size> </dev/vg/lv name> 
@@ -31,7 +31,7 @@ Method 1 file system expanstion:
 
 Method 2 file system expanstion:
 =================================
-1) verify free space in VG
+1) Verify free space in VG
 	# vgs
 2) Add new disk to server and format the disk
 	# parted /dev/<new disk>
@@ -52,7 +52,7 @@ Method 2 file system expanstion:
 Lab Tasks:
 ============
 1) Configure /weblogic file system with 1Gb Volume
-2) add 3gb volume to server
+2) add 3gb volume to server and attach to VG
 3) Extend file system with another 2GB with method 2
 4) Expand file system with 1Gb with method1
 
