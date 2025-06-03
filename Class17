@@ -1,0 +1,75 @@
+Class 17 03/06/2025
+
+FSTAB Entires:
+==============
+1) take the backup of existing file before editing
+	# cp /etc/fstab /etc/fstab.<mountpoint>
+2) edit the file wih vi editor and add new file system entry
+	# vi /etc/fstab
+devicename		mountpoint	fstype		mountoptions 	dumpoptions 	fsckoptions
+/dev/</dev/vg/lv name>	</mountpoint>	ext4/xfs	defaults	0		0
+:wq!
+3) remount the file system
+	# umount </mountpoint>
+	# mount </mountpoint>
+	# df -h </mountpoint>
+
+File system expanding:
+======================
+file system expansion will do in 2 methods 1) VG free space is available
+					   2) VG free space not available
+Method 1 file system expanstion:
+=================================
+1) verify free space in VG
+	# vgs
+2) Expand the LV with available free space
+	# lvextend –L <+addition size> </dev/vg/lv name> 
+3) Expand the file system
+	# resize2fs </dev/vg/lv name>
+4) Check the file system size
+	# df -h </mountpoint>
+
+Method 2 file system expanstion:
+=================================
+1) verify free space in VG
+	# vgs
+2) Add new disk to server and format the disk
+	# parted /dev/<new disk>
+3) Bring into LVM control
+	# pvcreate /dev/<new disk>
+	# pvs
+4) Add new disk to existing VG
+	# vgextend <VG name> <partition name>
+	# vgs
+5) Expand the LV
+	# lvextend –L <+addition size> </dev/vg/lv name> 
+	# lvs
+6) Expand the file system
+	# resize2fs </dev/vg/lv name>
+7) Check the file system size
+	# df -h </mountpoint>
+
+Reducing the file system:
+=========================
+1) Reducing the size of an LV is a bit complicated task, there are few things which you need to keep in mind before reducing the size of an LV. 
+2) LV size cannot be reduced online, it requires a down time i.e. unmounting the file 
+system. 
+3) Organized the data before reducing the size of LV. 
+4) Update the file system about the size. I.e. what its size will be after reduction. 
+5) Finally reduce the size
+
+If any of the above things are missed then it will be a mess, you may corrupt the file system and LV. 
+Let’s start the steps carefully 
+1) Check the size of the lv
+	# using df –h command
+2) Unmount the LV using umount command 
+	# umount </mountpoint>
+3) Organize the data in LV by using e2fsck  command 
+	# e2fsck -f  </dev/vg/lv name> 
+4) Update the file system by using resize2fs  command 
+	# resize2fs </dev/vg/lv name>  300M (where 300M is the approximate total size of LV after reduction) 
+5) Now reduce the size
+	# lvreduce  -L  -200M </dev/vg/lv name>
+6) Mount the LV and run the command df-h, to verify the change in the size of LV 
+	# mount </mountpoint> ( if an entry is passed in /etc/fstab use this command) 
+	# df –h </mountpoint>
