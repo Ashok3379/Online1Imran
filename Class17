@@ -49,27 +49,1017 @@ Method 2 file system expanstion:
 7) Check the file system size
 	# df -h </mountpoint>
 
-Reducing the file system:
-=========================
-1) Reducing the size of an LV is a bit complicated task, there are few things which you need to keep in mind before reducing the size of an LV. 
-2) LV size cannot be reduced online, it requires a down time i.e. unmounting the file 
-system. 
-3) Organized the data before reducing the size of LV. 
-4) Update the file system about the size. I.e. what its size will be after reduction. 
-5) Finally reduce the size
+Lab Tasks:
+============
+1) Configure /weblogic file system with 1Gb Volume
+2) add 3gb volume to server
+3) Extend file system with another 2GB with method 2
+4) Expand file system with 1Gb with method1
 
-If any of the above things are missed then it will be a mess, you may corrupt the file system and LV. 
-Let’s start the steps carefully 
-1) Check the size of the lv
-	# using df –h command
-2) Unmount the LV using umount command 
-	# umount </mountpoint>
-3) Organize the data in LV by using e2fsck  command 
-	# e2fsck -f  </dev/vg/lv name> 
-4) Update the file system by using resize2fs  command 
-	# resize2fs </dev/vg/lv name>  300M (where 300M is the approximate total size of LV after reduction) 
-5) Now reduce the size
-	# lvreduce  -L  -200M </dev/vg/lv name>
-6) Mount the LV and run the command df-h, to verify the change in the size of LV 
-	# mount </mountpoint> ( if an entry is passed in /etc/fstab use this command) 
-	# df –h </mountpoint>
+Session Outputs:
+================
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Sat May 31 19:26:52 2025
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB  ext4
+ 2      1025MB  2048MB  1023MB  ext4         logical2
+ 3      2049MB  3075MB  1027MB  ext4         logical3
+ 4      3076MB  4099MB  1023MB  ext4         logical4
+ 5      4100MB  5125MB  1026MB  ext4         logical5
+ 6      5126MB  5368MB  241MB   ext4         logical6
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+ 7      5126MB  5368MB  241MB   logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 16.1GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  16.1GB  16.1GB               primary  lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sde: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1073MB  1072MB               logical1
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdf: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+ 1      1049kB  1073MB  1072MB
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv2: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv1: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/shredvg-shrelv: 2139MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  2139MB  2139MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdg: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1073MB  1072MB               logical1
+
+
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: NECVMWar VMware SATA CD01 (scsi)
+Disk /dev/sr0: 4374MB
+Sector size (logical/physical): 2048B/2048B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 2      1442MB  1479MB  36.8MB  primary
+
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g 4.00m
+  /dev/sdd1  webdatavg lvm2 a--   <15.00g 5.23g
+  /dev/sdf1  shredvg   lvm2 a--  1020.00m    0
+  /dev/sdg1  shredvg   lvm2 a--  1020.00m    0
+[root@gvnkansiblesrv ~]# cd /
+[root@gvnkansiblesrv /]# ls -l
+total 36
+drwxrwxrwx    5 root root 4096 May 29  2024 ansible-playbook
+drwxrwxrwx    3 root root   24 May 22  2024 ansiroles
+lrwxrwxrwx.   1 root root    7 Apr 29  2024 bin -> usr/bin
+dr-xr-xr-x.   4 root root 4096 Apr 29  2024 boot
+drwxr-xr-x   22 root root 3920 Jun  3 19:18 dev
+drwxr-xr-x.  88 root root 8192 Jun  3 19:15 etc
+drwxr-xr-x    3 root root   18 May 10 19:41 export
+drwxr-xr-x.  13 root root  172 May 22 19:36 home
+drwxr-xr-x    2 root root   19 May  5 21:06 Imran_md
+drwxr-xr-x    5 root root   50 May  1 20:49 IPL-2025
+drwxrwsrwx    4 root root   76 May 15 19:57 jupiter
+lrwxrwxrwx.   1 root root    7 Apr 29  2024 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Apr 29  2024 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Mar 10  2016 media
+drwxr-xr-x.   2 root root    6 Mar 10  2016 mnt
+-rw-------.   1 root root    0 Apr 29  2024 nohup.out
+drwxr-xr-x.   4 root root   42 May 29  2024 opt
+drwxr-xr-x    3 root root   21 May  5 19:42 oracle
+drwxr-xr-x    2 root root    6 May 27 20:12 oradata1
+drwxr-xr-x    2 root root    6 May 27 20:22 oradata2
+drwxr-xr-x    2 root root    6 May 27 20:22 oradata3
+drwxr-xr-x    2 root root    6 May 27 20:22 oradata4
+drwxr-xr-x    2 root root    6 May 27 20:22 oradata5
+drwxr-xr-x    2 root root    6 May 27 20:22 oradata6
+drwxr-xr-x    2 root root    6 May  5 21:01 private
+dr-xr-xr-x  217 root root    0 Jun  3 19:15 proc
+drwxrwxrwt    4 root root   58 May 15 20:04 public
+dr-xr-x---.   6 root root  239 May 29  2024 root
+drwxr-xr-x   26 root root  800 Jun  3 19:15 run
+lrwxrwxrwx.   1 root root    8 Apr 29  2024 sbin -> usr/sbin
+drwxr-xr-x    2 root root    6 May 31 19:29 shareddir
+drwxr-xr-x.   2 root root    6 Mar 10  2016 srv
+dr-xr-xr-x   13 root root    0 Jun  3 19:15 sys
+drwxrwxrwt.  14 root root 4096 Jun  3 19:16 tmp
+drwxr-xr-x.  13 root root  155 Apr 29  2024 usr
+drwxr-xr-x.  21 root root 4096 May 11  2024 var
+drwxrwsr-x    3 root root 4096 May  6  2024 webdata1
+drwxrwsr-x    2 root root    6 May  6  2024 webdata2
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd shareddir
+[root@gvnkansiblesrv shareddir]# df -h .
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   47G  6.0G   41G  13% /
+[root@gvnkansiblesrv shareddir]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/sh
+shm/     shredvg/
+[root@gvnkansiblesrv /]# mount -t ext4 /dev/shredvg/shrelv /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/mapper/shredvg-shrelv        2.0G  874M 1011M  47% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /dev/mapper/rhel-root
+-bash: cd: /dev/mapper/rhel-root: Not a directory
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /shareddir/
+[root@gvnkansiblesrv shareddir]# df -h .
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/shredvg-shrelv  2.0G  874M 1011M  47% /shareddir
+[root@gvnkansiblesrv shareddir]#
+[root@gvnkansiblesrv shareddir]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/mapper/shredvg-shrelv        2.0G  874M 1011M  47% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Mon Apr 29 11:44:40 2024
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/rhel-root   /                       xfs     defaults        0 0
+UUID=2e83314c-d3cc-4735-b3b0-c711cec2d699 /boot                   xfs     defaults        0 0
+/dev/mapper/rhel-swap   swap                    swap    defaults        0 0
+/dev/webdatavg/webdatalv1 /webdata1 ext4 defaults 0 0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cp /etc/fstab /etc/fstab.shreddir
+[root@gvnkansiblesrv /]# ls -l /etc/fstab*
+-rw-r--r-- 1 root root 519 May 23  2024 /etc/fstab
+-rw-r--r-- 1 root root 519 May 23  2024 /etc/fstab.bkp
+-rw-r--r-- 1 root root 519 Jun  3 19:22 /etc/fstab.shreddir
+[root@gvnkansiblesrv /]# vi /etc/fstab
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Mon Apr 29 11:44:40 2024
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/rhel-root   /                       xfs     defaults        0 0
+UUID=2e83314c-d3cc-4735-b3b0-c711cec2d699 /boot                   xfs     defaults        0 0
+/dev/mapper/rhel-swap   swap                    swap    defaults        0 0
+/dev/webdatavg/webdatalv1 /webdata1 ext4 defaults 0 0
+/dev/shredvg/shrelv     /shareddir      ext4    defaults        0       0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/mapper/shredvg-shrelv        2.0G  874M 1011M  47% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# umount /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+/dev/sda1                        1014M  125M  890M  13% /boot
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# reboot
+
+Remote side unexpectedly closed network connection
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Tue Jun  3 19:17:51 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                        1014M  125M  890M  13% /boot
+/dev/mapper/shredvg-shrelv        2.0G  874M 1011M  47% /shareddir
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# uptime
+ 19:30:33 up 3 min,  1 user,  load average: 0.13, 0.29, 0.14
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# umount /shareddir
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                        1014M  125M  890M  13% /boot
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+tmpfs                              48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mount /shareddir
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                        1014M  125M  890M  13% /boot
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/mapper/shredvg-shrelv        2.0G  874M 1011M  47% /shareddir
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls -l /etc/fstab*
+-rw-r--r-- 1 root root 568 Jun  3 19:25 /etc/fstab
+-rw-r--r-- 1 root root 519 May 23  2024 /etc/fstab.bkp
+-rw-r--r-- 1 root root 519 Jun  3 19:22 /etc/fstab.shreddir
+[root@gvnkansiblesrv ~]# cd /etc/ls -l
+-bash: cd: /etc/ls: No such file or directory
+[root@gvnkansiblesrv ~]# cd /etc/
+[root@gvnkansiblesrv etc]# ls
+adjtime            dhcp                     group-       krb5.conf.d               my.cnf.d           protocols           security            tomcat
+aliases            DIR_COLORS               grub2.cfg    ld.so.cache               netconfig          python              selinux             tuned
+aliases.db         DIR_COLORS.256color      grub.d       ld.so.conf                NetworkManager     rc0.d               services            udev
+alternatives       DIR_COLORS.lightbgcolor  gshadow      ld.so.conf.d              networks           rc1.d               sestatus.conf       vconsole.conf
+anacrontab         dracut.conf              gshadow-     libaudit.conf             nfs.conf           rc2.d               shadow              virc
+ansible            dracut.conf.d            gss          libnl                     nfsmount.conf      rc3.d               shadow-             vmware-tools
+asound.conf        e2fsck.conf              gssproxy     libuser.conf              nsswitch.conf      rc4.d               shells              vsftpd
+audisp             environment              host.conf    locale.conf               nsswitch.conf.bak  rc5.d               skel                wgetrc
+audit              ethertypes               hostname     localtime                 openldap           rc6.d               ssh                 wpa_supplicant
+bash_completion.d  exports                  hosts        login.defs                opt                rc.d                ssl                 X11
+bashrc             exports.d                hosts.allow  logrotate.conf            os-release         rc.local            statetab            xdg
+binfmt.d           favicon.png              hosts.deny   logrotate.d               pam.d              redhat-release      statetab.d          xinetd.d
+chkconfig.d        filesystems              httpd        lvm                       passwd             request-key.conf    subgid              yum
+cron.d             firewalld                idmapd.conf  machine-id                passwd-            request-key.d       subuid              yum.conf
+cron.daily         fonts                    init.d       magic                     pkcs11             resolv.conf         sudo.conf           yum.repos.d
+cron.deny          fstab                    inittab      mailcap                   pki                resolv.conf.4JY5M2  sudoers             zlogin
+cron.hourly        fstab.bkp                inputrc      makedumpfile.conf.sample  plymouth           rhsm                sudoers.d           zlogout
+cron.monthly       fstab.shreddir           iproute2     man_db.conf               pm                 rpc                 sudo-ldap.conf      zprofile
+crontab            fuse.conf                issue        maven                     polkit-1           rpm                 sysconfig           zshenv
+cron.weekly        gcrypt                   issue.net    mime.types                popt.d             rsyncd.conf         sysctl.conf         zshrc
+crypttab           GeoIP.conf               java         mke2fs.conf               postfix            rsyslog.conf        sysctl.d
+csh.cshrc          GeoIP.conf.default       jvm          modprobe.d                ppp                rsyslog.d           systemd
+csh.login          gnupg                    jvm-commmon  modules-load.d            prelink.conf.d     rwtab               system-release
+dbus-1             GREP_COLORS              kdump.conf   motd                      printcap           rwtab.d             system-release-cpe
+default            groff                    kernel       mtab                      profile            sasl2               terminfo
+depmod.d           group                    krb5.conf    my.cnf                    profile.d          securetty           tmpfiles.d
+[root@gvnkansiblesrv etc]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rhel        1   2   0 wz--n- <49.00g 4.00m
+  shredvg     2   1   0 wz--n-   1.99g    0
+  webdatavg   1   2   0 wz--n- <15.00g 5.23g
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h /shareddir
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/shredvg-shrelv  2.0G  874M 1011M  47% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/z* /shareddir/
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/y* /shareddir/
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/x* /shareddir/
+[root@gvnkansiblesrv /]# df - h /shareddir/
+df: ‘-’: No such file or directory
+df: ‘h’: No such file or directory
+Filesystem                 1K-blocks   Used Available Use% Mounted on
+/dev/mapper/shredvg-shrelv   2039760 999716    929824  52% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/w* /shareddir/
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/v* /shareddir/
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/u* /shareddir/
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/t* /shareddir/
+[root@gvnkansiblesrv /]# df - h /shareddir/
+df: ‘-’: No such file or directory
+df: ‘h’: No such file or directory
+Filesystem                 1K-blocks    Used Available Use% Mounted on
+/dev/mapper/shredvg-shrelv   2039760 1670136    259404  87% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/s* /shareddir/
+[root@gvnkansiblesrv /]# cp /var/ftp/pub/rhel7/r* /shareddir/
+cp: omitting directory ‘/var/ftp/pub/rhel7/repodata’
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                        Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root              47G  6.0G   41G  13% /
+devtmpfs                          225M     0  225M   0% /dev
+tmpfs                             236M     0  236M   0% /dev/shm
+tmpfs                             236M  4.8M  231M   3% /run
+tmpfs                             236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                        1014M  125M  890M  13% /boot
+/dev/mapper/webdatavg-webdatalv1  4.7G   20M  4.5G   1% /webdata1
+tmpfs                              48M     0   48M   0% /run/user/0
+/dev/mapper/shredvg-shrelv        2.0G  1.8G   70M  97% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rhel        1   2   0 wz--n- <49.00g 4.00m
+  shredvg     2   1   0 wz--n-   1.99g    0
+  webdatavg   1   2   0 wz--n- <15.00g 5.23g
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# parted -l
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB  ext4
+ 2      1025MB  2048MB  1023MB  ext4         logical2
+ 3      2049MB  3075MB  1027MB  ext4         logical3
+ 4      3076MB  4099MB  1023MB  ext4         logical4
+ 5      4100MB  5125MB  1026MB  ext4         logical5
+ 6      5126MB  5368MB  241MB   ext4         logical6
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+ 7      5126MB  5368MB  241MB   logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 16.1GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  16.1GB  16.1GB               primary  lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sde: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1073MB  1072MB               logical1
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdf: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+ 1      1049kB  1073MB  1072MB
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/shredvg-shrelv: 2139MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  2139MB  2139MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv2: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv1: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdg: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1073MB  1072MB               logical1
+
+
+Error: /dev/sdh: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdh: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: NECVMWar VMware SATA CD01 (scsi)
+Disk /dev/sr0: 4374MB
+Sector size (logical/physical): 2048B/2048B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 2      1442MB  1479MB  36.8MB  primary
+
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# parted /dev/sdh
+GNU Parted 3.1
+Using /dev/sdh
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Error: /dev/sdh: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdh: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+(parted)
+(parted) mklabel gpt
+(parted) mkpart
+Partition name?  []? logical
+File system type?  [ext2]?
+Start? 1
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdh: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  2146MB  2145MB               logical
+
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# parted -l
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1024MB  1023MB  ext4
+ 2      1025MB  2048MB  1023MB  ext4         logical2
+ 3      2049MB  3075MB  1027MB  ext4         logical3
+ 4      3076MB  4099MB  1023MB  ext4         logical4
+ 5      4100MB  5125MB  1026MB  ext4         logical5
+ 6      5126MB  5368MB  241MB   ext4         logical6
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1024MB  1023MB  primary
+ 2      1025MB  2048MB  1023MB  primary
+ 3      2049MB  3075MB  1027MB  primary
+ 4      3076MB  5369MB  2293MB  extended               lba
+ 5      3076MB  4099MB  1023MB  logical
+ 6      4100MB  5125MB  1026MB  logical
+ 7      5126MB  5368MB  241MB   logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 16.1GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  16.1GB  16.1GB               primary  lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sde: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1073MB  1072MB               logical1
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdf: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+ 1      1049kB  1073MB  1072MB
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/shredvg-shrelv: 2139MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  2139MB  2139MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv2: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/webdatavg-webdatalv1: 5243MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  5243MB  5243MB  ext4
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdg: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name      Flags
+ 1      1049kB  1073MB  1072MB               logical1
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdh: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  2146MB  2145MB               logical
+
+
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: NECVMWar VMware SATA CD01 (scsi)
+Disk /dev/sr0: 4374MB
+Sector size (logical/physical): 2048B/2048B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 2      1442MB  1479MB  36.8MB  primary
+
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g 4.00m
+  /dev/sdd1  webdatavg lvm2 a--   <15.00g 5.23g
+  /dev/sdf1  shredvg   lvm2 a--  1020.00m    0
+  /dev/sdg1  shredvg   lvm2 a--  1020.00m    0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# pvcreate /dev/sdh1
+  Physical volume "/dev/sdh1" successfully created.
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g  4.00m
+  /dev/sdd1  webdatavg lvm2 a--   <15.00g  5.23g
+  /dev/sdf1  shredvg   lvm2 a--  1020.00m     0
+  /dev/sdg1  shredvg   lvm2 a--  1020.00m     0
+  /dev/sdh1            lvm2 ---    <2.00g <2.00g
+[root@gvnkansiblesrv /]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rhel        1   2   0 wz--n- <49.00g 4.00m
+  shredvg     2   1   0 wz--n-   1.99g    0
+  webdatavg   1   2   0 wz--n- <15.00g 5.23g
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vgextend shredvg /dev/sdh1
+  Volume group "shredvg" successfully extended
+[root@gvnkansiblesrv /]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rhel        1   2   0 wz--n- <49.00g  4.00m
+  shredvg     3   1   0 wz--n-  <3.99g <2.00g
+  webdatavg   1   2   0 wz--n- <15.00g  5.23g
+[root@gvnkansiblesrv /]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g  4.00m
+  /dev/sdd1  webdatavg lvm2 a--   <15.00g  5.23g
+  /dev/sdf1  shredvg   lvm2 a--  1020.00m     0
+  /dev/sdg1  shredvg   lvm2 a--  1020.00m     0
+  /dev/sdh1  shredvg   lvm2 a--    <2.00g <2.00g
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# lvs
+  LV         VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root       rhel      -wi-ao---- 46.99g
+  swap       rhel      -wi-ao----  2.00g
+  shrelv     shredvg   -wi-ao----  1.99g
+  webdatalv1 webdatavg -wi-ao----  4.88g
+  webdatalv2 webdatavg -wi-a-----  4.88g
+[root@gvnkansiblesrv /]# lvextend -L +1G /dev/shredvg/shrelv
+  Size of logical volume shredvg/shrelv changed from 1.99 GiB (510 extents) to 2.99 GiB (766 extents).
+  Logical volume shredvg/shrelv successfully resized.
+[root@gvnkansiblesrv /]# lvs
+  LV         VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root       rhel      -wi-ao---- 46.99g
+  swap       rhel      -wi-ao----  2.00g
+  shrelv     shredvg   -wi-ao----  2.99g
+  webdatalv1 webdatavg -wi-ao----  4.88g
+  webdatalv2 webdatavg -wi-a-----  4.88g
+[root@gvnkansiblesrv /]# df -h /shareddir/
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/shredvg-shrelv  2.0G  1.8G   70M  97% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# resize2fs /dev/shredvg/shrelv
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/shredvg/shrelv is mounted on /shareddir; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 1
+The filesystem on /dev/shredvg/shrelv is now 784384 blocks long.
+
+[root@gvnkansiblesrv /]# df -h /shareddir/
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/shredvg-shrelv  3.0G  1.8G  1.1G  64% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rhel        1   2   0 wz--n- <49.00g    4.00m
+  shredvg     3   1   0 wz--n-  <3.99g 1020.00m
+  webdatavg   1   2   0 wz--n- <15.00g    5.23g
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h /shareddir/
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/shredvg-shrelv  3.0G  1.8G  1.1G  64% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rhel        1   2   0 wz--n- <49.00g    4.00m
+  shredvg     3   1   0 wz--n-  <3.99g 1020.00m
+  webdatavg   1   2   0 wz--n- <15.00g    5.23g
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# lvextend -L +1000M /dev/shredvg/shrelv
+  Size of logical volume shredvg/shrelv changed from 2.99 GiB (766 extents) to <3.97 GiB (1016 extents).
+  Logical volume shredvg/shrelv successfully resized.
+[root@gvnkansiblesrv /]# lvs
+  LV         VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root       rhel      -wi-ao---- 46.99g
+  swap       rhel      -wi-ao----  2.00g
+  shrelv     shredvg   -wi-ao---- <3.97g
+  webdatalv1 webdatavg -wi-ao----  4.88g
+  webdatalv2 webdatavg -wi-a-----  4.88g
+[root@gvnkansiblesrv /]# resize2fs /dev/shredvg/shrelv
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/shredvg/shrelv is mounted on /shareddir; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 1
+The filesystem on /dev/shredvg/shrelv is now 1040384 blocks long.
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h /shareddir/
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/shredvg-shrelv  3.9G  1.8G  2.0G  48% /shareddir
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
