@@ -542,3 +542,47 @@ tmpfs                           tmpfs      48M     0   48M   0% /run/user/0
 [root@gvnkansiblesrv ~]#
 [root@gvnkansiblesrv ~]#
 [root@gvnkansiblesrv ~]#
+1001  parted -l
+ 1002  pvs
+ 1003  pvcreate /dev/sdb1
+ 1004  pvs
+ 1005  vgcreate bigdatavg /dev/sdb1
+ 1006  lvcreate -L 1000M -n bigdatalv bigdatavg
+ 1007  lvs
+ 1008  mkfs -t xfs /dev/bigdatavg/bigdatalv
+ 1009  mkdir /bigdata
+ 1010  mount -t xfs /dev/bigdatavg/bigdatalv /bigdata
+ 1011  df -h /bigdata/
+ 1012  blkid
+ 1013  df -h
+ 1014  cp /var/ftp/pub/rhel7/a* /bigdata/
+ 1015  cp /var/ftp/pub/rhel7/b* /bigdata/
+ 1016  cp /var/ftp/pub/rhel7/c* /bigdata/
+ 1017  cp /var/ftp/pub/rhel7/d* /bigdata/
+ 1018  cp /var/ftp/pub/rhel7/e* /bigdata/
+ 1019  cp /var/ftp/pub/rhel7/f* /bigdata/
+ 1020  df -h
+ 1021  cp /var/ftp/pub/rhel7/g* /bigdata/
+ 1022  df -h
+ 1023  parted -l
+ 1024  lvs
+ 1025  pvs
+ 1026  pvcreate /dev/sdc1
+ 1027  pvs
+ 1028  vgextend bigdatavg /dev/sdc1
+ 1029  vgs
+ 1030  pvs
+ 1031  lvextend -L +1000M /dev/bigdatavg/bigdatalv
+ 1032  lvs
+ 1033  df -h
+ 1034  xfs_growfs -d /bigdata
+ 1035  df -h
+ 1036  vgs
+ 1037  lvextend -L +1000M /dev/bigdatavg/bigdatalv
+ 1038  lvs
+ 1039  df -h
+ 1040  xfs_growfs -d /bigdata
+ 1041  df -h
+ 1042  df -Th
+ 1043  history
+[root@gvnkansiblesrv ~]#
