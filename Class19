@@ -1,0 +1,544 @@
+Class 19 12/06/2025
+
+EXT4 file system features:
+==========================
+1) Stands for Fouth Extended File System 
+2) It was introduced in 2008
+3) Supports Journaling Feature
+4) Maximum File Size can be from 16 GB to 16 TB 
+5) Maximum ext4 file system size is 1 EB (Exabyte). 1 EB = 1024 PB (Petabyte). 1 PB = 1024 TB (Terabyte). 
+6) All previous ext file systems can easily be converted into ext4 file system. You can also mount an existing ext3 f/s as ext4 f/s (without having to upgrade it)
+
+XFS file sytsem features:
+=========================
+1) Its 64-bit file system with a max file system size of 8EB.
+2) Supports metadata journaling which helps in faster data recovery in case of a system crash
+3) It can be extended while mounted and active.
+4) Online de-fragmentation is supported
+5) It has native backup (xfsdump) & restore (xfsrestore) utilities.
+6) Draback of the XFS is not able to reduce.
+
+XFS file system used commands:
+==============================
+Create xfs file system : "mkfs -t xfs" command.
+Mount xfs file system : No extra switch for mount command
+Quota management : xfs_quota command
+Extending file system : xfs_growfs command
+Repair file system : xfs_repair command
+Suspend write on file system : xfs_freeze command (-f for suspend, -u for resume)
+Bakcup : xfsdump command
+Restore : xfsrestore command
+Print file system information : xfs_info command
+De-fragmentation : xfs_fsr command with no argument
+Debug mode : xfs_db command
+
+XFS file system creation:
+========================= 
+1) Add disk to server and bring into LVM control
+	# pvs
+	# pvcreate <partition name> 
+	# pvs
+2) Create Volume Group
+	# vgs
+	# vgcreate <name for the VG> <partition name> 
+	# vgs
+3) Create Logical Volume
+	# lvs
+	# lvcreate –L <size of LV> -n <name for LV> <VG name> 
+	# lvs
+4) Configure XFS file system
+	# mkfs -t xfs </dev/vgname/lvname> 
+	# blkid
+5) Create Mountpoint
+	# mkdir <mountpoint>
+6) Mount the file system
+	# mount -t xfs </dev/vgname/lvname> </mountpoint>
+	# df -h </mountpoint>
+7) Add into /etc/fstab file to make file system perminent...
+/dev/vgname/lvname		/mountpoint	fstype	mountoptions	dumpoptions	fsckoptions
+Ex: /dev/bigdatavg/bigdatalv	/bigdata	xfs	defaults	0		0
+
+XFS File system expanding:
+==========================
+file system expansion will do in 2 methods 1) VG free space is available
+					   2) VG free space not available
+Method 1 file system expanstion:
+=================================
+1) Verify free space in VG
+	# vgs
+2) Expand the LV with available free space
+	# lvextend –L <+addition size> </dev/vg/lv name> 
+3) Expand the file system
+	# xfs_growfs -d  </mountpoint>
+4) Check the file system size
+	# df -h </mountpoint>
+
+Method 2 file system expansion:
+===============================
+1) Verify free space in VG
+	# vgs
+2) Add new disk to server and format the disk
+	# parted /dev/<new disk>
+3) Bring into LVM control
+	# pvcreate /dev/<new disk>
+	# pvs
+4) Add new disk to existing VG
+	# vgextend <VG name> <partition name>
+	# vgs
+5) Expand the LV
+	# lvextend –L <+addition size> </dev/vg/lv name> 
+	# lvs
+6) Expand the file system
+	# xfs_growfs -d  </mountpoint>
+7) Check the file system size
+	# df -h </mountpoint>
+
+Lab Tasks:
+==========
+1) Configure /bigdata file system with 1Gb Volume
+2) add 1gb volume to server and attach to VG
+3) Extend file system with another 1GB with method 2
+4) Expand file system with 1Gb with method1
+
+Session Logs:
+=============
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Thu Jun 12 20:06:26 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  2146MB  2145MB               logical
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: NECVMWar VMware SATA CD01 (scsi)
+Disk /dev/sr0: 4374MB
+Sector size (logical/physical): 2048B/2048B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 2      1442MB  1479MB  36.8MB  primary
+
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sda2  rhel lvm2 a--  <49.00g 4.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created.
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG   Fmt  Attr PSize    PFree
+  /dev/sda2  rhel lvm2 a--   <49.00g    4.00m
+  /dev/sdb1       lvm2 ---  1022.00m 1022.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgcreate bigdatavg /dev/sdb1
+  Volume group "bigdatavg" successfully created
+[root@gvnkansiblesrv ~]# lvcreate -L 1000M -n bigdatalv bigdatavg
+WARNING: ext4 signature detected on /dev/bigdatavg/bigdatalv at offset 1080. Wipe it? [y/n]: y
+  Wiping ext4 signature on /dev/bigdatavg/bigdatalv.
+  Logical volume "bigdatalv" created.
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# lvs
+  LV        VG        Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  bigdatalv bigdatavg -wi-a----- 1000.00m
+  root      rhel      -wi-ao----   46.99g
+  swap      rhel      -wi-ao----    2.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkfs -t xfs /dev/bigdatavg/bigdatalv
+meta-data=/dev/bigdatavg/bigdatalv isize=512    agcount=4, agsize=64000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=256000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkdir /bigdata
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/b
+bigdatavg/     block/         bsg/           btrfs-control  bus/
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/bigdatavg/bigdatalv /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h /bigdata/
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/bigdatavg-bigdatalv  997M   33M  965M   4% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# blkid
+/dev/sda1: UUID="2e83314c-d3cc-4735-b3b0-c711cec2d699" TYPE="xfs"
+/dev/sda2: UUID="W26kJ5-d31U-9Xsi-CU3S-08qE-iDsx-sqaJpf" TYPE="LVM2_member"
+/dev/sdb1: UUID="1UHKbp-9xXl-qHMa-aI2a-SSyy-DWpd-o4RjEZ" TYPE="LVM2_member" PARTLABEL="logical" PARTUUID="d11cab01-03d9-46d6-bf2d-897cedeaf416"
+/dev/sdc1: PARTLABEL="logical" PARTUUID="c8d4a9ee-bcd0-47d4-acfd-6370f59298dd"
+/dev/sr0: UUID="2018-01-19-09-23-44-00" LABEL="RHEL-7.4 Server.x86_64" TYPE="iso9660" PTTYPE="dos"
+/dev/mapper/rhel-root: UUID="a0ed92f2-a9b6-439e-9af7-9d0c31e0deb2" TYPE="xfs"
+/dev/mapper/rhel-swap: UUID="424d0bdb-d8b6-45fa-bd6b-811c444b0338" TYPE="swap"
+/dev/mapper/bigdatavg-bigdatalv: UUID="05c37601-8cc1-4095-9961-40e347b518b3" TYPE="xfs"
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  997M   33M  965M   4% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/a* /bigdata/
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/b* /bigdata/
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/c* /bigdata/
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/d* /bigdata/
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/e* /bigdata/
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/f* /bigdata/
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  997M  530M  468M  54% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/g* /bigdata/
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  997M  904M   94M  91% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  997M  904M   94M  91% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  2146MB  2145MB               logical
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/bigdatavg-bigdatalv: 1049MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  1049MB  1049MB  xfs
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: NECVMWar VMware SATA CD01 (scsi)
+Disk /dev/sr0: 4374MB
+Sector size (logical/physical): 2048B/2048B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 2      1442MB  1479MB  36.8MB  primary
+
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# lvs
+  LV        VG        Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  bigdatalv bigdatavg -wi-ao---- 1000.00m
+  root      rhel      -wi-ao----   46.99g
+  swap      rhel      -wi-ao----    2.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g  4.00m
+  /dev/sdb1  bigdatavg lvm2 a--  1020.00m 20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvcreate /dev/sdc1
+  Physical volume "/dev/sdc1" successfully created.
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g  4.00m
+  /dev/sdb1  bigdatavg lvm2 a--  1020.00m 20.00m
+  /dev/sdc1            lvm2 ---    <2.00g <2.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgextend bigdatavg /dev/sdc1
+  Volume group "bigdatavg" successfully extended
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  bigdatavg   2   1   0 wz--n-   2.99g <2.02g
+  rhel        1   2   0 wz--n- <49.00g  4.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda2  rhel      lvm2 a--   <49.00g  4.00m
+  /dev/sdb1  bigdatavg lvm2 a--  1020.00m 20.00m
+  /dev/sdc1  bigdatavg lvm2 a--    <2.00g <2.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# lvextend -L +1000M /dev/bigdatavg/bigdatalv
+  Size of logical volume bigdatavg/bigdatalv changed from 1000.00 MiB (250 extents) to 1.95 GiB (500 extents).
+  Logical volume bigdatavg/bigdatalv successfully resized.
+[root@gvnkansiblesrv ~]# lvs
+  LV        VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  bigdatalv bigdatavg -wi-ao----  1.95g
+  root      rhel      -wi-ao---- 46.99g
+  swap      rhel      -wi-ao----  2.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  997M  904M   94M  91% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# xfs_growfs -d /bigdata
+meta-data=/dev/mapper/bigdatavg-bigdatalv isize=512    agcount=4, agsize=64000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=256000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal               bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 256000 to 512000
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  2.0G  904M  1.1G  46% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  bigdatavg   2   1   0 wz--n-   2.99g <1.04g
+  rhel        1   2   0 wz--n- <49.00g  4.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# lvextend -L +1000M /dev/bigdatavg/bigdatalv
+  Size of logical volume bigdatavg/bigdatalv changed from 1.95 GiB (500 extents) to <2.93 GiB (750 extents).
+  Logical volume bigdatavg/bigdatalv successfully resized.
+[root@gvnkansiblesrv ~]# lvs
+  LV        VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  bigdatalv bigdatavg -wi-ao---- <2.93g
+  root      rhel      -wi-ao---- 46.99g
+  swap      rhel      -wi-ao----  2.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  2.0G  904M  1.1G  46% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# xfs_growfs -d /bigdata
+meta-data=/dev/mapper/bigdatavg-bigdatalv isize=512    agcount=8, agsize=64000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=512000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal               bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 512000 to 768000
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root             47G  6.0G   41G  13% /
+devtmpfs                         225M     0  225M   0% /dev
+tmpfs                            236M     0  236M   0% /dev/shm
+tmpfs                            236M  4.7M  231M   2% /run
+tmpfs                            236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       1014M  125M  890M  13% /boot
+tmpfs                             48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv  3.0G  904M  2.1G  31% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -Th
+Filesystem                      Type      Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root           xfs        47G  6.0G   41G  13% /
+devtmpfs                        devtmpfs  225M     0  225M   0% /dev
+tmpfs                           tmpfs     236M     0  236M   0% /dev/shm
+tmpfs                           tmpfs     236M  4.7M  231M   2% /run
+tmpfs                           tmpfs     236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                       xfs      1014M  125M  890M  13% /boot
+tmpfs                           tmpfs      48M     0   48M   0% /run/user/0
+/dev/mapper/bigdatavg-bigdatalv xfs       3.0G  904M  2.1G  31% /bigdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
