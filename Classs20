@@ -1,0 +1,979 @@
+Class 20 14/06/2025
+
+Moving or Migrating the LV (data) from one pv to another PV 
+===========================================================
+There might be a situation where the PV might be failing are the disk has to move different vendor and it is required to be replaced, in such case, we need to migrate or move the data from such PV to the other and isolate the PV. 
+
+The Steps to migrate the PV 
+============================
+1) Configure new file system /webdata
+	# parted /dev/sdb ====> label and create partition
+	# pvcreate /dev/sdb1
+	# vgcreate webvg /dev/sdb1
+	# lvcreate -L 1000M -n weblv webvg
+	# mkfs -t ext4 /dev/webvg/weblv
+	# mkdir /webdata
+	# mount -t ext4 /dev/webvg/weblv /webdata
+	# df -h /webdata
+2) Add some data into "/webdata" file system
+	# cp /var/log/messages /webdata
+3) Verify the size of the PV by pvs command or pvdisplay command
+	# df -h /webdata
+	# pvdisplay /dev/webvg/weblv
+	# ls -l /webdata
+4) Add new PV, which should be of the same size or higher than that of the replacing PV to the volume group. 
+	# pvcreate /dev/sdc1
+	# vgextend webvg /dev/sdc1
+5) Unmount the file system on that PV. 
+	# umount /webdata
+	# df -h
+6) Migrate the PVs contents to the new PV using following command 
+	# pvs
+	# pvmove /dev/sdb1 /dev/sdc1
+	# pvs 
+7) Mount back the LV, access the mount point and verify the data in it.
+	# mount -t ext4 /dev/webvg/weblv /webdata
+	# df -h /webdata
+	# ls -l /webdata
+8) Remove the old PV from Volume Group
+	# vgreduce webvg /dev/sdc1
+	# pvs
+	# pvremove /dev/sdc1
+	# pvs
+9) finally access the file system and close the request
+	# df -h /webdata
+	# ls -l /webdata
+
+
+Class Session Outputs:
+======================
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Sat Jun 14 19:24:53 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted -l |more
+Error: /dev/sdb: unrecognised disk label
+Error: /dev/sdc: unrecognised disk label
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 50.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system  Flags
+ 1      0.00B  50.5GB  50.5GB  xfs
+
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted /dev/sdb
+GNU Parted 3.1
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Error: /dev/sdb: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+(parted) mklabel gpt
+(parted) mkpart
+Partition name?  []? logical
+File system type?  [ext2]?
+Start? 1
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sda2  rhel lvm2 a--  <49.00g 4.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created.
+[root@gvnkansiblesrv ~]# vgcreate webvg /dev/sdb1
+  Volume group "webvg" successfully created
+[root@gvnkansiblesrv ~]# lvcreate -L 1000M -n weblv webvg
+  Logical volume "weblv" created.
+[root@gvnkansiblesrv ~]# lvs
+  LV    VG    Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root  rhel  -wi-ao----   46.99g
+  swap  rhel  -wi-ao----    2.00g
+  weblv webvg -wi-a----- 1000.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkfs -t xfs /dev/webvg/weblv
+meta-data=/dev/webvg/weblv       isize=512    agcount=4, agsize=64000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=256000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@gvnkansiblesrv ~]# mkdir /webdata
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/webvg/weblv /webdata
+[root@gvnkansiblesrv ~]# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root     47G  6.0G   41G  13% /
+devtmpfs                 225M     0  225M   0% /dev
+tmpfs                    236M     0  236M   0% /dev/shm
+tmpfs                    236M  4.7M  231M   2% /run
+tmpfs                    236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1               1014M  125M  890M  13% /boot
+tmpfs                     48M     0   48M   0% /run/user/0
+/dev/mapper/webvg-weblv  997M   33M  965M   4% /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/a* /webdata
+[root@gvnkansiblesrv ~]# cp /var/ftp/pub/rhel7/b* /webdata
+[root@gvnkansiblesrv ~]# ls -l /webdata
+total 128116
+-r--r--r-- 1 root root   153008 Jun 14 19:40 abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm
+-r--r--r-- 1 root root   549628 Jun 14 19:40 abrt-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   195708 Jun 14 19:40 abrt-addon-ccpp-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   107036 Jun 14 19:40 abrt-addon-kerneloops-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    97304 Jun 14 19:40 abrt-addon-pstoreoops-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   103144 Jun 14 19:40 abrt-addon-python-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   107512 Jun 14 19:40 abrt-addon-vmcore-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    97932 Jun 14 19:40 abrt-addon-xorg-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    88180 Jun 14 19:40 abrt-cli-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    89368 Jun 14 19:40 abrt-console-notification-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   122700 Jun 14 19:40 abrt-dbus-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    88256 Jun 14 19:40 abrt-desktop-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   193308 Jun 14 19:40 abrt-gui-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    95872 Jun 14 19:40 abrt-gui-libs-2.1.11-48.el7.i686.rpm
+-r--r--r-- 1 root root    95900 Jun 14 19:40 abrt-gui-libs-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    35092 Jun 14 19:40 abrt-java-connector-1.0.6-12.el7.x86_64.rpm
+-r--r--r-- 1 root root   110192 Jun 14 19:40 abrt-libs-2.1.11-48.el7.i686.rpm
+-r--r--r-- 1 root root   110400 Jun 14 19:40 abrt-libs-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   110316 Jun 14 19:40 abrt-python-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   101324 Jun 14 19:40 abrt-tui-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    96744 Jun 14 19:40 accountsservice-0.6.45-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    78440 Jun 14 19:40 accountsservice-libs-0.6.45-3.el7_4.1.i686.rpm
+-r--r--r-- 1 root root    79584 Jun 14 19:40 accountsservice-libs-0.6.45-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    82920 Jun 14 19:40 acl-2.2.51-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    70100 Jun 14 19:40 acpid-2.0.19-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   105396 Jun 14 19:40 adcli-0.8.1-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   656448 Jun 14 19:40 adwaita-cursor-theme-3.22.0-1.el7.noarch.rpm
+-r--r--r-- 1 root root   130412 Jun 14 19:40 adwaita-gtk2-theme-3.22.2-1.el7.i686.rpm
+-r--r--r-- 1 root root   130464 Jun 14 19:40 adwaita-gtk2-theme-3.22.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root 11696184 Jun 14 19:40 adwaita-icon-theme-3.22.0-1.el7.noarch.rpm
+-r--r--r-- 1 root root     3132 Jun 14 19:40 adwaita-qt-0.4-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    49832 Jun 14 19:40 adwaita-qt4-0.4-1.el7.i686.rpm
+-r--r--r-- 1 root root    48444 Jun 14 19:40 adwaita-qt4-0.4-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   310448 Jun 14 19:40 adwaita-qt-common-0.4-1.el7.noarch.rpm
+-r--r--r-- 1 root root   151428 Jun 14 19:40 agg-2.5-18.el7.i686.rpm
+-r--r--r-- 1 root root   148060 Jun 14 19:40 agg-2.5-18.el7.x86_64.rpm
+-r--r--r-- 1 root root    23612 Jun 14 19:40 aic94xx-firmware-30-6.el7.noarch.rpm
+-r--r--r-- 1 root root   136456 Jun 14 19:40 aide-0.15.1-13.el7.x86_64.rpm
+-r--r--r-- 1 root root   740312 Jun 14 19:40 akonadi-1.9.2-4.el7.i686.rpm
+-r--r--r-- 1 root root   742312 Jun 14 19:40 akonadi-1.9.2-4.el7.x86_64.rpm
+-r--r--r-- 1 root root    15928 Jun 14 19:40 akonadi-mysql-1.9.2-4.el7.x86_64.rpm
+-r--r--r-- 1 root root   133976 Jun 14 19:40 alacarte-3.11.91-1.el7.noarch.rpm
+-r--r--r-- 1 root root  2422232 Jun 14 19:40 alsa-firmware-1.0.28-2.el7.noarch.rpm
+-r--r--r-- 1 root root   430572 Jun 14 19:40 alsa-lib-1.1.3-3.el7.i686.rpm
+-r--r--r-- 1 root root   431436 Jun 14 19:40 alsa-lib-1.1.3-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   980480 Jun 14 19:40 alsa-lib-devel-1.1.3-3.el7.i686.rpm
+-r--r--r-- 1 root root   980460 Jun 14 19:40 alsa-lib-devel-1.1.3-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    41396 Jun 14 19:40 alsa-plugins-pulseaudio-1.1.1-1.el7.i686.rpm
+-r--r--r-- 1 root root    42068 Jun 14 19:40 alsa-plugins-pulseaudio-1.1.1-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    36128 Jun 14 19:40 alsa-tools-firmware-1.1.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  1092268 Jun 14 19:40 alsa-utils-1.1.3-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   129264 Jun 14 19:40 amanda-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root   137336 Jun 14 19:40 amanda-client-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root  1327720 Jun 14 19:40 amanda-libs-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root   265136 Jun 14 19:40 amanda-server-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root   195024 Jun 14 19:40 anaconda-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  1690824 Jun 14 19:40 anaconda-core-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   507304 Jun 14 19:40 anaconda-gui-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   285276 Jun 14 19:40 anaconda-tui-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   130744 Jun 14 19:40 anaconda-user-help-7.3.2-1.el7.noarch.rpm
+-r--r--r-- 1 root root   215164 Jun 14 19:40 anaconda-widgets-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  2030692 Jun 14 19:40 ant-1.9.2-9.el7.noarch.rpm
+-r--r--r-- 1 root root   365776 Jun 14 19:40 antlr-tool-2.7.7-30.el7.noarch.rpm
+-r--r--r-- 1 root root    51816 Jun 14 19:40 apache-commons-cli-1.2-13.el7.noarch.rpm
+-r--r--r-- 1 root root   228448 Jun 14 19:40 apache-commons-codec-1.8-7.el7.noarch.rpm
+-r--r--r-- 1 root root   520720 Jun 14 19:40 apache-commons-collections-3.2.1-22.el7_2.noarch.rpm
+-r--r--r-- 1 root root    55352 Jun 14 19:40 apache-commons-daemon-1.0.13-6.el7.x86_64.rpm
+-r--r--r-- 1 root root   171120 Jun 14 19:40 apache-commons-dbcp-1.4-17.el7.noarch.rpm
+-r--r--r-- 1 root root   193672 Jun 14 19:40 apache-commons-io-2.4-12.el7.noarch.rpm
+-r--r--r-- 1 root root   283028 Jun 14 19:40 apache-commons-lang-2.6-15.el7.noarch.rpm
+-r--r--r-- 1 root root    79584 Jun 14 19:40 apache-commons-logging-1.1.2-7.el7.noarch.rpm
+-r--r--r-- 1 root root   115888 Jun 14 19:40 apache-commons-pool-1.6-9.el7.noarch.rpm
+-r--r--r-- 1 root root  7080292 Jun 14 19:40 appstream-data-7-20170301.el7.noarch.rpm
+-r--r--r-- 1 root root   110480 Jun 14 19:40 apr-1.4.8-3.el7_4.1.i686.rpm
+-r--r--r-- 1 root root   105772 Jun 14 19:40 apr-1.4.8-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   192768 Jun 14 19:40 apr-devel-1.4.8-3.el7_4.1.i686.rpm
+-r--r--r-- 1 root root   192700 Jun 14 19:40 apr-devel-1.4.8-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    95564 Jun 14 19:40 apr-util-1.5.2-6.el7.i686.rpm
+-r--r--r-- 1 root root    94176 Jun 14 19:40 apr-util-1.5.2-6.el7.x86_64.rpm
+-r--r--r-- 1 root root    78164 Jun 14 19:40 apr-util-devel-1.5.2-6.el7.i686.rpm
+-r--r--r-- 1 root root    78120 Jun 14 19:40 apr-util-devel-1.5.2-6.el7.x86_64.rpm
+-r--r--r-- 1 root root    71956 Jun 14 19:40 args4j-2.0.16-13.el7.noarch.rpm
+-r--r--r-- 1 root root   283628 Jun 14 19:40 ark-4.10.5-4.el7.x86_64.rpm
+-r--r--r-- 1 root root   110356 Jun 14 19:40 ark-libs-4.10.5-4.el7.i686.rpm
+-r--r--r-- 1 root root   110820 Jun 14 19:40 ark-libs-4.10.5-4.el7.x86_64.rpm
+-r--r--r-- 1 root root    47844 Jun 14 19:40 arptables-0.0.4-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   196404 Jun 14 19:40 arpwatch-2.1a15-36.el7.x86_64.rpm
+-r--r--r-- 1 root root    52032 Jun 14 19:40 at-3.1.13-22.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   263736 Jun 14 19:40 atk-2.22.0-3.el7.i686.rpm
+-r--r--r-- 1 root root   264740 Jun 14 19:40 atk-2.22.0-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   187076 Jun 14 19:40 atk-devel-2.22.0-3.el7.i686.rpm
+-r--r--r-- 1 root root   187040 Jun 14 19:40 atk-devel-2.22.0-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    83272 Jun 14 19:40 atkmm-2.24.2-1.el7.i686.rpm
+-r--r--r-- 1 root root    80596 Jun 14 19:40 atkmm-2.24.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  4375064 Jun 14 19:40 atlas-3.10.1-12.el7.i686.rpm
+-r--r--r-- 1 root root  4545084 Jun 14 19:40 atlas-3.10.1-12.el7.x86_64.rpm
+-r--r--r-- 1 root root  4410760 Jun 14 19:40 atlas-sse2-3.10.1-12.el7.i686.rpm
+-r--r--r-- 1 root root  4458552 Jun 14 19:40 atlas-sse3-3.10.1-12.el7.i686.rpm
+-r--r--r-- 1 root root    82008 Jun 14 19:40 at-spi2-atk-2.22.0-2.el7.i686.rpm
+-r--r--r-- 1 root root    82012 Jun 14 19:40 at-spi2-atk-2.22.0-2.el7.x86_64.rpm
+-r--r--r-- 1 root root    12480 Jun 14 19:40 at-spi2-atk-devel-2.22.0-2.el7.i686.rpm
+-r--r--r-- 1 root root    12444 Jun 14 19:40 at-spi2-atk-devel-2.22.0-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   160152 Jun 14 19:40 at-spi2-core-2.22.0-1.el7.i686.rpm
+-r--r--r-- 1 root root   161188 Jun 14 19:40 at-spi2-core-2.22.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   142296 Jun 14 19:40 at-spi2-core-devel-2.22.0-1.el7.i686.rpm
+-r--r--r-- 1 root root   142264 Jun 14 19:40 at-spi2-core-devel-2.22.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   239468 Jun 14 19:40 attica-0.4.2-1.el7.i686.rpm
+-r--r--r-- 1 root root   238140 Jun 14 19:40 attica-0.4.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    29380 Jun 14 19:40 attica-devel-0.4.2-1.el7.i686.rpm
+-r--r--r-- 1 root root    29348 Jun 14 19:40 attica-devel-0.4.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    67240 Jun 14 19:40 attr-2.4.46-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    51024 Jun 14 19:40 audispd-plugins-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   247892 Jun 14 19:40 audit-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    98188 Jun 14 19:40 audit-libs-2.7.6-3.el7.i686.rpm
+-r--r--r-- 1 root root    98000 Jun 14 19:40 audit-libs-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    78428 Jun 14 19:40 audit-libs-devel-2.7.6-3.el7.i686.rpm
+-r--r--r-- 1 root root    78392 Jun 14 19:40 audit-libs-devel-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    75076 Jun 14 19:40 audit-libs-python-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    39680 Jun 14 19:40 augeas-1.4.0-2.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   360808 Jun 14 19:40 augeas-libs-1.4.0-2.el7_4.2.i686.rpm
+-r--r--r-- 1 root root   363456 Jun 14 19:40 augeas-libs-1.4.0-2.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   434392 Jun 14 19:40 authconfig-6.2.8-30.el7.x86_64.rpm
+-r--r--r-- 1 root root   111996 Jun 14 19:40 authconfig-gtk-6.2.8-30.el7.x86_64.rpm
+-r--r--r-- 1 root root    49404 Jun 14 19:40 authd-1.4.3-42.el7.x86_64.rpm
+-r--r--r-- 1 root root   717972 Jun 14 19:40 autoconf-2.69-11.el7.noarch.rpm
+-r--r--r-- 1 root root   626824 Jun 14 19:40 autoconf-archive-2017.03.21-1.el7.noarch.rpm
+-r--r--r-- 1 root root   828340 Jun 14 19:40 autofs-5.0.7-70.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    65892 Jun 14 19:40 autogen-libopts-5.18-5.el7.i686.rpm
+-r--r--r-- 1 root root    67672 Jun 14 19:40 autogen-libopts-5.18-5.el7.x86_64.rpm
+-r--r--r-- 1 root root   695728 Jun 14 19:40 automake-1.13.4-3.el7.noarch.rpm
+-r--r--r-- 1 root root    34516 Jun 14 19:40 automoc-1.0-0.20.rc3.el7.x86_64.rpm
+-r--r--r-- 1 root root   267976 Jun 14 19:40 avahi-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root   269668 Jun 14 19:40 avahi-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    40340 Jun 14 19:40 avahi-autoipd-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    25556 Jun 14 19:40 avahi-glib-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    25312 Jun 14 19:40 avahi-glib-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    34484 Jun 14 19:40 avahi-gobject-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    35340 Jun 14 19:40 avahi-gobject-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    62376 Jun 14 19:40 avahi-libs-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    62696 Jun 14 19:40 avahi-libs-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    37220 Jun 14 19:40 avahi-ui-gtk3-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    37704 Jun 14 19:40 avahi-ui-gtk3-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    89556 Jun 14 19:40 avalon-framework-4.3-10.el7.noarch.rpm
+-r--r--r-- 1 root root    89372 Jun 14 19:40 avalon-logkit-2.1-14.el7.noarch.rpm
+-r--r--r-- 1 root root    15088 Jun 14 19:40 babel-0.9.6-8.el7.noarch.rpm
+-r--r--r-- 1 root root   120816 Jun 14 19:40 babl-0.1.10-9.el7.i686.rpm
+-r--r--r-- 1 root root   120732 Jun 14 19:40 babl-0.1.10-9.el7.x86_64.rpm
+-r--r--r-- 1 root root   103712 Jun 14 19:40 bacula-client-5.2.13-23.1.el7.x86_64.rpm
+-r--r--r-- 1 root root    99600 Jun 14 19:40 bacula-common-5.2.13-23.1.el7.x86_64.rpm
+-r--r--r-- 1 root root   219024 Jun 14 19:40 bacula-libs-5.2.13-23.1.el7.x86_64.rpm
+-r--r--r-- 1 root root   354864 Jun 14 19:40 baobab-3.22.1-1.el7.x86_64.rpm
+-r--r--r-- 1 root root     4992 Jun 14 19:40 basesystem-10.0-7.el7.noarch.rpm
+-r--r--r-- 1 root root  1036416 Jun 14 19:40 bash-4.2.46-29.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    87360 Jun 14 19:40 bash-completion-2.1-6.el7.noarch.rpm
+-r--r--r-- 1 root root   117320 Jun 14 19:40 bc-1.06.95-13.el7.x86_64.rpm
+-r--r--r-- 1 root root   480352 Jun 14 19:40 bcel-5.2-18.el7.noarch.rpm
+-r--r--r-- 1 root root   180572 Jun 14 19:40 bea-stax-1.2.0-9.el7.noarch.rpm
+-r--r--r-- 1 root root    31964 Jun 14 19:40 bea-stax-api-1.2.0-9.el7.noarch.rpm
+-r--r--r-- 1 root root  1865384 Jun 14 19:40 bind-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    88260 Jun 14 19:40 bind-chroot-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   124820 Jun 14 19:40 bind-dyndb-ldap-11.1-4.el7.x86_64.rpm
+-r--r--r-- 1 root root  1034384 Jun 14 19:40 bind-libs-9.9.4-51.el7_4.1.i686.rpm
+-r--r--r-- 1 root root  1051280 Jun 14 19:40 bind-libs-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   740176 Jun 14 19:40 bind-libs-lite-9.9.4-51.el7_4.1.i686.rpm
+-r--r--r-- 1 root root   750300 Jun 14 19:40 bind-libs-lite-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    86412 Jun 14 19:40 bind-license-9.9.4-51.el7_4.1.noarch.rpm
+-r--r--r-- 1 root root   304140 Jun 14 19:40 bind-pkcs11-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  1182452 Jun 14 19:40 bind-pkcs11-libs-9.9.4-51.el7_4.1.i686.rpm
+-r--r--r-- 1 root root  1202412 Jun 14 19:40 bind-pkcs11-libs-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   202264 Jun 14 19:40 bind-pkcs11-utils-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   208220 Jun 14 19:40 bind-utils-9.9.4-51.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  5666888 Jun 14 19:40 binutils-2.25.1-32.base.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   904776 Jun 14 19:40 binutils-devel-2.25.1-32.base.el7_4.2.i686.rpm
+-r--r--r-- 1 root root   866264 Jun 14 19:40 binutils-devel-2.25.1-32.base.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root    39148 Jun 14 19:40 biosdevname-0.7.2-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   690532 Jun 14 19:40 bison-3.0.4-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    77840 Jun 14 19:40 bitmap-fixed-fonts-0.3-21.el7.noarch.rpm
+-r--r--r-- 1 root root   229928 Jun 14 19:40 bitmap-lucida-typewriter-fonts-0.3-21.el7.noarch.rpm
+-r--r--r-- 1 root root   405796 Jun 14 19:40 blas-3.4.2-8.el7.i686.rpm
+-r--r--r-- 1 root root   408592 Jun 14 19:40 blas-3.4.2-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   136932 Jun 14 19:40 blktrace-1.0.5-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  2858464 Jun 14 19:40 bltk-1.1.0-10.el7.i686.rpm
+-r--r--r-- 1 root root  2858724 Jun 14 19:40 bltk-1.1.0-10.el7.x86_64.rpm
+-r--r--r-- 1 root root   387316 Jun 14 19:40 bluedevil-2.1-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  1285544 Jun 14 19:40 bluez-5.44-4.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    81684 Jun 14 19:40 bluez-libs-5.44-4.el7_4.i686.rpm
+-r--r--r-- 1 root root    82284 Jun 14 19:40 bluez-libs-5.44-4.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    34168 Jun 14 19:40 boost-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    34116 Jun 14 19:40 boost-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    36076 Jun 14 19:40 boost-atomic-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    36100 Jun 14 19:40 boost-atomic-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    44884 Jun 14 19:40 boost-chrono-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    45400 Jun 14 19:40 boost-chrono-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    37212 Jun 14 19:40 boost-context-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    37292 Jun 14 19:40 boost-context-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    51992 Jun 14 19:40 boost-date-time-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    52924 Jun 14 19:40 boost-date-time-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root  7291624 Jun 14 19:40 boost-devel-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root  7294332 Jun 14 19:40 boost-devel-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    72568 Jun 14 19:40 boost-filesystem-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    69648 Jun 14 19:40 boost-filesystem-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   139436 Jun 14 19:40 boost-graph-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   139112 Jun 14 19:40 boost-graph-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    65244 Jun 14 19:40 boost-iostreams-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    62488 Jun 14 19:40 boost-iostreams-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   264264 Jun 14 19:40 boost-locale-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   257024 Jun 14 19:40 boost-locale-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   327196 Jun 14 19:40 boost-math-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   342440 Jun 14 19:40 boost-math-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   156392 Jun 14 19:40 boost-program-options-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   159524 Jun 14 19:40 boost-program-options-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   135772 Jun 14 19:40 boost-python-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   131996 Jun 14 19:40 boost-python-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    39976 Jun 14 19:40 boost-random-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    40096 Jun 14 19:40 boost-random-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   313608 Jun 14 19:40 boost-regex-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   307492 Jun 14 19:40 boost-regex-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   178572 Jun 14 19:40 boost-serialization-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   173124 Jun 14 19:40 boost-serialization-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    63212 Jun 14 19:40 boost-signals-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    61836 Jun 14 19:40 boost-signals-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    40740 Jun 14 19:40 boost-system-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    40588 Jun 14 19:40 boost-system-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   225072 Jun 14 19:40 boost-test-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   228616 Jun 14 19:40 boost-test-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    58856 Jun 14 19:40 boost-thread-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    58760 Jun 14 19:40 boost-thread-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    44024 Jun 14 19:40 boost-timer-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root    43640 Jun 14 19:40 boost-timer-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root   214416 Jun 14 19:40 boost-wave-1.53.0-27.el7.i686.rpm
+-r--r--r-- 1 root root   214772 Jun 14 19:40 boost-wave-1.53.0-27.el7.x86_64.rpm
+-r--r--r-- 1 root root    26872 Jun 14 19:40 bpg-chveulebrivi-fonts-3.002-3.el7.noarch.rpm
+-r--r--r-- 1 root root    28836 Jun 14 19:40 bpg-courier-fonts-4.002-3.el7.noarch.rpm
+-r--r--r-- 1 root root    18180 Jun 14 19:40 bpg-fonts-common-20120413-3.el7.noarch.rpm
+-r--r--r-- 1 root root    26284 Jun 14 19:40 bpg-glaho-fonts-9.000-3.el7.noarch.rpm
+-r--r--r-- 1 root root  2634452 Jun 14 19:40 brasero-3.12.1-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   350240 Jun 14 19:40 brasero-libs-3.12.1-2.el7.i686.rpm
+-r--r--r-- 1 root root   341112 Jun 14 19:40 brasero-libs-3.12.1-2.el7.x86_64.rpm
+-r--r--r-- 1 root root    30868 Jun 14 19:40 brasero-nautilus-3.12.1-2.el7.x86_64.rpm
+-r--r--r-- 1 root root    32532 Jun 14 19:40 bridge-utils-1.5-9.el7.x86_64.rpm
+-r--r--r-- 1 root root   117108 Jun 14 19:40 brlapi-0.6.0-15.el7.i686.rpm
+-r--r--r-- 1 root root   117100 Jun 14 19:40 brlapi-0.6.0-15.el7.x86_64.rpm
+-r--r--r-- 1 root root   955604 Jun 14 19:40 brltty-4.5-15.el7.x86_64.rpm
+-r--r--r-- 1 root root   744016 Jun 14 19:40 btrfs-progs-4.9.1-1.el7.i686.rpm
+-r--r--r-- 1 root root   694048 Jun 14 19:40 btrfs-progs-4.9.1-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    66340 Jun 14 19:40 byacc-1.9.20130304-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    53244 Jun 14 19:40 bzip2-1.0.6-13.el7.x86_64.rpm
+-r--r--r-- 1 root root   223316 Jun 14 19:40 bzip2-devel-1.0.6-13.el7.i686.rpm
+-r--r--r-- 1 root root   223276 Jun 14 19:40 bzip2-devel-1.0.6-13.el7.x86_64.rpm
+-r--r--r-- 1 root root    40696 Jun 14 19:40 bzip2-libs-1.0.6-13.el7.i686.rpm
+-r--r--r-- 1 root root    40752 Jun 14 19:40 bzip2-libs-1.0.6-13.el7.x86_64.rpm
+-r--r--r-- 1 root root  6366436 Jun 14 19:40 bzr-2.5.1-14.el7.x86_64.rpm
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root     47G  6.0G   41G  13% /
+devtmpfs                 225M     0  225M   0% /dev
+tmpfs                    236M     0  236M   0% /dev/shm
+tmpfs                    236M  4.7M  231M   2% /run
+tmpfs                    236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1               1014M  125M  890M  13% /boot
+tmpfs                     48M     0   48M   0% /run/user/0
+/dev/mapper/webvg-weblv  997M  159M  839M  16% /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root     47G  6.0G   41G  13% /
+devtmpfs                 225M     0  225M   0% /dev
+tmpfs                    236M     0  236M   0% /dev/shm
+tmpfs                    236M  4.7M  231M   2% /run
+tmpfs                    236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1               1014M  125M  890M  13% /boot
+tmpfs                     48M     0   48M   0% /run/user/0
+/dev/mapper/webvg-weblv  997M  158M  840M  16% /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgs
+  VG    #PV #LV #SN Attr   VSize    VFree
+  rhel    1   2   0 wz--n-  <49.00g  4.00m
+  webvg   1   1   0 wz--n- 1020.00m 20.00m
+[root@gvnkansiblesrv ~]# lvs
+  LV    VG    Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root  rhel  -wi-ao----   46.99g
+  swap  rhel  -wi-ao----    2.00g
+  weblv webvg -wi-ao---- 1000.00m
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g  4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m 20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted /dev/sdc
+GNU Parted 3.1
+Using /dev/sdc
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Error: /dev/sdc: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+(parted)
+(parted) mklabel gpt
+(parted) mkpart
+Partition name?  []? logical
+File system type?  [ext2]?
+Start? 1
+End? -1
+(parted)
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvcreate /dev/sdc1
+  Physical volume "/dev/sdc1" successfully created.
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g    4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m   20.00m
+  /dev/sdc1        lvm2 ---  1022.00m 1022.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgextend webvg /dev/sdc1
+  Volume group "webvg" successfully extended
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g    4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m   20.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m 1020.00m
+[root@gvnkansiblesrv ~]# lvs
+  LV    VG    Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root  rhel  -wi-ao----   46.99g
+  swap  rhel  -wi-ao----    2.00g
+  weblv webvg -wi-ao---- 1000.00m
+[root@gvnkansiblesrv ~]# vgs
+  VG    #PV #LV #SN Attr   VSize   VFree
+  rhel    1   2   0 wz--n- <49.00g  4.00m
+  webvg   2   1   0 wz--n-   1.99g <1.02g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# umount /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   47G  6.0G   41G  13% /
+devtmpfs               225M     0  225M   0% /dev
+tmpfs                  236M     0  236M   0% /dev/shm
+tmpfs                  236M  4.7M  231M   2% /run
+tmpfs                  236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1             1014M  125M  890M  13% /boot
+tmpfs                   48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g    4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m   20.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m 1020.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvmove /dev/sdb1 /dev/sdc1
+  /dev/sdb1: Moved: 0.00%
+  /dev/sdb1: Moved: 100.00%
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g    4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m 1020.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m   20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mount -t ext4 /dev/webvg/weblv /webdata
+mount: wrong fs type, bad option, bad superblock on /dev/mapper/webvg-weblv,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/webvg/weblv /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root     47G  6.0G   41G  13% /
+devtmpfs                 225M     0  225M   0% /dev
+tmpfs                    236M     0  236M   0% /dev/shm
+tmpfs                    236M  4.7M  231M   2% /run
+tmpfs                    236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1               1014M  125M  890M  13% /boot
+tmpfs                     48M     0   48M   0% /run/user/0
+/dev/mapper/webvg-weblv  997M  158M  840M  16% /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# ls /webdata
+abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm       ark-libs-4.10.5-4.el7.x86_64.rpm              bind-pkcs11-libs-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-2.1.11-48.el7.x86_64.rpm                         arptables-0.0.4-8.el7.x86_64.rpm              bind-pkcs11-utils-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-addon-ccpp-2.1.11-48.el7.x86_64.rpm              arpwatch-2.1a15-36.el7.x86_64.rpm             bind-utils-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-addon-kerneloops-2.1.11-48.el7.x86_64.rpm        at-3.1.13-22.el7_4.2.x86_64.rpm               binutils-2.25.1-32.base.el7_4.2.x86_64.rpm
+abrt-addon-pstoreoops-2.1.11-48.el7.x86_64.rpm        atk-2.22.0-3.el7.i686.rpm                     binutils-devel-2.25.1-32.base.el7_4.2.i686.rpm
+abrt-addon-python-2.1.11-48.el7.x86_64.rpm            atk-2.22.0-3.el7.x86_64.rpm                   binutils-devel-2.25.1-32.base.el7_4.2.x86_64.rpm
+abrt-addon-vmcore-2.1.11-48.el7.x86_64.rpm            atk-devel-2.22.0-3.el7.i686.rpm               biosdevname-0.7.2-2.el7.x86_64.rpm
+abrt-addon-xorg-2.1.11-48.el7.x86_64.rpm              atk-devel-2.22.0-3.el7.x86_64.rpm             bison-3.0.4-1.el7.x86_64.rpm
+abrt-cli-2.1.11-48.el7.x86_64.rpm                     atkmm-2.24.2-1.el7.i686.rpm                   bitmap-fixed-fonts-0.3-21.el7.noarch.rpm
+abrt-console-notification-2.1.11-48.el7.x86_64.rpm    atkmm-2.24.2-1.el7.x86_64.rpm                 bitmap-lucida-typewriter-fonts-0.3-21.el7.noarch.rpm
+abrt-dbus-2.1.11-48.el7.x86_64.rpm                    atlas-3.10.1-12.el7.i686.rpm                  blas-3.4.2-8.el7.i686.rpm
+abrt-desktop-2.1.11-48.el7.x86_64.rpm                 atlas-3.10.1-12.el7.x86_64.rpm                blas-3.4.2-8.el7.x86_64.rpm
+abrt-gui-2.1.11-48.el7.x86_64.rpm                     atlas-sse2-3.10.1-12.el7.i686.rpm             blktrace-1.0.5-8.el7.x86_64.rpm
+abrt-gui-libs-2.1.11-48.el7.i686.rpm                  atlas-sse3-3.10.1-12.el7.i686.rpm             bltk-1.1.0-10.el7.i686.rpm
+abrt-gui-libs-2.1.11-48.el7.x86_64.rpm                at-spi2-atk-2.22.0-2.el7.i686.rpm             bltk-1.1.0-10.el7.x86_64.rpm
+abrt-java-connector-1.0.6-12.el7.x86_64.rpm           at-spi2-atk-2.22.0-2.el7.x86_64.rpm           bluedevil-2.1-1.el7.x86_64.rpm
+abrt-libs-2.1.11-48.el7.i686.rpm                      at-spi2-atk-devel-2.22.0-2.el7.i686.rpm       bluez-5.44-4.el7_4.x86_64.rpm
+abrt-libs-2.1.11-48.el7.x86_64.rpm                    at-spi2-atk-devel-2.22.0-2.el7.x86_64.rpm     bluez-libs-5.44-4.el7_4.i686.rpm
+abrt-python-2.1.11-48.el7.x86_64.rpm                  at-spi2-core-2.22.0-1.el7.i686.rpm            bluez-libs-5.44-4.el7_4.x86_64.rpm
+abrt-tui-2.1.11-48.el7.x86_64.rpm                     at-spi2-core-2.22.0-1.el7.x86_64.rpm          boost-1.53.0-27.el7.i686.rpm
+accountsservice-0.6.45-3.el7_4.1.x86_64.rpm           at-spi2-core-devel-2.22.0-1.el7.i686.rpm      boost-1.53.0-27.el7.x86_64.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.i686.rpm        at-spi2-core-devel-2.22.0-1.el7.x86_64.rpm    boost-atomic-1.53.0-27.el7.i686.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.x86_64.rpm      attica-0.4.2-1.el7.i686.rpm                   boost-atomic-1.53.0-27.el7.x86_64.rpm
+acl-2.2.51-12.el7.x86_64.rpm                          attica-0.4.2-1.el7.x86_64.rpm                 boost-chrono-1.53.0-27.el7.i686.rpm
+acpid-2.0.19-8.el7.x86_64.rpm                         attica-devel-0.4.2-1.el7.i686.rpm             boost-chrono-1.53.0-27.el7.x86_64.rpm
+adcli-0.8.1-3.el7.x86_64.rpm                          attica-devel-0.4.2-1.el7.x86_64.rpm           boost-context-1.53.0-27.el7.i686.rpm
+adwaita-cursor-theme-3.22.0-1.el7.noarch.rpm          attr-2.4.46-12.el7.x86_64.rpm                 boost-context-1.53.0-27.el7.x86_64.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.i686.rpm              audispd-plugins-2.7.6-3.el7.x86_64.rpm        boost-date-time-1.53.0-27.el7.i686.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.x86_64.rpm            audit-2.7.6-3.el7.x86_64.rpm                  boost-date-time-1.53.0-27.el7.x86_64.rpm
+adwaita-icon-theme-3.22.0-1.el7.noarch.rpm            audit-libs-2.7.6-3.el7.i686.rpm               boost-devel-1.53.0-27.el7.i686.rpm
+adwaita-qt-0.4-1.el7.x86_64.rpm                       audit-libs-2.7.6-3.el7.x86_64.rpm             boost-devel-1.53.0-27.el7.x86_64.rpm
+adwaita-qt4-0.4-1.el7.i686.rpm                        audit-libs-devel-2.7.6-3.el7.i686.rpm         boost-filesystem-1.53.0-27.el7.i686.rpm
+adwaita-qt4-0.4-1.el7.x86_64.rpm                      audit-libs-devel-2.7.6-3.el7.x86_64.rpm       boost-filesystem-1.53.0-27.el7.x86_64.rpm
+adwaita-qt-common-0.4-1.el7.noarch.rpm                audit-libs-python-2.7.6-3.el7.x86_64.rpm      boost-graph-1.53.0-27.el7.i686.rpm
+agg-2.5-18.el7.i686.rpm                               augeas-1.4.0-2.el7_4.2.x86_64.rpm             boost-graph-1.53.0-27.el7.x86_64.rpm
+agg-2.5-18.el7.x86_64.rpm                             augeas-libs-1.4.0-2.el7_4.2.i686.rpm          boost-iostreams-1.53.0-27.el7.i686.rpm
+aic94xx-firmware-30-6.el7.noarch.rpm                  augeas-libs-1.4.0-2.el7_4.2.x86_64.rpm        boost-iostreams-1.53.0-27.el7.x86_64.rpm
+aide-0.15.1-13.el7.x86_64.rpm                         authconfig-6.2.8-30.el7.x86_64.rpm            boost-locale-1.53.0-27.el7.i686.rpm
+akonadi-1.9.2-4.el7.i686.rpm                          authconfig-gtk-6.2.8-30.el7.x86_64.rpm        boost-locale-1.53.0-27.el7.x86_64.rpm
+akonadi-1.9.2-4.el7.x86_64.rpm                        authd-1.4.3-42.el7.x86_64.rpm                 boost-math-1.53.0-27.el7.i686.rpm
+akonadi-mysql-1.9.2-4.el7.x86_64.rpm                  autoconf-2.69-11.el7.noarch.rpm               boost-math-1.53.0-27.el7.x86_64.rpm
+alacarte-3.11.91-1.el7.noarch.rpm                     autoconf-archive-2017.03.21-1.el7.noarch.rpm  boost-program-options-1.53.0-27.el7.i686.rpm
+alsa-firmware-1.0.28-2.el7.noarch.rpm                 autofs-5.0.7-70.el7_4.x86_64.rpm              boost-program-options-1.53.0-27.el7.x86_64.rpm
+alsa-lib-1.1.3-3.el7.i686.rpm                         autogen-libopts-5.18-5.el7.i686.rpm           boost-python-1.53.0-27.el7.i686.rpm
+alsa-lib-1.1.3-3.el7.x86_64.rpm                       autogen-libopts-5.18-5.el7.x86_64.rpm         boost-python-1.53.0-27.el7.x86_64.rpm
+alsa-lib-devel-1.1.3-3.el7.i686.rpm                   automake-1.13.4-3.el7.noarch.rpm              boost-random-1.53.0-27.el7.i686.rpm
+alsa-lib-devel-1.1.3-3.el7.x86_64.rpm                 automoc-1.0-0.20.rc3.el7.x86_64.rpm           boost-random-1.53.0-27.el7.x86_64.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.i686.rpm          avahi-0.6.31-17.el7.i686.rpm                  boost-regex-1.53.0-27.el7.i686.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.x86_64.rpm        avahi-0.6.31-17.el7.x86_64.rpm                boost-regex-1.53.0-27.el7.x86_64.rpm
+alsa-tools-firmware-1.1.0-1.el7.x86_64.rpm            avahi-autoipd-0.6.31-17.el7.x86_64.rpm        boost-serialization-1.53.0-27.el7.i686.rpm
+alsa-utils-1.1.3-2.el7.x86_64.rpm                     avahi-glib-0.6.31-17.el7.i686.rpm             boost-serialization-1.53.0-27.el7.x86_64.rpm
+amanda-3.3.3-18.el7.x86_64.rpm                        avahi-glib-0.6.31-17.el7.x86_64.rpm           boost-signals-1.53.0-27.el7.i686.rpm
+amanda-client-3.3.3-18.el7.x86_64.rpm                 avahi-gobject-0.6.31-17.el7.i686.rpm          boost-signals-1.53.0-27.el7.x86_64.rpm
+amanda-libs-3.3.3-18.el7.x86_64.rpm                   avahi-gobject-0.6.31-17.el7.x86_64.rpm        boost-system-1.53.0-27.el7.i686.rpm
+amanda-server-3.3.3-18.el7.x86_64.rpm                 avahi-libs-0.6.31-17.el7.i686.rpm             boost-system-1.53.0-27.el7.x86_64.rpm
+anaconda-21.48.22.121-1.el7.x86_64.rpm                avahi-libs-0.6.31-17.el7.x86_64.rpm           boost-test-1.53.0-27.el7.i686.rpm
+anaconda-core-21.48.22.121-1.el7.x86_64.rpm           avahi-ui-gtk3-0.6.31-17.el7.i686.rpm          boost-test-1.53.0-27.el7.x86_64.rpm
+anaconda-gui-21.48.22.121-1.el7.x86_64.rpm            avahi-ui-gtk3-0.6.31-17.el7.x86_64.rpm        boost-thread-1.53.0-27.el7.i686.rpm
+anaconda-tui-21.48.22.121-1.el7.x86_64.rpm            avalon-framework-4.3-10.el7.noarch.rpm        boost-thread-1.53.0-27.el7.x86_64.rpm
+anaconda-user-help-7.3.2-1.el7.noarch.rpm             avalon-logkit-2.1-14.el7.noarch.rpm           boost-timer-1.53.0-27.el7.i686.rpm
+anaconda-widgets-21.48.22.121-1.el7.x86_64.rpm        babel-0.9.6-8.el7.noarch.rpm                  boost-timer-1.53.0-27.el7.x86_64.rpm
+ant-1.9.2-9.el7.noarch.rpm                            babl-0.1.10-9.el7.i686.rpm                    boost-wave-1.53.0-27.el7.i686.rpm
+antlr-tool-2.7.7-30.el7.noarch.rpm                    babl-0.1.10-9.el7.x86_64.rpm                  boost-wave-1.53.0-27.el7.x86_64.rpm
+apache-commons-cli-1.2-13.el7.noarch.rpm              bacula-client-5.2.13-23.1.el7.x86_64.rpm      bpg-chveulebrivi-fonts-3.002-3.el7.noarch.rpm
+apache-commons-codec-1.8-7.el7.noarch.rpm             bacula-common-5.2.13-23.1.el7.x86_64.rpm      bpg-courier-fonts-4.002-3.el7.noarch.rpm
+apache-commons-collections-3.2.1-22.el7_2.noarch.rpm  bacula-libs-5.2.13-23.1.el7.x86_64.rpm        bpg-fonts-common-20120413-3.el7.noarch.rpm
+apache-commons-daemon-1.0.13-6.el7.x86_64.rpm         baobab-3.22.1-1.el7.x86_64.rpm                bpg-glaho-fonts-9.000-3.el7.noarch.rpm
+apache-commons-dbcp-1.4-17.el7.noarch.rpm             basesystem-10.0-7.el7.noarch.rpm              brasero-3.12.1-2.el7.x86_64.rpm
+apache-commons-io-2.4-12.el7.noarch.rpm               bash-4.2.46-29.el7_4.x86_64.rpm               brasero-libs-3.12.1-2.el7.i686.rpm
+apache-commons-lang-2.6-15.el7.noarch.rpm             bash-completion-2.1-6.el7.noarch.rpm          brasero-libs-3.12.1-2.el7.x86_64.rpm
+apache-commons-logging-1.1.2-7.el7.noarch.rpm         bc-1.06.95-13.el7.x86_64.rpm                  brasero-nautilus-3.12.1-2.el7.x86_64.rpm
+apache-commons-pool-1.6-9.el7.noarch.rpm              bcel-5.2-18.el7.noarch.rpm                    bridge-utils-1.5-9.el7.x86_64.rpm
+appstream-data-7-20170301.el7.noarch.rpm              bea-stax-1.2.0-9.el7.noarch.rpm               brlapi-0.6.0-15.el7.i686.rpm
+apr-1.4.8-3.el7_4.1.i686.rpm                          bea-stax-api-1.2.0-9.el7.noarch.rpm           brlapi-0.6.0-15.el7.x86_64.rpm
+apr-1.4.8-3.el7_4.1.x86_64.rpm                        bind-9.9.4-51.el7_4.1.x86_64.rpm              brltty-4.5-15.el7.x86_64.rpm
+apr-devel-1.4.8-3.el7_4.1.i686.rpm                    bind-chroot-9.9.4-51.el7_4.1.x86_64.rpm       btrfs-progs-4.9.1-1.el7.i686.rpm
+apr-devel-1.4.8-3.el7_4.1.x86_64.rpm                  bind-dyndb-ldap-11.1-4.el7.x86_64.rpm         btrfs-progs-4.9.1-1.el7.x86_64.rpm
+apr-util-1.5.2-6.el7.i686.rpm                         bind-libs-9.9.4-51.el7_4.1.i686.rpm           byacc-1.9.20130304-3.el7.x86_64.rpm
+apr-util-1.5.2-6.el7.x86_64.rpm                       bind-libs-9.9.4-51.el7_4.1.x86_64.rpm         bzip2-1.0.6-13.el7.x86_64.rpm
+apr-util-devel-1.5.2-6.el7.i686.rpm                   bind-libs-lite-9.9.4-51.el7_4.1.i686.rpm      bzip2-devel-1.0.6-13.el7.i686.rpm
+apr-util-devel-1.5.2-6.el7.x86_64.rpm                 bind-libs-lite-9.9.4-51.el7_4.1.x86_64.rpm    bzip2-devel-1.0.6-13.el7.x86_64.rpm
+args4j-2.0.16-13.el7.noarch.rpm                       bind-license-9.9.4-51.el7_4.1.noarch.rpm      bzip2-libs-1.0.6-13.el7.i686.rpm
+ark-4.10.5-4.el7.x86_64.rpm                           bind-pkcs11-9.9.4-51.el7_4.1.x86_64.rpm       bzip2-libs-1.0.6-13.el7.x86_64.rpm
+ark-libs-4.10.5-4.el7.i686.rpm                        bind-pkcs11-libs-9.9.4-51.el7_4.1.i686.rpm    bzr-2.5.1-14.el7.x86_64.rpm
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /webdata
+[root@gvnkansiblesrv webdata]# mkdir ashok
+[root@gvnkansiblesrv webdata]# ls -ld ashok/
+drwxr-xr-x 2 root root 6 Jun 14 19:48 ashok/
+[root@gvnkansiblesrv webdata]#
+[root@gvnkansiblesrv webdata]# rmdir ashok
+[root@gvnkansiblesrv webdata]#
+[root@gvnkansiblesrv webdata]# cd
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g    4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m 1020.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m   20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgreduce webvg /dev/sdb1
+  Removed "/dev/sdb1" from volume group "webvg"
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g    4.00m
+  /dev/sdb1        lvm2 ---  1022.00m 1022.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m   20.00m
+[root@gvnkansiblesrv ~]# vgs
+  VG    #PV #LV #SN Attr   VSize    VFree
+  rhel    1   2   0 wz--n-  <49.00g  4.00m
+  webvg   1   1   0 wz--n- 1020.00m 20.00m
+[root@gvnkansiblesrv ~]# pvremove /dev/sdb1
+  Labels on physical volume "/dev/sdb1" successfully wiped.
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g  4.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m 20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgs
+  VG    #PV #LV #SN Attr   VSize    VFree
+  rhel    1   2   0 wz--n-  <49.00g  4.00m
+  webvg   1   1   0 wz--n- 1020.00m 20.00m
+[root@gvnkansiblesrv ~]# lvs
+  LV    VG    Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root  rhel  -wi-ao----   46.99g
+  swap  rhel  -wi-ao----    2.00g
+  weblv webvg -wi-ao---- 1000.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /webdata
+[root@gvnkansiblesrv webdata]# ls
+abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm       ark-libs-4.10.5-4.el7.x86_64.rpm              bind-pkcs11-libs-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-2.1.11-48.el7.x86_64.rpm                         arptables-0.0.4-8.el7.x86_64.rpm              bind-pkcs11-utils-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-addon-ccpp-2.1.11-48.el7.x86_64.rpm              arpwatch-2.1a15-36.el7.x86_64.rpm             bind-utils-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-addon-kerneloops-2.1.11-48.el7.x86_64.rpm        at-3.1.13-22.el7_4.2.x86_64.rpm               binutils-2.25.1-32.base.el7_4.2.x86_64.rpm
+abrt-addon-pstoreoops-2.1.11-48.el7.x86_64.rpm        atk-2.22.0-3.el7.i686.rpm                     binutils-devel-2.25.1-32.base.el7_4.2.i686.rpm
+abrt-addon-python-2.1.11-48.el7.x86_64.rpm            atk-2.22.0-3.el7.x86_64.rpm                   binutils-devel-2.25.1-32.base.el7_4.2.x86_64.rpm
+abrt-addon-vmcore-2.1.11-48.el7.x86_64.rpm            atk-devel-2.22.0-3.el7.i686.rpm               biosdevname-0.7.2-2.el7.x86_64.rpm
+abrt-addon-xorg-2.1.11-48.el7.x86_64.rpm              atk-devel-2.22.0-3.el7.x86_64.rpm             bison-3.0.4-1.el7.x86_64.rpm
+abrt-cli-2.1.11-48.el7.x86_64.rpm                     atkmm-2.24.2-1.el7.i686.rpm                   bitmap-fixed-fonts-0.3-21.el7.noarch.rpm
+abrt-console-notification-2.1.11-48.el7.x86_64.rpm    atkmm-2.24.2-1.el7.x86_64.rpm                 bitmap-lucida-typewriter-fonts-0.3-21.el7.noarch.rpm
+abrt-dbus-2.1.11-48.el7.x86_64.rpm                    atlas-3.10.1-12.el7.i686.rpm                  blas-3.4.2-8.el7.i686.rpm
+abrt-desktop-2.1.11-48.el7.x86_64.rpm                 atlas-3.10.1-12.el7.x86_64.rpm                blas-3.4.2-8.el7.x86_64.rpm
+abrt-gui-2.1.11-48.el7.x86_64.rpm                     atlas-sse2-3.10.1-12.el7.i686.rpm             blktrace-1.0.5-8.el7.x86_64.rpm
+abrt-gui-libs-2.1.11-48.el7.i686.rpm                  atlas-sse3-3.10.1-12.el7.i686.rpm             bltk-1.1.0-10.el7.i686.rpm
+abrt-gui-libs-2.1.11-48.el7.x86_64.rpm                at-spi2-atk-2.22.0-2.el7.i686.rpm             bltk-1.1.0-10.el7.x86_64.rpm
+abrt-java-connector-1.0.6-12.el7.x86_64.rpm           at-spi2-atk-2.22.0-2.el7.x86_64.rpm           bluedevil-2.1-1.el7.x86_64.rpm
+abrt-libs-2.1.11-48.el7.i686.rpm                      at-spi2-atk-devel-2.22.0-2.el7.i686.rpm       bluez-5.44-4.el7_4.x86_64.rpm
+abrt-libs-2.1.11-48.el7.x86_64.rpm                    at-spi2-atk-devel-2.22.0-2.el7.x86_64.rpm     bluez-libs-5.44-4.el7_4.i686.rpm
+abrt-python-2.1.11-48.el7.x86_64.rpm                  at-spi2-core-2.22.0-1.el7.i686.rpm            bluez-libs-5.44-4.el7_4.x86_64.rpm
+abrt-tui-2.1.11-48.el7.x86_64.rpm                     at-spi2-core-2.22.0-1.el7.x86_64.rpm          boost-1.53.0-27.el7.i686.rpm
+accountsservice-0.6.45-3.el7_4.1.x86_64.rpm           at-spi2-core-devel-2.22.0-1.el7.i686.rpm      boost-1.53.0-27.el7.x86_64.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.i686.rpm        at-spi2-core-devel-2.22.0-1.el7.x86_64.rpm    boost-atomic-1.53.0-27.el7.i686.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.x86_64.rpm      attica-0.4.2-1.el7.i686.rpm                   boost-atomic-1.53.0-27.el7.x86_64.rpm
+acl-2.2.51-12.el7.x86_64.rpm                          attica-0.4.2-1.el7.x86_64.rpm                 boost-chrono-1.53.0-27.el7.i686.rpm
+acpid-2.0.19-8.el7.x86_64.rpm                         attica-devel-0.4.2-1.el7.i686.rpm             boost-chrono-1.53.0-27.el7.x86_64.rpm
+adcli-0.8.1-3.el7.x86_64.rpm                          attica-devel-0.4.2-1.el7.x86_64.rpm           boost-context-1.53.0-27.el7.i686.rpm
+adwaita-cursor-theme-3.22.0-1.el7.noarch.rpm          attr-2.4.46-12.el7.x86_64.rpm                 boost-context-1.53.0-27.el7.x86_64.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.i686.rpm              audispd-plugins-2.7.6-3.el7.x86_64.rpm        boost-date-time-1.53.0-27.el7.i686.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.x86_64.rpm            audit-2.7.6-3.el7.x86_64.rpm                  boost-date-time-1.53.0-27.el7.x86_64.rpm
+adwaita-icon-theme-3.22.0-1.el7.noarch.rpm            audit-libs-2.7.6-3.el7.i686.rpm               boost-devel-1.53.0-27.el7.i686.rpm
+adwaita-qt-0.4-1.el7.x86_64.rpm                       audit-libs-2.7.6-3.el7.x86_64.rpm             boost-devel-1.53.0-27.el7.x86_64.rpm
+adwaita-qt4-0.4-1.el7.i686.rpm                        audit-libs-devel-2.7.6-3.el7.i686.rpm         boost-filesystem-1.53.0-27.el7.i686.rpm
+adwaita-qt4-0.4-1.el7.x86_64.rpm                      audit-libs-devel-2.7.6-3.el7.x86_64.rpm       boost-filesystem-1.53.0-27.el7.x86_64.rpm
+adwaita-qt-common-0.4-1.el7.noarch.rpm                audit-libs-python-2.7.6-3.el7.x86_64.rpm      boost-graph-1.53.0-27.el7.i686.rpm
+agg-2.5-18.el7.i686.rpm                               augeas-1.4.0-2.el7_4.2.x86_64.rpm             boost-graph-1.53.0-27.el7.x86_64.rpm
+agg-2.5-18.el7.x86_64.rpm                             augeas-libs-1.4.0-2.el7_4.2.i686.rpm          boost-iostreams-1.53.0-27.el7.i686.rpm
+aic94xx-firmware-30-6.el7.noarch.rpm                  augeas-libs-1.4.0-2.el7_4.2.x86_64.rpm        boost-iostreams-1.53.0-27.el7.x86_64.rpm
+aide-0.15.1-13.el7.x86_64.rpm                         authconfig-6.2.8-30.el7.x86_64.rpm            boost-locale-1.53.0-27.el7.i686.rpm
+akonadi-1.9.2-4.el7.i686.rpm                          authconfig-gtk-6.2.8-30.el7.x86_64.rpm        boost-locale-1.53.0-27.el7.x86_64.rpm
+akonadi-1.9.2-4.el7.x86_64.rpm                        authd-1.4.3-42.el7.x86_64.rpm                 boost-math-1.53.0-27.el7.i686.rpm
+akonadi-mysql-1.9.2-4.el7.x86_64.rpm                  autoconf-2.69-11.el7.noarch.rpm               boost-math-1.53.0-27.el7.x86_64.rpm
+alacarte-3.11.91-1.el7.noarch.rpm                     autoconf-archive-2017.03.21-1.el7.noarch.rpm  boost-program-options-1.53.0-27.el7.i686.rpm
+alsa-firmware-1.0.28-2.el7.noarch.rpm                 autofs-5.0.7-70.el7_4.x86_64.rpm              boost-program-options-1.53.0-27.el7.x86_64.rpm
+alsa-lib-1.1.3-3.el7.i686.rpm                         autogen-libopts-5.18-5.el7.i686.rpm           boost-python-1.53.0-27.el7.i686.rpm
+alsa-lib-1.1.3-3.el7.x86_64.rpm                       autogen-libopts-5.18-5.el7.x86_64.rpm         boost-python-1.53.0-27.el7.x86_64.rpm
+alsa-lib-devel-1.1.3-3.el7.i686.rpm                   automake-1.13.4-3.el7.noarch.rpm              boost-random-1.53.0-27.el7.i686.rpm
+alsa-lib-devel-1.1.3-3.el7.x86_64.rpm                 automoc-1.0-0.20.rc3.el7.x86_64.rpm           boost-random-1.53.0-27.el7.x86_64.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.i686.rpm          avahi-0.6.31-17.el7.i686.rpm                  boost-regex-1.53.0-27.el7.i686.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.x86_64.rpm        avahi-0.6.31-17.el7.x86_64.rpm                boost-regex-1.53.0-27.el7.x86_64.rpm
+alsa-tools-firmware-1.1.0-1.el7.x86_64.rpm            avahi-autoipd-0.6.31-17.el7.x86_64.rpm        boost-serialization-1.53.0-27.el7.i686.rpm
+alsa-utils-1.1.3-2.el7.x86_64.rpm                     avahi-glib-0.6.31-17.el7.i686.rpm             boost-serialization-1.53.0-27.el7.x86_64.rpm
+amanda-3.3.3-18.el7.x86_64.rpm                        avahi-glib-0.6.31-17.el7.x86_64.rpm           boost-signals-1.53.0-27.el7.i686.rpm
+amanda-client-3.3.3-18.el7.x86_64.rpm                 avahi-gobject-0.6.31-17.el7.i686.rpm          boost-signals-1.53.0-27.el7.x86_64.rpm
+amanda-libs-3.3.3-18.el7.x86_64.rpm                   avahi-gobject-0.6.31-17.el7.x86_64.rpm        boost-system-1.53.0-27.el7.i686.rpm
+amanda-server-3.3.3-18.el7.x86_64.rpm                 avahi-libs-0.6.31-17.el7.i686.rpm             boost-system-1.53.0-27.el7.x86_64.rpm
+anaconda-21.48.22.121-1.el7.x86_64.rpm                avahi-libs-0.6.31-17.el7.x86_64.rpm           boost-test-1.53.0-27.el7.i686.rpm
+anaconda-core-21.48.22.121-1.el7.x86_64.rpm           avahi-ui-gtk3-0.6.31-17.el7.i686.rpm          boost-test-1.53.0-27.el7.x86_64.rpm
+anaconda-gui-21.48.22.121-1.el7.x86_64.rpm            avahi-ui-gtk3-0.6.31-17.el7.x86_64.rpm        boost-thread-1.53.0-27.el7.i686.rpm
+anaconda-tui-21.48.22.121-1.el7.x86_64.rpm            avalon-framework-4.3-10.el7.noarch.rpm        boost-thread-1.53.0-27.el7.x86_64.rpm
+anaconda-user-help-7.3.2-1.el7.noarch.rpm             avalon-logkit-2.1-14.el7.noarch.rpm           boost-timer-1.53.0-27.el7.i686.rpm
+anaconda-widgets-21.48.22.121-1.el7.x86_64.rpm        babel-0.9.6-8.el7.noarch.rpm                  boost-timer-1.53.0-27.el7.x86_64.rpm
+ant-1.9.2-9.el7.noarch.rpm                            babl-0.1.10-9.el7.i686.rpm                    boost-wave-1.53.0-27.el7.i686.rpm
+antlr-tool-2.7.7-30.el7.noarch.rpm                    babl-0.1.10-9.el7.x86_64.rpm                  boost-wave-1.53.0-27.el7.x86_64.rpm
+apache-commons-cli-1.2-13.el7.noarch.rpm              bacula-client-5.2.13-23.1.el7.x86_64.rpm      bpg-chveulebrivi-fonts-3.002-3.el7.noarch.rpm
+apache-commons-codec-1.8-7.el7.noarch.rpm             bacula-common-5.2.13-23.1.el7.x86_64.rpm      bpg-courier-fonts-4.002-3.el7.noarch.rpm
+apache-commons-collections-3.2.1-22.el7_2.noarch.rpm  bacula-libs-5.2.13-23.1.el7.x86_64.rpm        bpg-fonts-common-20120413-3.el7.noarch.rpm
+apache-commons-daemon-1.0.13-6.el7.x86_64.rpm         baobab-3.22.1-1.el7.x86_64.rpm                bpg-glaho-fonts-9.000-3.el7.noarch.rpm
+apache-commons-dbcp-1.4-17.el7.noarch.rpm             basesystem-10.0-7.el7.noarch.rpm              brasero-3.12.1-2.el7.x86_64.rpm
+apache-commons-io-2.4-12.el7.noarch.rpm               bash-4.2.46-29.el7_4.x86_64.rpm               brasero-libs-3.12.1-2.el7.i686.rpm
+apache-commons-lang-2.6-15.el7.noarch.rpm             bash-completion-2.1-6.el7.noarch.rpm          brasero-libs-3.12.1-2.el7.x86_64.rpm
+apache-commons-logging-1.1.2-7.el7.noarch.rpm         bc-1.06.95-13.el7.x86_64.rpm                  brasero-nautilus-3.12.1-2.el7.x86_64.rpm
+apache-commons-pool-1.6-9.el7.noarch.rpm              bcel-5.2-18.el7.noarch.rpm                    bridge-utils-1.5-9.el7.x86_64.rpm
+appstream-data-7-20170301.el7.noarch.rpm              bea-stax-1.2.0-9.el7.noarch.rpm               brlapi-0.6.0-15.el7.i686.rpm
+apr-1.4.8-3.el7_4.1.i686.rpm                          bea-stax-api-1.2.0-9.el7.noarch.rpm           brlapi-0.6.0-15.el7.x86_64.rpm
+apr-1.4.8-3.el7_4.1.x86_64.rpm                        bind-9.9.4-51.el7_4.1.x86_64.rpm              brltty-4.5-15.el7.x86_64.rpm
+apr-devel-1.4.8-3.el7_4.1.i686.rpm                    bind-chroot-9.9.4-51.el7_4.1.x86_64.rpm       btrfs-progs-4.9.1-1.el7.i686.rpm
+apr-devel-1.4.8-3.el7_4.1.x86_64.rpm                  bind-dyndb-ldap-11.1-4.el7.x86_64.rpm         btrfs-progs-4.9.1-1.el7.x86_64.rpm
+apr-util-1.5.2-6.el7.i686.rpm                         bind-libs-9.9.4-51.el7_4.1.i686.rpm           byacc-1.9.20130304-3.el7.x86_64.rpm
+apr-util-1.5.2-6.el7.x86_64.rpm                       bind-libs-9.9.4-51.el7_4.1.x86_64.rpm         bzip2-1.0.6-13.el7.x86_64.rpm
+apr-util-devel-1.5.2-6.el7.i686.rpm                   bind-libs-lite-9.9.4-51.el7_4.1.i686.rpm      bzip2-devel-1.0.6-13.el7.i686.rpm
+apr-util-devel-1.5.2-6.el7.x86_64.rpm                 bind-libs-lite-9.9.4-51.el7_4.1.x86_64.rpm    bzip2-devel-1.0.6-13.el7.x86_64.rpm
+args4j-2.0.16-13.el7.noarch.rpm                       bind-license-9.9.4-51.el7_4.1.noarch.rpm      bzip2-libs-1.0.6-13.el7.i686.rpm
+ark-4.10.5-4.el7.x86_64.rpm                           bind-pkcs11-9.9.4-51.el7_4.1.x86_64.rpm       bzip2-libs-1.0.6-13.el7.x86_64.rpm
+ark-libs-4.10.5-4.el7.i686.rpm                        bind-pkcs11-libs-9.9.4-51.el7_4.1.i686.rpm    bzr-2.5.1-14.el7.x86_64.rpm
+[root@gvnkansiblesrv webdata]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g  4.00m
+  /dev/sdc1  webvg lvm2 a--  1020.00m 20.00m
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# poweroff
+
+Remote side unexpectedly closed network connection
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Sat Jun 14 19:36:15 2025 from 192.168.29.79
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG    Fmt  Attr PSize    PFree
+  /dev/sda2  rhel  lvm2 a--   <49.00g  4.00m
+  /dev/sdb1  webvg lvm2 a--  1020.00m 20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/webvg/weblv /webdata
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /webdata
+[root@gvnkansiblesrv webdata]# ls
+abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm       ark-libs-4.10.5-4.el7.x86_64.rpm              bind-pkcs11-libs-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-2.1.11-48.el7.x86_64.rpm                         arptables-0.0.4-8.el7.x86_64.rpm              bind-pkcs11-utils-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-addon-ccpp-2.1.11-48.el7.x86_64.rpm              arpwatch-2.1a15-36.el7.x86_64.rpm             bind-utils-9.9.4-51.el7_4.1.x86_64.rpm
+abrt-addon-kerneloops-2.1.11-48.el7.x86_64.rpm        at-3.1.13-22.el7_4.2.x86_64.rpm               binutils-2.25.1-32.base.el7_4.2.x86_64.rpm
+abrt-addon-pstoreoops-2.1.11-48.el7.x86_64.rpm        atk-2.22.0-3.el7.i686.rpm                     binutils-devel-2.25.1-32.base.el7_4.2.i686.rpm
+abrt-addon-python-2.1.11-48.el7.x86_64.rpm            atk-2.22.0-3.el7.x86_64.rpm                   binutils-devel-2.25.1-32.base.el7_4.2.x86_64.rpm
+abrt-addon-vmcore-2.1.11-48.el7.x86_64.rpm            atk-devel-2.22.0-3.el7.i686.rpm               biosdevname-0.7.2-2.el7.x86_64.rpm
+abrt-addon-xorg-2.1.11-48.el7.x86_64.rpm              atk-devel-2.22.0-3.el7.x86_64.rpm             bison-3.0.4-1.el7.x86_64.rpm
+abrt-cli-2.1.11-48.el7.x86_64.rpm                     atkmm-2.24.2-1.el7.i686.rpm                   bitmap-fixed-fonts-0.3-21.el7.noarch.rpm
+abrt-console-notification-2.1.11-48.el7.x86_64.rpm    atkmm-2.24.2-1.el7.x86_64.rpm                 bitmap-lucida-typewriter-fonts-0.3-21.el7.noarch.rpm
+abrt-dbus-2.1.11-48.el7.x86_64.rpm                    atlas-3.10.1-12.el7.i686.rpm                  blas-3.4.2-8.el7.i686.rpm
+abrt-desktop-2.1.11-48.el7.x86_64.rpm                 atlas-3.10.1-12.el7.x86_64.rpm                blas-3.4.2-8.el7.x86_64.rpm
+abrt-gui-2.1.11-48.el7.x86_64.rpm                     atlas-sse2-3.10.1-12.el7.i686.rpm             blktrace-1.0.5-8.el7.x86_64.rpm
+abrt-gui-libs-2.1.11-48.el7.i686.rpm                  atlas-sse3-3.10.1-12.el7.i686.rpm             bltk-1.1.0-10.el7.i686.rpm
+abrt-gui-libs-2.1.11-48.el7.x86_64.rpm                at-spi2-atk-2.22.0-2.el7.i686.rpm             bltk-1.1.0-10.el7.x86_64.rpm
+abrt-java-connector-1.0.6-12.el7.x86_64.rpm           at-spi2-atk-2.22.0-2.el7.x86_64.rpm           bluedevil-2.1-1.el7.x86_64.rpm
+abrt-libs-2.1.11-48.el7.i686.rpm                      at-spi2-atk-devel-2.22.0-2.el7.i686.rpm       bluez-5.44-4.el7_4.x86_64.rpm
+abrt-libs-2.1.11-48.el7.x86_64.rpm                    at-spi2-atk-devel-2.22.0-2.el7.x86_64.rpm     bluez-libs-5.44-4.el7_4.i686.rpm
+abrt-python-2.1.11-48.el7.x86_64.rpm                  at-spi2-core-2.22.0-1.el7.i686.rpm            bluez-libs-5.44-4.el7_4.x86_64.rpm
+abrt-tui-2.1.11-48.el7.x86_64.rpm                     at-spi2-core-2.22.0-1.el7.x86_64.rpm          boost-1.53.0-27.el7.i686.rpm
+accountsservice-0.6.45-3.el7_4.1.x86_64.rpm           at-spi2-core-devel-2.22.0-1.el7.i686.rpm      boost-1.53.0-27.el7.x86_64.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.i686.rpm        at-spi2-core-devel-2.22.0-1.el7.x86_64.rpm    boost-atomic-1.53.0-27.el7.i686.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.x86_64.rpm      attica-0.4.2-1.el7.i686.rpm                   boost-atomic-1.53.0-27.el7.x86_64.rpm
+acl-2.2.51-12.el7.x86_64.rpm                          attica-0.4.2-1.el7.x86_64.rpm                 boost-chrono-1.53.0-27.el7.i686.rpm
+acpid-2.0.19-8.el7.x86_64.rpm                         attica-devel-0.4.2-1.el7.i686.rpm             boost-chrono-1.53.0-27.el7.x86_64.rpm
+adcli-0.8.1-3.el7.x86_64.rpm                          attica-devel-0.4.2-1.el7.x86_64.rpm           boost-context-1.53.0-27.el7.i686.rpm
+adwaita-cursor-theme-3.22.0-1.el7.noarch.rpm          attr-2.4.46-12.el7.x86_64.rpm                 boost-context-1.53.0-27.el7.x86_64.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.i686.rpm              audispd-plugins-2.7.6-3.el7.x86_64.rpm        boost-date-time-1.53.0-27.el7.i686.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.x86_64.rpm            audit-2.7.6-3.el7.x86_64.rpm                  boost-date-time-1.53.0-27.el7.x86_64.rpm
+adwaita-icon-theme-3.22.0-1.el7.noarch.rpm            audit-libs-2.7.6-3.el7.i686.rpm               boost-devel-1.53.0-27.el7.i686.rpm
+adwaita-qt-0.4-1.el7.x86_64.rpm                       audit-libs-2.7.6-3.el7.x86_64.rpm             boost-devel-1.53.0-27.el7.x86_64.rpm
+adwaita-qt4-0.4-1.el7.i686.rpm                        audit-libs-devel-2.7.6-3.el7.i686.rpm         boost-filesystem-1.53.0-27.el7.i686.rpm
+adwaita-qt4-0.4-1.el7.x86_64.rpm                      audit-libs-devel-2.7.6-3.el7.x86_64.rpm       boost-filesystem-1.53.0-27.el7.x86_64.rpm
+adwaita-qt-common-0.4-1.el7.noarch.rpm                audit-libs-python-2.7.6-3.el7.x86_64.rpm      boost-graph-1.53.0-27.el7.i686.rpm
+agg-2.5-18.el7.i686.rpm                               augeas-1.4.0-2.el7_4.2.x86_64.rpm             boost-graph-1.53.0-27.el7.x86_64.rpm
+agg-2.5-18.el7.x86_64.rpm                             augeas-libs-1.4.0-2.el7_4.2.i686.rpm          boost-iostreams-1.53.0-27.el7.i686.rpm
+aic94xx-firmware-30-6.el7.noarch.rpm                  augeas-libs-1.4.0-2.el7_4.2.x86_64.rpm        boost-iostreams-1.53.0-27.el7.x86_64.rpm
+aide-0.15.1-13.el7.x86_64.rpm                         authconfig-6.2.8-30.el7.x86_64.rpm            boost-locale-1.53.0-27.el7.i686.rpm
+akonadi-1.9.2-4.el7.i686.rpm                          authconfig-gtk-6.2.8-30.el7.x86_64.rpm        boost-locale-1.53.0-27.el7.x86_64.rpm
+akonadi-1.9.2-4.el7.x86_64.rpm                        authd-1.4.3-42.el7.x86_64.rpm                 boost-math-1.53.0-27.el7.i686.rpm
+akonadi-mysql-1.9.2-4.el7.x86_64.rpm                  autoconf-2.69-11.el7.noarch.rpm               boost-math-1.53.0-27.el7.x86_64.rpm
+alacarte-3.11.91-1.el7.noarch.rpm                     autoconf-archive-2017.03.21-1.el7.noarch.rpm  boost-program-options-1.53.0-27.el7.i686.rpm
+alsa-firmware-1.0.28-2.el7.noarch.rpm                 autofs-5.0.7-70.el7_4.x86_64.rpm              boost-program-options-1.53.0-27.el7.x86_64.rpm
+alsa-lib-1.1.3-3.el7.i686.rpm                         autogen-libopts-5.18-5.el7.i686.rpm           boost-python-1.53.0-27.el7.i686.rpm
+alsa-lib-1.1.3-3.el7.x86_64.rpm                       autogen-libopts-5.18-5.el7.x86_64.rpm         boost-python-1.53.0-27.el7.x86_64.rpm
+alsa-lib-devel-1.1.3-3.el7.i686.rpm                   automake-1.13.4-3.el7.noarch.rpm              boost-random-1.53.0-27.el7.i686.rpm
+alsa-lib-devel-1.1.3-3.el7.x86_64.rpm                 automoc-1.0-0.20.rc3.el7.x86_64.rpm           boost-random-1.53.0-27.el7.x86_64.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.i686.rpm          avahi-0.6.31-17.el7.i686.rpm                  boost-regex-1.53.0-27.el7.i686.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.x86_64.rpm        avahi-0.6.31-17.el7.x86_64.rpm                boost-regex-1.53.0-27.el7.x86_64.rpm
+alsa-tools-firmware-1.1.0-1.el7.x86_64.rpm            avahi-autoipd-0.6.31-17.el7.x86_64.rpm        boost-serialization-1.53.0-27.el7.i686.rpm
+alsa-utils-1.1.3-2.el7.x86_64.rpm                     avahi-glib-0.6.31-17.el7.i686.rpm             boost-serialization-1.53.0-27.el7.x86_64.rpm
+amanda-3.3.3-18.el7.x86_64.rpm                        avahi-glib-0.6.31-17.el7.x86_64.rpm           boost-signals-1.53.0-27.el7.i686.rpm
+amanda-client-3.3.3-18.el7.x86_64.rpm                 avahi-gobject-0.6.31-17.el7.i686.rpm          boost-signals-1.53.0-27.el7.x86_64.rpm
+amanda-libs-3.3.3-18.el7.x86_64.rpm                   avahi-gobject-0.6.31-17.el7.x86_64.rpm        boost-system-1.53.0-27.el7.i686.rpm
+amanda-server-3.3.3-18.el7.x86_64.rpm                 avahi-libs-0.6.31-17.el7.i686.rpm             boost-system-1.53.0-27.el7.x86_64.rpm
+anaconda-21.48.22.121-1.el7.x86_64.rpm                avahi-libs-0.6.31-17.el7.x86_64.rpm           boost-test-1.53.0-27.el7.i686.rpm
+anaconda-core-21.48.22.121-1.el7.x86_64.rpm           avahi-ui-gtk3-0.6.31-17.el7.i686.rpm          boost-test-1.53.0-27.el7.x86_64.rpm
+anaconda-gui-21.48.22.121-1.el7.x86_64.rpm            avahi-ui-gtk3-0.6.31-17.el7.x86_64.rpm        boost-thread-1.53.0-27.el7.i686.rpm
+anaconda-tui-21.48.22.121-1.el7.x86_64.rpm            avalon-framework-4.3-10.el7.noarch.rpm        boost-thread-1.53.0-27.el7.x86_64.rpm
+anaconda-user-help-7.3.2-1.el7.noarch.rpm             avalon-logkit-2.1-14.el7.noarch.rpm           boost-timer-1.53.0-27.el7.i686.rpm
+anaconda-widgets-21.48.22.121-1.el7.x86_64.rpm        babel-0.9.6-8.el7.noarch.rpm                  boost-timer-1.53.0-27.el7.x86_64.rpm
+ant-1.9.2-9.el7.noarch.rpm                            babl-0.1.10-9.el7.i686.rpm                    boost-wave-1.53.0-27.el7.i686.rpm
+antlr-tool-2.7.7-30.el7.noarch.rpm                    babl-0.1.10-9.el7.x86_64.rpm                  boost-wave-1.53.0-27.el7.x86_64.rpm
+apache-commons-cli-1.2-13.el7.noarch.rpm              bacula-client-5.2.13-23.1.el7.x86_64.rpm      bpg-chveulebrivi-fonts-3.002-3.el7.noarch.rpm
+apache-commons-codec-1.8-7.el7.noarch.rpm             bacula-common-5.2.13-23.1.el7.x86_64.rpm      bpg-courier-fonts-4.002-3.el7.noarch.rpm
+apache-commons-collections-3.2.1-22.el7_2.noarch.rpm  bacula-libs-5.2.13-23.1.el7.x86_64.rpm        bpg-fonts-common-20120413-3.el7.noarch.rpm
+apache-commons-daemon-1.0.13-6.el7.x86_64.rpm         baobab-3.22.1-1.el7.x86_64.rpm                bpg-glaho-fonts-9.000-3.el7.noarch.rpm
+apache-commons-dbcp-1.4-17.el7.noarch.rpm             basesystem-10.0-7.el7.noarch.rpm              brasero-3.12.1-2.el7.x86_64.rpm
+apache-commons-io-2.4-12.el7.noarch.rpm               bash-4.2.46-29.el7_4.x86_64.rpm               brasero-libs-3.12.1-2.el7.i686.rpm
+apache-commons-lang-2.6-15.el7.noarch.rpm             bash-completion-2.1-6.el7.noarch.rpm          brasero-libs-3.12.1-2.el7.x86_64.rpm
+apache-commons-logging-1.1.2-7.el7.noarch.rpm         bc-1.06.95-13.el7.x86_64.rpm                  brasero-nautilus-3.12.1-2.el7.x86_64.rpm
+apache-commons-pool-1.6-9.el7.noarch.rpm              bcel-5.2-18.el7.noarch.rpm                    bridge-utils-1.5-9.el7.x86_64.rpm
+appstream-data-7-20170301.el7.noarch.rpm              bea-stax-1.2.0-9.el7.noarch.rpm               brlapi-0.6.0-15.el7.i686.rpm
+apr-1.4.8-3.el7_4.1.i686.rpm                          bea-stax-api-1.2.0-9.el7.noarch.rpm           brlapi-0.6.0-15.el7.x86_64.rpm
+apr-1.4.8-3.el7_4.1.x86_64.rpm                        bind-9.9.4-51.el7_4.1.x86_64.rpm              brltty-4.5-15.el7.x86_64.rpm
+apr-devel-1.4.8-3.el7_4.1.i686.rpm                    bind-chroot-9.9.4-51.el7_4.1.x86_64.rpm       btrfs-progs-4.9.1-1.el7.i686.rpm
+apr-devel-1.4.8-3.el7_4.1.x86_64.rpm                  bind-dyndb-ldap-11.1-4.el7.x86_64.rpm         btrfs-progs-4.9.1-1.el7.x86_64.rpm
+apr-util-1.5.2-6.el7.i686.rpm                         bind-libs-9.9.4-51.el7_4.1.i686.rpm           byacc-1.9.20130304-3.el7.x86_64.rpm
+apr-util-1.5.2-6.el7.x86_64.rpm                       bind-libs-9.9.4-51.el7_4.1.x86_64.rpm         bzip2-1.0.6-13.el7.x86_64.rpm
+apr-util-devel-1.5.2-6.el7.i686.rpm                   bind-libs-lite-9.9.4-51.el7_4.1.i686.rpm      bzip2-devel-1.0.6-13.el7.i686.rpm
+apr-util-devel-1.5.2-6.el7.x86_64.rpm                 bind-libs-lite-9.9.4-51.el7_4.1.x86_64.rpm    bzip2-devel-1.0.6-13.el7.x86_64.rpm
+args4j-2.0.16-13.el7.noarch.rpm                       bind-license-9.9.4-51.el7_4.1.noarch.rpm      bzip2-libs-1.0.6-13.el7.i686.rpm
+ark-4.10.5-4.el7.x86_64.rpm                           bind-pkcs11-9.9.4-51.el7_4.1.x86_64.rpm       bzip2-libs-1.0.6-13.el7.x86_64.rpm
+ark-libs-4.10.5-4.el7.i686.rpm                        bind-pkcs11-libs-9.9.4-51.el7_4.1.i686.rpm    bzr-2.5.1-14.el7.x86_64.rpm
+[root@gvnkansiblesrv webdata]#
+[root@gvnkansiblesrv webdata]# mkdir ashok
+[root@gvnkansiblesrv webdata]# ls -ld ashok
+drwxr-xr-x 2 root root 6 Jun 14 19:53 ashok
+[root@gvnkansiblesrv webdata]#
+[root@gvnkansiblesrv webdata]# rmdir ashok
+[root@gvnkansiblesrv webdata]#
+[root@gvnkansiblesrv webdata]# ls -ld ashok
+ls: cannot access ashok: No such file or directory
+[root@gvnkansiblesrv webdata]#
+[root@gvnkansiblesrv webdata]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root     47G  6.0G   41G  13% /
+devtmpfs                 225M     0  225M   0% /dev
+tmpfs                    236M     0  236M   0% /dev/shm
+tmpfs                    236M  4.7M  231M   2% /run
+tmpfs                    236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1               1014M  125M  890M  13% /boot
+tmpfs                     48M     0   48M   0% /run/user/0
+/dev/mapper/webvg-weblv  997M  158M  840M  16% /webdata
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
