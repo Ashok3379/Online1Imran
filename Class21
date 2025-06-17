@@ -1,0 +1,571 @@
+class 21 17/06/2025
+
+LVM Volume renaming: Need to unmount the file system before proceeding the activity.
+=====================================================================================
+
+# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/ashokvg-ashoklv  969M  5.1M  898M   1% /ashok
+
+1) rename Mountpoint
+# umount /ashok
+# mv /ashok /sharddata
+
+2) Rename the Logical Volume
+# lvs
+ashoklv ashokvg -wi-a----- 1000.00m
+# lvrename /dev/ashokvg/ashoklv /dev/ashokvg/sharelv
+  Renamed "ashoklv" to "sharelv" in volume group "ashokvg"
+# lvs
+sharelv ashokvg -wi-a----- 1000.00m
+
+3) Rename Volume Group
+# vgrename ashokvg sharevg
+Volume group "ashokvg" successfully renamed to "sharevg"
+# vgs
+VG      #PV #LV #SN Attr   VSize    VFree
+rhel      1   2   0 wz--n-  <19.00g     0
+sharevg   1   1   0 wz--n- 1020.00m 20.00m
+
+4) mount the file system and identify the file system data
+# mount -t ext4 /dev/sharevg/sharelv /shareddata
+# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/sharevg-sharelv  969M  5.1M  898M   1% /shareddata
+# cd /shareddata/
+shareddata# ls
+boot.log           boot.log-20250616  cron-20250616       
+shareddata#
+
+LVM Volume deleting: Need to unmount the file system before proceeding the activity.
+====================================================================================
+
+# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/sharevg-sharelv  969M  5.1M  898M   1% /shareddata
+
+1) unmount the file system
+# umount /sharedata
+# df -h
+# rmdir /shareddata
+
+2) Remove Logical Volume
+# lvremove /dev/sharevg/sharelv
+Do you really want to remove active logical volume sharevg/sharelv? [y/n]: yes
+Logical volume "sharelv" successfully removed
+# lvs
+LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+root rhel -wi-ao---- <17.00g
+swap rhel -wi-ao----   2.00g
+#
+
+3) Remove VolumeGroup
+# vgs
+VG      #PV #LV #SN Attr   VSize    VFree
+rhel      1   2   0 wz--n-  <19.00g       0
+sharevg   1   0   0 wz--n- 1020.00m 1020.00m
+# vgremove sharevg
+Volume group "sharevg" successfully removed
+# vgs
+VG   #PV #LV #SN Attr   VSize   VFree
+rhel   1   2   0 wz--n- <19.00g    0
+#
+
+4) Remove Physical Volume
+# pvs
+PV         VG   Fmt  Attr PSize    PFree
+/dev/sda2  rhel lvm2 a--   <19.00g       0
+/dev/sdb1       lvm2 ---  1022.00m 1022.00m
+#
+# pvremove /dev/sdb1
+Labels on physical volume "/dev/sdb1" successfully wiped.
+# pvs
+PV         VG   Fmt  Attr PSize   PFree
+/dev/sda2  rhel lvm2 a--  <19.00g    0
+#
+
+5) Removing the partion and good to handover the disk to storage team
+# parted /dev/sdb
+GNU Parted 3.1
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+(parted) rm
+Partition number? 1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags
+
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+#
+
+Lab Sessions Output:
+====================
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.120                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last login: Tue Jun 17 19:39:03 2025 from 192.168.29.211
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  954M   17G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# parted -l |more
+Error: /dev/sdb: unrecognised disk label
+Error: /dev/sdc: unrecognised disk label
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 21.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  21.5GB  20.4GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 18.2GB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# parted /dev/sdb
+GNU Parted 3.1
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) mklabel gpt
+(parted) mkpart
+Partition name?  []? logical
+File system type?  [ext2]?
+Start? 1
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+(parted)
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# parted -l |more
+Error: /dev/sdc: unrecognised disk label
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 21.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  21.5GB  20.4GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-swap: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  2147MB  2147MB  linux-swap(v1)
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/rhel-root: 18.2GB
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created.
+[root@c111xyz ~]# vgcreate ashokvg /dev/sdb1
+  Volume group "ashokvg" successfully created
+[root@c111xyz ~]# lvcreate -L 1000M -n ashoklv ashokvg
+  Logical volume "ashoklv" created.
+[root@c111xyz ~]# mkfs -t ext4 /dev/ashokvg/ashoklv
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+64000 inodes, 256000 blocks
+12800 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=262144000
+8 block groups
+32768 blocks per group, 32768 fragments per group
+8000 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@c111xyz ~]#
+[root@c111xyz ~]# mkdir /ashok
+[root@c111xyz ~]# mount -t ext4 /dev/ashokvg/ashoklv /ashok
+[root@c111xyz ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         17G  954M   17G   6% /
+devtmpfs                     901M     0  901M   0% /dev
+tmpfs                        912M     0  912M   0% /dev/shm
+tmpfs                        912M  8.7M  903M   1% /run
+tmpfs                        912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  143M  872M  15% /boot
+tmpfs                        183M     0  183M   0% /run/user/0
+/dev/mapper/ashokvg-ashoklv  969M  2.5M  900M   1% /ashok
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# cp /var/log/messages /ashok/
+[root@c111xyz ~]# cp /var/log/* /ashok/
+cp: omitting directory ‘/var/log/anaconda’
+cp: omitting directory ‘/var/log/audit’
+cp: overwrite ‘/ashok/messages’? yes
+cp: omitting directory ‘/var/log/rhsm’
+cp: omitting directory ‘/var/log/tuned’
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# ls -lrt /ashok/
+total 2660
+drwx------. 2 root root   16384 Jun 17 20:05 lost+found
+-rw-------. 1 root root   26510 Jun 17 20:06 boot.log
+-rw-------. 1 root root    8798 Jun 17 20:06 boot.log-20250528
+-rw-------. 1 root root    8938 Jun 17 20:06 boot.log-20250530
+-rw-------. 1 root root    8708 Jun 17 20:06 boot.log-20250602
+-rw-------. 1 root root    8944 Jun 17 20:06 boot.log-20250604
+-rw-------. 1 root root   17694 Jun 17 20:06 boot.log-20250611
+-rw-------. 1 root root       0 Jun 17 20:06 boot.log-20250616
+-rw-------. 1 root root    8893 Jun 17 20:06 boot.log-20250613
+-rw-------. 1 root root    9600 Jun 17 20:06 btmp
+-rw-------. 1 root root    1565 Jun 17 20:06 cron
+-rw-------. 1 root root    4608 Jun 17 20:06 btmp-20250602
+-rw-------. 1 root root    2867 Jun 17 20:06 cron-20250526
+-rw-------. 1 root root    5997 Jun 17 20:06 cron-20250602
+-rw-------. 1 root root    4029 Jun 17 20:06 cron-20250611
+-rw-------. 1 root root    3514 Jun 17 20:06 cron-20250616
+-rw-r--r--. 1 root root  130841 Jun 17 20:06 dmesg
+-rw-r--r--. 1 root root  128649 Jun 17 20:06 dmesg.old
+-rw-r--r--. 1 root root    7982 Jun 17 20:06 firewalld
+-rw-r--r--. 1 root root     193 Jun 17 20:06 grubby_prune_debug
+-rw-------. 1 root root     582 Jun 17 20:06 maillog
+-rw-r--r--. 1 root root 1314876 Jun 17 20:06 lastlog
+-rw-------. 1 root root     582 Jun 17 20:06 maillog-20250526
+-rw-------. 1 root root     582 Jun 17 20:06 maillog-20250602
+-rw-------. 1 root root     582 Jun 17 20:06 maillog-20250611
+-rw-------. 1 root root     194 Jun 17 20:06 maillog-20250616
+-rw-------. 1 root root  441128 Jun 17 20:06 messages
+-rw-------. 1 root root  439522 Jun 17 20:06 messages-20250526
+-rw-------. 1 root root  442048 Jun 17 20:06 messages-20250602
+-rw-------. 1 root root  433689 Jun 17 20:06 messages-20250611
+-rw-------. 1 root root  161905 Jun 17 20:06 messages-20250616
+-rw-------. 1 root root    3213 Jun 17 20:06 secure-20250526
+-rw-------. 1 root root   17240 Jun 17 20:06 secure
+-rw-------. 1 root root   11897 Jun 17 20:06 secure-20250602
+-rw-------. 1 root root   13952 Jun 17 20:06 secure-20250611
+-rw-------. 1 root root       0 Jun 17 20:06 spooler-20250616
+-rw-------. 1 root root       0 Jun 17 20:06 spooler-20250611
+-rw-------. 1 root root       0 Jun 17 20:06 spooler-20250602
+-rw-------. 1 root root       0 Jun 17 20:06 spooler-20250526
+-rw-------. 1 root root       0 Jun 17 20:06 spooler
+-rw-------. 1 root root   13260 Jun 17 20:06 secure-20250616
+-rw-------. 1 root root       0 Jun 17 20:06 tallylog
+-rw-r--r--. 1 root root   20067 Jun 17 20:06 vmware-vgauthsvc.log.0
+-rw-r--r--. 1 root root  145324 Jun 17 20:06 vmware-vmsvc.log
+-rw-r--r--. 1 root root       0 Jun 17 20:06 yum.log
+-rw-r--r--. 1 root root   50304 Jun 17 20:06 wtmp
+[root@c111xyz ~]#
+[root@c111xyz ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         17G  951M   17G   6% /
+devtmpfs                     901M     0  901M   0% /dev
+tmpfs                        912M     0  912M   0% /dev/shm
+tmpfs                        912M  8.7M  903M   1% /run
+tmpfs                        912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  143M  872M  15% /boot
+tmpfs                        183M     0  183M   0% /run/user/0
+/dev/mapper/ashokvg-ashoklv  969M  5.1M  898M   1% /ashok
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         17G  951M   17G   6% /
+devtmpfs                     901M     0  901M   0% /dev
+tmpfs                        912M     0  912M   0% /dev/shm
+tmpfs                        912M  8.7M  903M   1% /run
+tmpfs                        912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  143M  872M  15% /boot
+tmpfs                        183M     0  183M   0% /run/user/0
+/dev/mapper/ashokvg-ashoklv  969M  5.1M  898M   1% /ashok
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# umount /ashok
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# mv /ashok /shareddata
+[root@c111xyz ~]# lvs
+  LV      VG      Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  ashoklv ashokvg -wi-a----- 1000.00m
+  root    rhel    -wi-ao----  <17.00g
+  swap    rhel    -wi-ao----    2.00g
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# lvrename /dev/ashokvg/ashoklv /dev/ashokvg/sharelv
+  Renamed "ashoklv" to "sharelv" in volume group "ashokvg"
+[root@c111xyz ~]#
+[root@c111xyz ~]# lvs
+  LV      VG      Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  sharelv ashokvg -wi-a----- 1000.00m
+  root    rhel    -wi-ao----  <17.00g
+  swap    rhel    -wi-ao----    2.00g
+[root@c111xyz ~]#
+[root@c111xyz ~]# vgrename ashokvg sharevg
+  Volume group "ashokvg" successfully renamed to "sharevg"
+[root@c111xyz ~]#
+[root@c111xyz ~]# vgs
+  VG      #PV #LV #SN Attr   VSize    VFree
+  rhel      1   2   0 wz--n-  <19.00g     0
+  sharevg   1   1   0 wz--n- 1020.00m 20.00m
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# lvs
+  LV      VG      Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root    rhel    -wi-ao----  <17.00g
+  swap    rhel    -wi-ao----    2.00g
+  sharelv sharevg -wi-a----- 1000.00m
+[root@c111xyz ~]#
+[root@c111xyz ~]# mount -t etx4 /dev/sharevg/sharelv /shareddata
+mount: unknown filesystem type 'etx4'
+[root@c111xyz ~]# mount -t ext4 /dev/sharevg/sharelv /shareddata
+[root@c111xyz ~]#
+[root@c111xyz ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         17G  951M   17G   6% /
+devtmpfs                     901M     0  901M   0% /dev
+tmpfs                        912M     0  912M   0% /dev/shm
+tmpfs                        912M  8.7M  903M   1% /run
+tmpfs                        912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  143M  872M  15% /boot
+tmpfs                        183M     0  183M   0% /run/user/0
+/dev/mapper/sharevg-sharelv  969M  5.1M  898M   1% /shareddata
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# cd /shareddata/
+[root@c111xyz shareddata]# ls
+boot.log           boot.log-20250616  cron-20250616       maillog            messages-20250602  secure-20250616   vmware-vgauthsvc.log.0
+boot.log-20250528  btmp               dmesg               maillog-20250526   messages-20250611  spooler           vmware-vmsvc.log
+boot.log-20250530  btmp-20250602      dmesg.old           maillog-20250602   messages-20250616  spooler-20250526  wtmp
+boot.log-20250602  cron               firewalld           maillog-20250611   secure             spooler-20250602  yum.log
+boot.log-20250604  cron-20250526      grubby_prune_debug  maillog-20250616   secure-20250526    spooler-20250611
+boot.log-20250611  cron-20250602      lastlog             messages           secure-20250602    spooler-20250616
+boot.log-20250613  cron-20250611      lost+found          messages-20250526  secure-20250611    tallylog
+[root@c111xyz shareddata]#
+[root@c111xyz shareddata]#
+[root@c111xyz shareddata]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         17G  951M   17G   6% /
+devtmpfs                     901M     0  901M   0% /dev
+tmpfs                        912M     0  912M   0% /dev/shm
+tmpfs                        912M  8.7M  903M   1% /run
+tmpfs                        912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  143M  872M  15% /boot
+tmpfs                        183M     0  183M   0% /run/user/0
+/dev/mapper/sharevg-sharelv  969M  5.1M  898M   1% /shareddata
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# umount /shareddata
+[root@c111xyz /]#
+[root@c111xyz /]# rmdir /shareddata
+[root@c111xyz /]#
+[root@c111xyz /]# lvremove /dev/sharevg/sharelv
+Do you really want to remove active logical volume sharevg/sharelv? [y/n]: yes
+  Logical volume "sharelv" successfully removed
+[root@c111xyz /]#
+[root@c111xyz /]# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root rhel -wi-ao---- <17.00g
+  swap rhel -wi-ao----   2.00g
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# vgs
+  VG      #PV #LV #SN Attr   VSize    VFree
+  rhel      1   2   0 wz--n-  <19.00g       0
+  sharevg   1   0   0 wz--n- 1020.00m 1020.00m
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# vgremove sharevg
+  Volume group "sharevg" successfully removed
+[root@c111xyz /]#
+[root@c111xyz /]# vgs
+  VG   #PV #LV #SN Attr   VSize   VFree
+  rhel   1   2   0 wz--n- <19.00g    0
+[root@c111xyz /]#
+[root@c111xyz /]# pvs
+  PV         VG   Fmt  Attr PSize    PFree
+  /dev/sda2  rhel lvm2 a--   <19.00g       0
+  /dev/sdb1       lvm2 ---  1022.00m 1022.00m
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# pvremove /dev/sdb1
+  Labels on physical volume "/dev/sdb1" successfully wiped.
+[root@c111xyz /]#
+[root@c111xyz /]# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sda2  rhel lvm2 a--  <19.00g    0
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# parted /dev/sdb1
+GNU Parted 3.1
+Using /dev/sdb1
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+(parted) quit
+[root@c111xyz /]#
+[root@c111xyz /]# parted /dev/sdb
+GNU Parted 3.1
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+(parted)
+(parted)
+(parted) rm
+Partition number? 1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags
+
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  951M   17G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
