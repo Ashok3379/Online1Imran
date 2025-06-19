@@ -741,111 +741,6 @@ tmpfs                         48M     0   48M   0% /run/user/0
 [root@gvnkansiblesrv /]#
 [root@gvnkansiblesrv /]# umount /sharedata/
 [root@gvnkansiblesrv /]#
-[root@gvnkansiblesrv /]# vgchange -y n sharevg
-  No command with matching syntax recognised.  Run 'vgchange --help' for more information.
-[root@gvnkansiblesrv /]# vgchange man
-  No command with matching syntax recognised.  Run 'vgchange --help' for more information.
-[root@gvnkansiblesrv /]# vgchange --help
-  vgchange - Change volume group attributes
-
-  Change a general VG attribute.
-  For options listed in parentheses, any one is
-  required, after which the others are optional.
-  vgchange
-        ( -l|--logicalvolume Number,
-          -p|--maxphysicalvolumes Number,
-          -u|--uuid,
-          -c|--clustered y|n,
-          -s|--physicalextentsize Size[m|UNIT],
-          -x|--resizeable y|n,
-             --addtag Tag,
-             --deltag Tag,
-             --alloc contiguous|cling|cling_by_tags|normal|anywhere|inherit,
-             --pvmetadatacopies 0|1|2,
-             --vgmetadatacopies all|unmanaged|Number,
-             --systemid String,
-             --locktype sanlock|dlm|none,
-             --profile String,
-             --detachprofile,
-             --metadataprofile String )
-
-        [    --poll y|n ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Start or stop monitoring LVs from dmeventd.
-  vgchange --monitor y|n
-        [    --sysinit ]
-        [    --ignorelockingfailure ]
-        [    --poll y|n ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Start or stop processing LV conversions.
-  vgchange --poll y|n
-        [    --ignorelockingfailure ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Activate or deactivate LVs.
-  vgchange -a|--activate y|n|ay
-        [ -K|--ignoreactivationskip ]
-        [ -P|--partial ]
-        [    --activationmode partial|degraded|complete ]
-        [    --sysinit ]
-        [    --ignorelockingfailure ]
-        [    --monitor y|n ]
-        [    --poll y|n ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Reactivate LVs using the latest metadata.
-  vgchange --refresh
-        [    --sysinit ]
-        [    --ignorelockingfailure ]
-        [    --poll y|n ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Start the lockspace of a shared VG in lvmlockd.
-  vgchange --lockstart
-        [    --lockopt String ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Stop the lockspace of a shared VG in lvmlockd.
-  vgchange --lockstop
-        [    --lockopt String ]
-        [ COMMON_OPTIONS ]
-        [ VG|Tag|Select ... ]
-
-  Common options for command:
-        [ -A|--autobackup y|n ]
-        [ -f|--force ]
-        [ -S|--select String ]
-        [    --ignoremonitoring ]
-        [    --ignoreskippedcluster ]
-        [    --noudevsync ]
-        [    --reportformat basic|json ]
-
-  Common options for lvm:
-        [ -d|--debug ]
-        [ -h|--help ]
-        [ -q|--quiet ]
-        [ -v|--verbose ]
-        [ -y|--yes ]
-        [ -t|--test ]
-        [    --commandprofile String ]
-        [    --config String ]
-        [    --driverloaded y|n ]
-        [    --longhelp ]
-        [    --profile String ]
-        [    --version ]
-
-  Use --longhelp to show all options and advanced commands.
-[root@gvnkansiblesrv /]#
-[root@gvnkansiblesrv /]#
-[root@gvnkansiblesrv /]#
 [root@gvnkansiblesrv /]#
 [root@gvnkansiblesrv /]# vgchange -a y sharevg
   1 logical volume(s) in volume group "sharevg" now active
@@ -1026,6 +921,59 @@ tmpfs                         48M     0   48M   0% /run/user/0
 [root@gvnkansiblesrv /]#
 [root@gvnkansiblesrv /]#
 [root@gvnkansiblesrv /]#
+512  pvs
+  513  pvcreate /dev/sdb1
+  514  vgcreate sharevg /dev/sdb1
+  515  lvcreate -L 1000M -n sharelv sharevg
+  516  ls
+  517  lvs
+  518  mkfs -t etx4 /dev/sharevg/sharelv
+  519  mkfs -t ext4 /dev/sharevg/sharelv
+  520  mkdir /sharedata
+  521  mount -t etx4 /dev/sharevg/sharelv /sharedata/
+  522  mount -t ext4 /dev/sharevg/sharelv /sharedata/
+  523  df -h
+  524  cp /var/ftp/pub/rhel7/g* /sharedata/
+  525  ls -l /shared
+  526  ls -l /sharedata/
+  527  cd /
+  528  df -h
+  529  pvs
+  530  lvs
+  531  vgs
+  532  umount /sharedata/
+  533  vgchange -y n sharevg
+  534  vgchange man
+  535  vgchange --help
+  536  vgchange -a y sharevg
+  537  vgchange -a n sharevg
+  538  lvscan
+  539  vgs
+  540  vgexport sharevg
+  541  vgs
+  542  vgscan
+  543  vgs
+  544  lvs
+  545  lvscan
+  546  lvs
+  547  vgs
+  548  df -h
+  549  vgs
+  550  lvs
+  551  vgscan
+  552  vgimport sharevg
+  553  vgscan
+  554  lvs
+  555  lvscan
+  556  vgchange -a y sharevg
+  557  lvscan
+  558  mount -t ext4 /dev/sharevg/sharelv /sharedata/
+  559  df -h
+  560  cd /sharedata/
+  561  ls -l
+  562  cd /
+  563  df -h
+  564  history
 
 
 
