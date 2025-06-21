@@ -1315,3 +1315,49 @@ tmpfs                  183M     0  183M   0% /run/user/0
 [root@c111xyz /]#
 [root@c111xyz /]#
 [root@c111xyz /]#
+
+577  rpm -qa |grep -i nfs
+  578  rpm -e nfs-utils
+  579  rpm -qa |grep -i nfs
+  580  yum install nfs-utils
+  581  rpm -qa |grep -i nfs
+  582  systemctl status nfs
+  583  systemctl start nfs
+  584  systemctl enable nfs
+  585  systemctl status nfs
+  586  parted -l |more
+  587  parted /dev/sdd
+  588  pvcreate /dev/sdd1
+  589  vgcreate infravg /dev/sdd1
+  590  lvcreate -L 1500MB -n infralv infravg
+  591  mkfs -t xfs /dev/infravg/infralv
+  592  mkdir /infra
+  593  mount -t xfs /dev/infravg/infralv /infra
+  594  cd /infra/
+  595  df -h .
+  596  cp /var/log/* /infra
+  597  ls -l
+  598  ls
+  599  cd /
+  600  df -h
+  601  vi /etc/fstab
+  602  df -h
+  603  umount /infra
+  604  mount /infra
+  605  df -h
+  606  cat /etc/exports
+  607  vi /etc/exports
+  608  cat /etc/exports
+  609  exportfs -avr
+  610  systemctl restart nfs
+  611  systemctl status nfs
+  612  cd /etc/yum.repos.d/
+  613  ls -lrt
+  614  cat rhel7.repo
+  615  systemctl status vsftpd
+  616  systemctl enable vsftpd
+  617  systemctl start vsftpd
+  618  cd /infra
+  619  ls -l
+  620  mkdir dir1 dir2 dir3 dir4 dir5
+  621  ls -l
