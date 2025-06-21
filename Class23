@@ -1,0 +1,1317 @@
+Class23 21/06/2025
+
+Linux Filesystem types:
+=======================
+1) disk based file systems: ext4, xfs, fat, ntfs
+2) distributed file systems: samba, nfs, ftp
+3) pseudo file systems: tmpfs, procfs, swapfs
+
+NFS (Network file system): The Linux Operating Environment supports the sharing of remote file system resources and presents them to users as if they were local files and directories. The sharing of remote file system resources is administered through 
+distributed file systems (DPS) file system types. This file system type provides the architectural support required for mounting resources over the network.    
+
+The NFS environment contains the following components: 
+======================================================
+NFS server - A system that contains the file resources to be shared with other systems on the network. 
+
+NFS client - A system that mounts the file resources shared over the network and presents the file resources as if they were local
+
+The benefits of an NFS include: 
+===============================
+1) Centralized file access : Files are located in centralized locations. You can make a copy of a file accessible to many users or systems simultaneously. This is an especially useful feature with home directories or common data files. 
+2) Common software access : Systems can share one or more software packages that are located in a central location. This reduces the disk space requirements for individual systems. 
+3) Easy to use :Remote file sharing is transparent to the user and to any applications, because these resources appear as if they were resident on the local system. 
+
+Package   : nfs-utils 
+Daemons   : rpc.nfsd, rpc.mountd, rpc.statd, rpc.lockd 
+Script   : /etc/init.d/nfs-server 
+Port number  : 2049 
+Configuration File  : /etc/exports 
+
+Steps to configure NFS server:
+============================== 
+Step1: Install the NFS package using yum or rpm and enable the service
+	# rpm -qa |grep -i nfs
+	# yum install nfs-utils
+	# rpm -qa |grep -i nfs
+	# systemctl start nfs
+	# systemctl enable nfs
+Step2: Create new file system /infra 10Gb add some data
+	# df -h
+	Filesystem                   Size  Used Avail Use% Mounted on
+	/dev/mapper/infravg-infralv  1.5G   38M  1.5G   3% /infra
+Step3: Export the directory by editing /etc/exports file and using exportfs command
+	# vi /etc/exports
+	# cat /etc/exports
+	/infra   *(sync,rw,no_root_squash)
+	# exportfs -avr
+	exporting *:/infra
+Step4: Restart the services and make it permanent
+	# systemctl restart nfs
+	# systemctl status nfs
+ 
+Steps to configure NFS client:
+==============================
+Step1: check the NFS server access and shared file system information
+	# ping nfsserver
+	# ssh nfsserver
+	# showmount -e nfsserver
+Step2: mount the file system on clinet server
+	# mount -t nfs 192.168.29.176:/infra /mnt
+	# df -h /mnt
+	# cd /mnt; ls -l
+	# cd /
+	# umount /mnt
+	# mkdir /shareinfra
+	# mount -t nfs 192.168.29.176:/infra /shareinfra
+Step3: utilize the data
+	# cd /shareinfra
+	# ls -l 
+
+Session Logs:
+=============
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.176                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last failed login: Sat Jun 21 19:20:02 IST 2025 from 2405:201:c037:d269:c268:ccff:fe6b:db71 on ssh:notty
+There were 7 failed login attempts since the last successful login.
+Last login: Sat Jun 21 19:13:32 2025 from 192.168.29.120
+[root@gvnkansiblesrv ~]#
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   47G  6.0G   41G  13% /
+devtmpfs               225M     0  225M   0% /dev
+tmpfs                  236M     0  236M   0% /dev/shm
+tmpfs                  236M  8.7M  227M   4% /run
+tmpfs                  236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1             1014M  125M  890M  13% /boot
+tmpfs                   48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cat /proc/mounts
+rootfs / rootfs rw 0 0
+sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
+proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
+devtmpfs /dev devtmpfs rw,nosuid,size=230188k,nr_inodes=57547,mode=755 0 0
+securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0
+tmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,mode=755 0 0
+tmpfs /sys/fs/cgroup tmpfs ro,nosuid,nodev,noexec,mode=755 0 0
+cgroup /sys/fs/cgroup/systemd cgroup rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd 0 0
+pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
+cgroup /sys/fs/cgroup/net_cls,net_prio cgroup rw,nosuid,nodev,noexec,relatime,net_prio,net_cls 0 0
+cgroup /sys/fs/cgroup/pids cgroup rw,nosuid,nodev,noexec,relatime,pids 0 0
+cgroup /sys/fs/cgroup/hugetlb cgroup rw,nosuid,nodev,noexec,relatime,hugetlb 0 0
+cgroup /sys/fs/cgroup/freezer cgroup rw,nosuid,nodev,noexec,relatime,freezer 0 0
+cgroup /sys/fs/cgroup/cpuset cgroup rw,nosuid,nodev,noexec,relatime,cpuset 0 0
+cgroup /sys/fs/cgroup/cpu,cpuacct cgroup rw,nosuid,nodev,noexec,relatime,cpuacct,cpu 0 0
+cgroup /sys/fs/cgroup/memory cgroup rw,nosuid,nodev,noexec,relatime,memory 0 0
+cgroup /sys/fs/cgroup/perf_event cgroup rw,nosuid,nodev,noexec,relatime,perf_event 0 0
+cgroup /sys/fs/cgroup/blkio cgroup rw,nosuid,nodev,noexec,relatime,blkio 0 0
+cgroup /sys/fs/cgroup/devices cgroup rw,nosuid,nodev,noexec,relatime,devices 0 0
+configfs /sys/kernel/config configfs rw,relatime 0 0
+/dev/mapper/rhel-root / xfs rw,relatime,attr2,inode64,noquota 0 0
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=32,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=13458 0 0
+debugfs /sys/kernel/debug debugfs rw,relatime 0 0
+mqueue /dev/mqueue mqueue rw,relatime 0 0
+hugetlbfs /dev/hugepages hugetlbfs rw,relatime 0 0
+nfsd /proc/fs/nfsd nfsd rw,relatime 0 0
+/dev/sda1 /boot xfs rw,relatime,attr2,inode64,noquota 0 0
+sunrpc /var/lib/nfs/rpc_pipefs rpc_pipefs rw,relatime 0 0
+tmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=48256k,mode=700 0 0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /proc/
+[root@gvnkansiblesrv proc]# ls
+1     1228  1463  272  367  378  389  400  412  424  528  634  715  828  acpi       driver       key-users   mtrr          sys
+10    1229  15    273  368  379  390  401  413  425  529  642  718  831  asound     execdomains  kmsg        net           sysrq-trigger
+1088  1230  1517  274  369  38   391  402  414  426  530  643  719  832  buddyinfo  fb           kpagecount  pagetypeinfo  sysvipc
+1093  1231  1518  277  37   380  392  403  415  450  531  646  720  836  bus        filesystems  kpageflags  partitions    timer_list
+1100  1232  16    279  370  381  393  404  416  451  532  665  725  840  cgroups    fs           loadavg     sched_debug   timer_stats
+1101  13    17    284  371  382  394  405  417  5    533  686  726  841  cmdline    interrupts   locks       schedstat     tty
+1104  14    18    289  372  383  395  406  418  500  534  687  793  848  consoles   iomem        mdstat      scsi          uptime
+1107  1402  19    290  373  384  396  407  419  501  535  688  795  850  cpuinfo    ioports      meminfo     self          version
+12    1407  2     293  374  385  397  408  420  512  536  690  8    868  crypto     irq          misc        slabinfo      vmallocinfo
+1205  1409  25    299  375  386  398  409  421  513  59   7    800  872  devices    kallsyms     modules     softirqs      vmstat
+1215  1431  26    3    376  387  399  410  422  526  611  713  825  9    diskstats  kcore        mounts      stat          zoneinfo
+1216  1438  27    35   377  388  40   411  423  527  613  714  826  91   dma        keys         mpt         swaps
+[root@gvnkansiblesrv proc]#
+[root@gvnkansiblesrv proc]#
+[root@gvnkansiblesrv proc]# cat cpuinfo
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 126
+model name      : Intel(R) Core(TM) i3-1005G1 CPU @ 1.20GHz
+stepping        : 5
+microcode       : 0xc2
+cpu MHz         : 1190.398
+cache size      : 4096 KB
+physical id     : 0
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 27
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts nopl xtopology tsc_reliable nonstop_tsc aperfmperf eagerfpu pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch epb invpcid_single fsgsbase tsc_adjust bmi1 avx2 smep bmi2 invpcid rdseed adx smap xsaveopt dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req
+bogomips        : 2380.79
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 42 bits physical, 48 bits virtual
+power management:
+
+[root@gvnkansiblesrv proc]# cat meminfo
+MemTotal:         482556 kB
+MemFree:          158668 kB
+MemAvailable:     286916 kB
+Buffers:            2108 kB
+Cached:           129728 kB
+SwapCached:            0 kB
+Active:           110972 kB
+Inactive:         100696 kB
+Active(anon):      82124 kB
+Inactive(anon):     6676 kB
+Active(file):      28848 kB
+Inactive(file):    94020 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:       2097148 kB
+SwapFree:        2097148 kB
+Dirty:                12 kB
+Writeback:             0 kB
+AnonPages:         79860 kB
+Mapped:            36664 kB
+Shmem:              8968 kB
+Slab:              45292 kB
+SReclaimable:      18256 kB
+SUnreclaim:        27036 kB
+KernelStack:        5584 kB
+PageTables:         7144 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     2338424 kB
+Committed_AS:     366140 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      183012 kB
+VmallocChunk:   34359310332 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       69504 kB
+DirectMap2M:      454656 kB
+DirectMap1G:           0 kB
+[root@gvnkansiblesrv proc]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   47G  6.0G   41G  13% /
+devtmpfs               225M     0  225M   0% /dev
+tmpfs                  236M     0  236M   0% /dev/shm
+tmpfs                  236M  8.8M  227M   4% /run
+tmpfs                  236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1             1014M  125M  890M  13% /boot
+tmpfs                   48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# rpm -qa |grep -i nfs
+nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+libnfsidmap-0.25-17.el7.x86_64
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# rpm -e nfs-utils
+warning: file /var/lib/nfs/v4recovery: remove failed: No such file or directory
+warning: file /var/lib/nfs/statd/sm.bak: remove failed: No such file or directory
+warning: file /var/lib/nfs/statd/sm: remove failed: No such file or directory
+warning: file /var/lib/nfs/statd: remove failed: No such file or directory
+warning: directory /var/lib/nfs/rpc_pipefs: remove failed: Device or resource busy
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# rpm -qa |grep -i nfs
+libnfsidmap-0.25-17.el7.x86_64
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# yum install nfs-utils
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+epel/x86_64/metalink                                                                                                           | 4.8 kB  00:00:00
+rhel7                                                                                                                          | 2.9 kB  00:00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package nfs-utils.x86_64 1:1.3.0-0.48.el7_4.1 will be installed
+
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+======================================================================================================================================================
+ Package                           Arch                           Version                                         Repository                     Size
+======================================================================================================================================================
+Installing:
+ nfs-utils                         x86_64                         1:1.3.0-0.48.el7_4.1                            rhel7                         398 k
+
+Transaction Summary
+======================================================================================================================================================
+Install  1 Package
+
+Total download size: 398 k
+Installed size: 1.0 M
+Is this ok [y/d/N]: Exiting on user command
+Your transaction was saved, rerun it with:
+ yum load-transaction /tmp/yum_save_tx.2025-06-21.20-13.wMgYgo.yumtx
+[root@gvnkansiblesrv /]# yum install nfs-utils
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+Resolving Dependencies
+--> Running transaction check
+---> Package nfs-utils.x86_64 1:1.3.0-0.48.el7_4.1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+======================================================================================================================================================
+ Package                           Arch                           Version                                         Repository                     Size
+======================================================================================================================================================
+Installing:
+ nfs-utils                         x86_64                         1:1.3.0-0.48.el7_4.1                            rhel7                         398 k
+
+Transaction Summary
+======================================================================================================================================================
+Install  1 Package
+
+Total download size: 398 k
+Installed size: 1.0 M
+Is this ok [y/d/N]: yes
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+Warning: RPMDB altered outside of yum.
+  Installing : 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64                                                                                              1/1
+  Verifying  : 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64                                                                                              1/1
+
+Installed:
+  nfs-utils.x86_64 1:1.3.0-0.48.el7_4.1
+
+Complete!
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# rpm -qa |grep -i nfs
+nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+libnfsidmap-0.25-17.el7.x86_64
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# systemctl status nfs
+? nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; disabled; vendor preset: disabled)
+  Drop-In: /run/systemd/generator/nfs-server.service.d
+           +-order-with-mounts.conf
+   Active: inactive (dead)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# systemctl start nfs
+[root@gvnkansiblesrv /]# systemctl enable nfs
+Created symlink from /etc/systemd/system/multi-user.target.wants/nfs-server.service to /usr/lib/systemd/system/nfs-server.service.
+[root@gvnkansiblesrv /]# systemctl status nfs
+? nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; enabled; vendor preset: disabled)
+  Drop-In: /run/systemd/generator/nfs-server.service.d
+           +-order-with-mounts.conf
+   Active: active (exited) since Sat 2025-06-21 20:15:48 IST; 51s ago
+ Main PID: 2084 (code=exited, status=0/SUCCESS)
+   CGroup: /system.slice/nfs-server.service
+
+Jun 21 20:15:47 gvnkansiblesrv systemd[1]: Starting NFS server and services...
+Jun 21 20:15:47 gvnkansiblesrv exportfs[2079]: exportfs: Failed to stat /data: No such file or directory
+Jun 21 20:15:48 gvnkansiblesrv systemd[1]: Started NFS server and services.
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# parted -l |more
+Error: /dev/sdd: unrecognised disk label
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0
+has been opened read-only.
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  53.7GB  52.6GB  primary               lvm
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdc: 1074MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  1073MB  1072MB               logical
+
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/sharevg-sharelv: 1049MB
+[root@gvnkansiblesrv /]# parted /dev/sdd
+GNU Parted 3.1
+Using /dev/sdd
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Error: /dev/sdd: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+(parted) mklabel gpt
+(parted) mkpart
+Partition name?  []? logical
+File system type?  [ext2]?
+Start? 1
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdd: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  2146MB  2145MB               logical
+
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# pvcreate /dev/sdd1
+  Physical volume "/dev/sdd1" successfully created.
+[root@gvnkansiblesrv /]# vgcreate infravg /dev/sdd1
+  Volume group "infravg" successfully created
+[root@gvnkansiblesrv /]# lvcreate -L 1500MB -n infralv infravg
+  Logical volume "infralv" created.
+[root@gvnkansiblesrv /]# mkfs -t xfs /dev/infravg/infralv
+meta-data=/dev/infravg/infralv   isize=512    agcount=4, agsize=96000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=384000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@gvnkansiblesrv /]# mkdir /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mount -t xfs /dev/in
+infravg/ initctl  input/
+[root@gvnkansiblesrv /]# mount -t xfs /dev/infravg/infralv /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /infra/
+[root@gvnkansiblesrv infra]# df -h .
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/infravg-infralv  1.5G   33M  1.5G   3% /infra
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]# cp /var/log/* /infra
+cp: omitting directory ‘/var/log/anaconda’
+cp: omitting directory ‘/var/log/audit’
+cp: omitting directory ‘/var/log/httpd’
+cp: omitting directory ‘/var/log/rhsm’
+cp: omitting directory ‘/var/log/tomcat’
+cp: omitting directory ‘/var/log/tuned’
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]# ls -l
+total 5276
+-rw------- 1 root root       0 Jun 21 20:20 boot.log
+-rw------- 1 root root    9691 Jun 21 20:20 boot.log-20250531
+-rw------- 1 root root   19953 Jun 21 20:20 boot.log-20250603
+-rw------- 1 root root   19722 Jun 21 20:20 boot.log-20250610
+-rw------- 1 root root    9630 Jun 21 20:20 boot.log-20250612
+-rw------- 1 root root   38495 Jun 21 20:20 boot.log-20250614
+-rw------- 1 root root   43237 Jun 21 20:20 boot.log-20250619
+-rw------- 1 root root    9574 Jun 21 20:20 boot.log-20250621
+-rw------- 1 root root  200832 Jun 21 20:20 btmp
+-rw------- 1 root root    3072 Jun 21 20:20 btmp-20250603
+-rw------- 1 root root     490 Jun 21 20:20 cron
+-rw------- 1 root root    8017 Jun 21 20:20 cron-20250527
+-rw------- 1 root root    4042 Jun 21 20:20 cron-20250603
+-rw------- 1 root root    3172 Jun 21 20:20 cron-20250612
+-rw------- 1 root root    5423 Jun 21 20:20 cron-20250621
+-rw-r--r-- 1 root root  131852 Jun 21 20:20 dmesg
+-rw-r--r-- 1 root root  131900 Jun 21 20:20 dmesg.old
+-rw-r--r-- 1 root root     614 Jun 21 20:20 firewalld
+-rw-r--r-- 1 root root     193 Jun 21 20:20 grubby_prune_debug
+-rw-r--r-- 1 root root 1549644 Jun 21 20:20 lastlog
+-rw------- 1 root root       0 Jun 21 20:20 maillog
+-rw------- 1 root root    3458 Jun 21 20:20 maillog-20250527
+-rw------- 1 root root     624 Jun 21 20:20 maillog-20250603
+-rw------- 1 root root     624 Jun 21 20:20 maillog-20250612
+-rw------- 1 root root    1456 Jun 21 20:20 maillog-20250621
+-rw------- 1 root root    2508 Jun 21 20:20 messages
+-rw------- 1 root root  964019 Jun 21 20:20 messages-20250527
+-rw------- 1 root root  531107 Jun 21 20:20 messages-20250603
+-rw------- 1 root root  517159 Jun 21 20:20 messages-20250612
+-rw------- 1 root root 1190312 Jun 21 20:20 messages-20250621
+-rw------- 1 root root     990 Jun 21 20:20 secure
+-rw------- 1 root root   21639 Jun 21 20:20 secure-20250527
+-rw------- 1 root root    4214 Jun 21 20:20 secure-20250603
+-rw------- 1 root root    4639 Jun 21 20:20 secure-20250612
+-rw------- 1 root root  273736 Jun 21 20:20 secure-20250621
+-rw------- 1 root root       0 Jun 21 20:20 spooler
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250527
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250603
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250612
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250621
+-rw------- 1 root root       0 Jun 21 20:20 tallylog
+-rw-r--r-- 1 root root  120658 Jun 21 20:20 vmware-vgauthsvc.log.0
+-rw-r--r-- 1 root root  233062 Jun 21 20:20 vmware-vmsvc.log
+-rw-r--r-- 1 root root  675456 Jun 21 20:20 wtmp
+-rw------- 1 root root      65 Jun 21 20:20 yum.log
+-rw------- 1 root root   10104 Jun 21 20:20 yum.log-20250429
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]# ls
+boot.log           boot.log-20250619  cron-20250603  grubby_prune_debug  maillog-20250621   secure           spooler-20250527        vmware-vmsvc.log
+boot.log-20250531  boot.log-20250621  cron-20250612  lastlog             messages           secure-20250527  spooler-20250603        wtmp
+boot.log-20250603  btmp               cron-20250621  maillog             messages-20250527  secure-20250603  spooler-20250612        yum.log
+boot.log-20250610  btmp-20250603      dmesg          maillog-20250527    messages-20250603  secure-20250612  spooler-20250621        yum.log-20250429
+boot.log-20250612  cron               dmesg.old      maillog-20250603    messages-20250612  secure-20250621  tallylog
+boot.log-20250614  cron-20250527      firewalld      maillog-20250612    messages-20250621  spooler          vmware-vgauthsvc.log.0
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]# cd /
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/infravg-infralv  1.5G   38M  1.5G   3% /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vi /etc/fstab
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/infravg-infralv  1.5G   38M  1.5G   3% /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# umount /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# mount /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/infravg-infralv  1.5G   38M  1.5G   3% /infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cat /etc/exports
+/data   *(sync,rw,no_root_squash)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# vi /etc/exports
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cat /etc/exports
+/infra   *(sync,rw,no_root_squash)
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# exportfs -avr
+exporting *:/infra
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# systemctl restart nfs
+[root@gvnkansiblesrv /]# systemctl status nfs
+? nfs-server.service - NFS server and services
+   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; enabled; vendor preset: disabled)
+  Drop-In: /run/systemd/generator/nfs-server.service.d
+           +-order-with-mounts.conf
+   Active: active (exited) since Sat 2025-06-21 20:27:22 IST; 7s ago
+  Process: 2216 ExecStopPost=/usr/sbin/exportfs -f (code=exited, status=0/SUCCESS)
+  Process: 2215 ExecStopPost=/usr/sbin/exportfs -au (code=exited, status=0/SUCCESS)
+  Process: 2211 ExecStop=/usr/sbin/rpc.nfsd 0 (code=exited, status=0/SUCCESS)
+  Process: 2231 ExecStart=/usr/sbin/rpc.nfsd $RPCNFSDARGS (code=exited, status=0/SUCCESS)
+  Process: 2226 ExecStartPre=/bin/sh -c /bin/kill -HUP `cat /run/gssproxy.pid` (code=exited, status=0/SUCCESS)
+  Process: 2225 ExecStartPre=/usr/sbin/exportfs -r (code=exited, status=0/SUCCESS)
+ Main PID: 2231 (code=exited, status=0/SUCCESS)
+   CGroup: /system.slice/nfs-server.service
+
+Jun 21 20:27:22 gvnkansiblesrv systemd[1]: Starting NFS server and services...
+Jun 21 20:27:22 gvnkansiblesrv systemd[1]: Started NFS server and services.
+[root@gvnkansiblesrv /]#
+[root@gvnkansiblesrv /]# cd /etc/yum.repos.d/
+[root@gvnkansiblesrv yum.repos.d]# ls -lrt
+total 26076
+-rw-r--r--   1 root      root          1457 Sep  4  2021 epel-testing.repo
+-rw-r--r--   1 root      root          1358 Sep  4  2021 epel.repo
+-rw-r--r--   1 root      root         15608 Sep  4  2021 epel-release-latest-7.noarch.rpm
+-rw-r--r--   1 root      root      20696952 Aug 25  2023 Python-3.8.18.tar.xz
+-rw-r--r--.  1 root      root            74 Apr 29  2024 rhel7.repo
+-rw-r--r--.  1 root      root           358 Apr 29  2024 redhat.repo
+drwxrwxr-x  16 ansiadmin ansiadmin     4096 May 27  2024 Python-3.8.18
+-rw-r--r--   1 root      root       5928730 May 29  2024 git-2.9.5.tar.gz
+drwxrwxr-x  23 root      root         20480 May 29  2024 git-2.9.5
+[root@gvnkansiblesrv yum.repos.d]#
+[root@gvnkansiblesrv yum.repos.d]#
+[root@gvnkansiblesrv yum.repos.d]# cat rhel7.repo
+[rhel7]
+name=rhel7
+baseurl=file:///var/ftp/pub/rhel7
+enabled=1
+gpgcheck=0
+[root@gvnkansiblesrv yum.repos.d]#
+[root@gvnkansiblesrv yum.repos.d]# systemctl status vsftpd
+? vsftpd.service - Vsftpd ftp daemon
+   Loaded: loaded (/usr/lib/systemd/system/vsftpd.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[root@gvnkansiblesrv yum.repos.d]# systemctl enable vsftpd
+Created symlink from /etc/systemd/system/multi-user.target.wants/vsftpd.service to /usr/lib/systemd/system/vsftpd.service.
+[root@gvnkansiblesrv yum.repos.d]# systemctl start vsftpd
+[root@gvnkansiblesrv yum.repos.d]#
+[root@gvnkansiblesrv yum.repos.d]# cd /infra
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]# ls -l
+total 1808
+-rw------- 1 root root       0 Jun 21 20:20 boot.log
+-rw------- 1 root root    9691 Jun 21 20:20 boot.log-20250531
+-rw------- 1 root root   19953 Jun 21 20:20 boot.log-20250603
+-rw------- 1 root root   19722 Jun 21 20:20 boot.log-20250610
+-rw------- 1 root root    9630 Jun 21 20:20 boot.log-20250612
+-rw------- 1 root root   38495 Jun 21 20:20 boot.log-20250614
+-rw------- 1 root root   43237 Jun 21 20:20 boot.log-20250619
+-rw------- 1 root root    9574 Jun 21 20:20 boot.log-20250621
+-rw------- 1 root root  200832 Jun 21 20:20 btmp
+-rw------- 1 root root    3072 Jun 21 20:20 btmp-20250603
+-rw------- 1 root root     490 Jun 21 20:20 cron
+-rw------- 1 root root    8017 Jun 21 20:20 cron-20250527
+-rw------- 1 root root    4042 Jun 21 20:20 cron-20250603
+-rw------- 1 root root    3172 Jun 21 20:20 cron-20250612
+-rw------- 1 root root    5423 Jun 21 20:20 cron-20250621
+-rw-r--r-- 1 root root  131852 Jun 21 20:20 dmesg
+-rw-r--r-- 1 root root  131900 Jun 21 20:20 dmesg.old
+-rw-r--r-- 1 root root     614 Jun 21 20:20 firewalld
+-rw-r--r-- 1 root root     193 Jun 21 20:20 grubby_prune_debug
+-rw-r--r-- 1 root root 1549644 Jun 21 20:20 lastlog
+-rw------- 1 root root       0 Jun 21 20:20 tallylog
+-rw-r--r-- 1 root root  120658 Jun 21 20:20 vmware-vgauthsvc.log.0
+-rw-r--r-- 1 root root  233062 Jun 21 20:20 vmware-vmsvc.log
+-rw-r--r-- 1 root root  675456 Jun 21 20:20 wtmp
+-rw------- 1 root root      65 Jun 21 20:20 yum.log
+-rw------- 1 root root   10104 Jun 21 20:20 yum.log-20250429
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]# mkdir dir1 dir2 dir3 dir4 dir5
+[root@gvnkansiblesrv infra]# ls -l
+total 1808
+-rw------- 1 root root       0 Jun 21 20:20 boot.log
+-rw------- 1 root root    9691 Jun 21 20:20 boot.log-20250531
+-rw------- 1 root root   19953 Jun 21 20:20 boot.log-20250603
+-rw------- 1 root root   19722 Jun 21 20:20 boot.log-20250610
+-rw------- 1 root root    9630 Jun 21 20:20 boot.log-20250612
+-rw------- 1 root root   38495 Jun 21 20:20 boot.log-20250614
+-rw------- 1 root root   43237 Jun 21 20:20 boot.log-20250619
+-rw------- 1 root root    9574 Jun 21 20:20 boot.log-20250621
+-rw------- 1 root root  200832 Jun 21 20:20 btmp
+-rw------- 1 root root    3072 Jun 21 20:20 btmp-20250603
+-rw------- 1 root root     490 Jun 21 20:20 cron
+-rw------- 1 root root    8017 Jun 21 20:20 cron-20250527
+-rw------- 1 root root    4042 Jun 21 20:20 cron-20250603
+-rw------- 1 root root    3172 Jun 21 20:20 cron-20250612
+-rw------- 1 root root    5423 Jun 21 20:20 cron-20250621
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir1
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir2
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir3
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir4
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir5
+-rw-r--r-- 1 root root  131852 Jun 21 20:20 dmesg
+-rw-r--r-- 1 root root  131900 Jun 21 20:20 dmesg.old
+-rw-r--r-- 1 root root     614 Jun 21 20:20 firewalld
+-rw-r--r-- 1 root root     193 Jun 21 20:20 grubby_prune_debug
+-rw-r--r-- 1 root root 1549644 Jun 21 20:20 lastlog
+-rw------- 1 root root       0 Jun 21 20:20 tallylog
+-rw-r--r-- 1 root root  120658 Jun 21 20:20 vmware-vgauthsvc.log.0
+-rw-r--r-- 1 root root  233062 Jun 21 20:20 vmware-vmsvc.log
+-rw-r--r-- 1 root root  675456 Jun 21 20:20 wtmp
+-rw------- 1 root root      65 Jun 21 20:20 yum.log
+-rw------- 1 root root   10104 Jun 21 20:20 yum.log-20250429
+[root@gvnkansiblesrv infra]#
+[root@gvnkansiblesrv infra]#
+
+
+
+
+Client Server Session Logs:
+===========================
+
+Network error: Connection refused
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.120                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last failed login: Fri Jun 20 20:35:33 IST 2025 from fe80::c268:ccff:fe6b:db71%ens33 on ssh:notty
+There were 14 failed login attempts since the last successful login.
+Last login: Fri Jun 20 19:49:09 2025 from 192.168.29.211
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# ping 192.168.29.176
+PING 192.168.29.176 (192.168.29.176) 56(84) bytes of data.
+64 bytes from 192.168.29.176: icmp_seq=1 ttl=64 time=1.89 ms
+64 bytes from 192.168.29.176: icmp_seq=2 ttl=64 time=0.485 ms
+64 bytes from 192.168.29.176: icmp_seq=3 ttl=64 time=0.364 ms
+^C
+--- 192.168.29.176 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 0.364/0.915/1.897/0.696 ms
+[root@c111xyz ~]#
+[root@c111xyz ~]# ssh 192.168.29.176
+The authenticity of host '192.168.29.176 (192.168.29.176)' can't be established.
+ECDSA key fingerprint is SHA256:g6iUWdKykPlKseI2FjstLjPRMNZCMz+rk4ZBX9VqTSM.
+ECDSA key fingerprint is MD5:b8:b0:d1:e7:f6:2b:b3:d3:cc:7d:c1:ca:33:59:16:79.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.29.176' (ECDSA) to the list of known hosts.
+root@192.168.29.176's password:
+Last failed login: Sat Jun 21 19:13:18 IST 2025 from 2405:201:c037:d269:c268:ccff:fe6b:db71 on ssh:notty
+There were 2 failed login attempts since the last successful login.
+Last login: Sat Jun 21 19:12:10 2025 from gateway
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# logout
+Connection to 192.168.29.176 closed.
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#  systemctl status firewalld
+? firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sat 2025-06-21 19:12:03 IST; 2min 30s ago
+     Docs: man:firewalld(1)
+ Main PID: 851 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           +-851 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+
+Jun 21 19:11:58 c111xyz systemd[1]: Starting firewalld - dynamic firewall daemon...
+Jun 21 19:12:03 c111xyz systemd[1]: Started firewalld - dynamic firewall daemon.
+Jun 21 19:12:07 c111xyz firewalld[851]: WARNING: ICMP type 'beyond-scope' is not supported by the kernel for ipv6.
+Jun 21 19:12:07 c111xyz firewalld[851]: WARNING: beyond-scope: INVALID_ICMPTYPE: No supported ICMP type., ignoring for run-time.
+Jun 21 19:12:07 c111xyz firewalld[851]: WARNING: ICMP type 'failed-policy' is not supported by the kernel for ipv6.
+Jun 21 19:12:07 c111xyz firewalld[851]: WARNING: failed-policy: INVALID_ICMPTYPE: No supported ICMP type., ignoring for run-time.
+Jun 21 19:12:07 c111xyz firewalld[851]: WARNING: ICMP type 'reject-route' is not supported by the kernel for ipv6.
+Jun 21 19:12:07 c111xyz firewalld[851]: WARNING: reject-route: INVALID_ICMPTYPE: No supported ICMP type., ignoring for run-time.
+[root@c111xyz ~]# systemctl disable firewalld
+Removed symlink /etc/systemd/system/multi-user.target.wants/firewalld.service.
+Removed symlink /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service.
+[root@c111xyz ~]#
+[root@c111xyz ~]# vi /etc/selinux/config
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# systemctl reboot
+
+Remote side unexpectedly closed network connection
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.120                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last failed login: Sat Jun 21 19:14:34 IST 2025 from 2405:201:c037:d269:c268:ccff:fe6b:db71 on ssh:notty
+There were 3 failed login attempts since the last successful login.
+Last login: Sat Jun 21 19:12:54 2025 from 192.168.29.176
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# ping 192.168.29.176
+PING 192.168.29.176 (192.168.29.176) 56(84) bytes of data.
+64 bytes from 192.168.29.176: icmp_seq=1 ttl=64 time=0.718 ms
+64 bytes from 192.168.29.176: icmp_seq=2 ttl=64 time=0.582 ms
+^C
+--- 192.168.29.176 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1003ms
+rtt min/avg/max/mdev = 0.582/0.650/0.718/0.068 ms
+[root@c111xyz ~]#
+[root@c111xyz ~]# ssh 192.168.29.176
+root@192.168.29.176's password:
+Last login: Sat Jun 21 20:13:42 2025
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/infravg-infralv  1.5G   38M  1.5G   3% /infra
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# logout
+Connection to 192.168.29.176 closed.
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# mount -t nfs 192.168.29.176:/infra /mnt
+mount: wrong fs type, bad option, bad superblock on 192.168.29.176:/infra,
+       missing codepage or helper program, or other error
+       (for several filesystems (e.g. nfs, cifs) you might
+       need a /sbin/mount.<type> helper program)
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# show
+showconsolefont  showkey
+[root@c111xyz ~]# show
+showconsolefont  showkey
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# rpm -qa |grep -i nfs
+[root@c111xyz ~]#
+[root@c111xyz ~]# yum install nfs
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+There are no enabled repos.
+ Run "yum repolist all" to see the repos you have.
+ To enable Red Hat Subscription Management repositories:
+     subscription-manager repos --enable <repo>
+ To enable custom repositories:
+     yum-config-manager --enable <repo>
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# cd /etc/yum.repos.d/
+[root@c111xyz yum.repos.d]# ls -l
+total 4
+-rw-r--r-- 1 root root 358 Jun 21 20:32 redhat.repo
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# vi rhel7.repo
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# systemctl status vsftpd
+Unit vsftpd.service could not be found.
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# mount /dev/sr0 /mnt
+mount: /dev/sr0 is write-protected, mounting read-only
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# rpm -ivh /mnt/Packages/ftp-0.17-67.el7.x86_64.rpm
+warning: /mnt/Packages/ftp-0.17-67.el7.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID fd431d51: NOKEY
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:ftp-0.17-67.el7                  ################################# [100%]
+[root@c111xyz yum.repos.d]# rpm -ivh /mnt/Packages/vsftpd-3.0.2-22.el7.x86_64.rpm
+warning: /mnt/Packages/vsftpd-3.0.2-22.el7.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID fd431d51: NOKEY
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:vsftpd-3.0.2-22.el7              ################################# [100%]
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# systemctl enable vsftpd
+Created symlink from /etc/systemd/system/multi-user.target.wants/vsftpd.service to /usr/lib/systemd/system/vsftpd.service.
+[root@c111xyz yum.repos.d]# systemctl start vsftpd
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# yum clean all
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+Cleaning repos: rhel7
+Cleaning up everything
+Maybe you want: rm -rf /var/cache/yum, to also free up space taken by orphaned data from disabled or removed repos
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# yum makecache
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+rhel7                                                                                                                          | 2.9 kB  00:00:00
+(1/3): rhel7/filelists_db                                                                                                      | 3.3 MB  00:00:01
+(2/3): rhel7/primary_db                                                                                                        | 4.0 MB  00:00:01
+(3/3): rhel7/other_db                                                                                                          | 1.5 MB  00:00:00
+Metadata Cache Created
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]#
+[root@c111xyz yum.repos.d]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# yum install nfs
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+No package nfs available.
+Error: Nothing to do
+[root@c111xyz /]# yum install nfs-utils
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+Resolving Dependencies
+--> Running transaction check
+---> Package nfs-utils.x86_64 1:1.3.0-0.48.el7_4.1 will be installed
+--> Processing Dependency: libtirpc >= 0.2.4-0.7 for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: gssproxy >= 0.7.0-3 for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: rpcbind for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: quota for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: libnfsidmap for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: libevent for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: keyutils for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: libtirpc.so.1()(64bit) for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: libnfsidmap.so.0()(64bit) for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Processing Dependency: libevent-2.0.so.5()(64bit) for package: 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+--> Running transaction check
+---> Package gssproxy.x86_64 0:0.7.0-4.el7 will be installed
+--> Processing Dependency: libverto-module-base for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libref_array.so.1(REF_ARRAY_0.1.1)(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libini_config.so.3(INI_CONFIG_1.2.0)(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libini_config.so.3(INI_CONFIG_1.1.0)(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libref_array.so.1()(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libini_config.so.3()(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libcollection.so.2()(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+--> Processing Dependency: libbasicobjects.so.0()(64bit) for package: gssproxy-0.7.0-4.el7.x86_64
+---> Package keyutils.x86_64 0:1.5.8-3.el7 will be installed
+---> Package libevent.x86_64 0:2.0.21-4.el7 will be installed
+---> Package libnfsidmap.x86_64 0:0.25-17.el7 will be installed
+---> Package libtirpc.x86_64 0:0.2.4-0.10.el7 will be installed
+---> Package quota.x86_64 1:4.01-14.el7 will be installed
+--> Processing Dependency: quota-nls = 1:4.01-14.el7 for package: 1:quota-4.01-14.el7.x86_64
+--> Processing Dependency: tcp_wrappers for package: 1:quota-4.01-14.el7.x86_64
+---> Package rpcbind.x86_64 0:0.2.0-42.el7 will be installed
+--> Running transaction check
+---> Package libbasicobjects.x86_64 0:0.1.1-27.el7 will be installed
+---> Package libcollection.x86_64 0:0.6.2-27.el7 will be installed
+---> Package libini_config.x86_64 0:1.3.0-27.el7 will be installed
+--> Processing Dependency: libpath_utils.so.1(PATH_UTILS_0.2.1)(64bit) for package: libini_config-1.3.0-27.el7.x86_64
+--> Processing Dependency: libpath_utils.so.1()(64bit) for package: libini_config-1.3.0-27.el7.x86_64
+---> Package libref_array.x86_64 0:0.1.5-27.el7 will be installed
+---> Package libverto-libevent.x86_64 0:0.2.5-4.el7 will be installed
+---> Package quota-nls.noarch 1:4.01-14.el7 will be installed
+---> Package tcp_wrappers.x86_64 0:7.6-77.el7 will be installed
+--> Running transaction check
+---> Package libpath_utils.x86_64 0:0.2.1-27.el7 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+======================================================================================================================================================
+ Package                                 Arch                         Version                                       Repository                   Size
+======================================================================================================================================================
+Installing:
+ nfs-utils                               x86_64                       1:1.3.0-0.48.el7_4.1                          rhel7                       398 k
+Installing for dependencies:
+ gssproxy                                x86_64                       0.7.0-4.el7                                   rhel7                       105 k
+ keyutils                                x86_64                       1.5.8-3.el7                                   rhel7                        54 k
+ libbasicobjects                         x86_64                       0.1.1-27.el7                                  rhel7                        25 k
+ libcollection                           x86_64                       0.6.2-27.el7                                  rhel7                        41 k
+ libevent                                x86_64                       2.0.21-4.el7                                  rhel7                       214 k
+ libini_config                           x86_64                       1.3.0-27.el7                                  rhel7                        63 k
+ libnfsidmap                             x86_64                       0.25-17.el7                                   rhel7                        49 k
+ libpath_utils                           x86_64                       0.2.1-27.el7                                  rhel7                        27 k
+ libref_array                            x86_64                       0.1.5-27.el7                                  rhel7                        26 k
+ libtirpc                                x86_64                       0.2.4-0.10.el7                                rhel7                        89 k
+ libverto-libevent                       x86_64                       0.2.5-4.el7                                   rhel7                       8.9 k
+ quota                                   x86_64                       1:4.01-14.el7                                 rhel7                       179 k
+ quota-nls                               noarch                       1:4.01-14.el7                                 rhel7                        91 k
+ rpcbind                                 x86_64                       0.2.0-42.el7                                  rhel7                        59 k
+ tcp_wrappers                            x86_64                       7.6-77.el7                                    rhel7                        79 k
+
+Transaction Summary
+======================================================================================================================================================
+Install  1 Package (+15 Dependent packages)
+
+Total download size: 1.5 M
+Installed size: 4.2 M
+Is this ok [y/d/N]: yes
+Downloading packages:
+(1/16): gssproxy-0.7.0-4.el7.x86_64.rpm                                                                                        | 105 kB  00:00:00
+(2/16): keyutils-1.5.8-3.el7.x86_64.rpm                                                                                        |  54 kB  00:00:00
+(3/16): libbasicobjects-0.1.1-27.el7.x86_64.rpm                                                                                |  25 kB  00:00:00
+(4/16): libcollection-0.6.2-27.el7.x86_64.rpm                                                                                  |  41 kB  00:00:00
+(5/16): libevent-2.0.21-4.el7.x86_64.rpm                                                                                       | 214 kB  00:00:00
+(6/16): libini_config-1.3.0-27.el7.x86_64.rpm                                                                                  |  63 kB  00:00:00
+(7/16): libnfsidmap-0.25-17.el7.x86_64.rpm                                                                                     |  49 kB  00:00:00
+(8/16): libpath_utils-0.2.1-27.el7.x86_64.rpm                                                                                  |  27 kB  00:00:00
+(9/16): libref_array-0.1.5-27.el7.x86_64.rpm                                                                                   |  26 kB  00:00:00
+(10/16): libtirpc-0.2.4-0.10.el7.x86_64.rpm                                                                                    |  89 kB  00:00:00
+(11/16): libverto-libevent-0.2.5-4.el7.x86_64.rpm                                                                              | 8.9 kB  00:00:00
+(12/16): nfs-utils-1.3.0-0.48.el7_4.1.x86_64.rpm                                                                               | 398 kB  00:00:00
+(13/16): quota-4.01-14.el7.x86_64.rpm                                                                                          | 179 kB  00:00:00
+(14/16): quota-nls-4.01-14.el7.noarch.rpm                                                                                      |  91 kB  00:00:00
+(15/16): rpcbind-0.2.0-42.el7.x86_64.rpm                                                                                       |  59 kB  00:00:00
+(16/16): tcp_wrappers-7.6-77.el7.x86_64.rpm                                                                                    |  79 kB  00:00:00
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                 1.1 MB/s | 1.5 MB  00:00:01
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+Warning: RPMDB altered outside of yum.
+  Installing : libref_array-0.1.5-27.el7.x86_64                                                                                                  1/16
+  Installing : libcollection-0.6.2-27.el7.x86_64                                                                                                 2/16
+  Installing : libevent-2.0.21-4.el7.x86_64                                                                                                      3/16
+  Installing : libbasicobjects-0.1.1-27.el7.x86_64                                                                                               4/16
+  Installing : libtirpc-0.2.4-0.10.el7.x86_64                                                                                                    5/16
+  Installing : rpcbind-0.2.0-42.el7.x86_64                                                                                                       6/16
+  Installing : libverto-libevent-0.2.5-4.el7.x86_64                                                                                              7/16
+  Installing : 1:quota-nls-4.01-14.el7.noarch                                                                                                    8/16
+  Installing : libpath_utils-0.2.1-27.el7.x86_64                                                                                                 9/16
+  Installing : libini_config-1.3.0-27.el7.x86_64                                                                                                10/16
+  Installing : gssproxy-0.7.0-4.el7.x86_64                                                                                                      11/16
+  Installing : tcp_wrappers-7.6-77.el7.x86_64                                                                                                   12/16
+  Installing : 1:quota-4.01-14.el7.x86_64                                                                                                       13/16
+  Installing : keyutils-1.5.8-3.el7.x86_64                                                                                                      14/16
+  Installing : libnfsidmap-0.25-17.el7.x86_64                                                                                                   15/16
+  Installing : 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64                                                                                            16/16
+  Verifying  : 1:nfs-utils-1.3.0-0.48.el7_4.1.x86_64                                                                                             1/16
+  Verifying  : 1:quota-4.01-14.el7.x86_64                                                                                                        2/16
+  Verifying  : libtirpc-0.2.4-0.10.el7.x86_64                                                                                                    3/16
+  Verifying  : libnfsidmap-0.25-17.el7.x86_64                                                                                                    4/16
+  Verifying  : rpcbind-0.2.0-42.el7.x86_64                                                                                                       5/16
+  Verifying  : libini_config-1.3.0-27.el7.x86_64                                                                                                 6/16
+  Verifying  : libbasicobjects-0.1.1-27.el7.x86_64                                                                                               7/16
+  Verifying  : libevent-2.0.21-4.el7.x86_64                                                                                                      8/16
+  Verifying  : keyutils-1.5.8-3.el7.x86_64                                                                                                       9/16
+  Verifying  : libverto-libevent-0.2.5-4.el7.x86_64                                                                                             10/16
+  Verifying  : tcp_wrappers-7.6-77.el7.x86_64                                                                                                   11/16
+  Verifying  : libpath_utils-0.2.1-27.el7.x86_64                                                                                                12/16
+  Verifying  : 1:quota-nls-4.01-14.el7.noarch                                                                                                   13/16
+  Verifying  : gssproxy-0.7.0-4.el7.x86_64                                                                                                      14/16
+  Verifying  : libcollection-0.6.2-27.el7.x86_64                                                                                                15/16
+  Verifying  : libref_array-0.1.5-27.el7.x86_64                                                                                                 16/16
+
+Installed:
+  nfs-utils.x86_64 1:1.3.0-0.48.el7_4.1
+
+Dependency Installed:
+  gssproxy.x86_64 0:0.7.0-4.el7      keyutils.x86_64 0:1.5.8-3.el7       libbasicobjects.x86_64 0:0.1.1-27.el7  libcollection.x86_64 0:0.6.2-27.el7
+  libevent.x86_64 0:2.0.21-4.el7     libini_config.x86_64 0:1.3.0-27.el7 libnfsidmap.x86_64 0:0.25-17.el7       libpath_utils.x86_64 0:0.2.1-27.el7
+  libref_array.x86_64 0:0.1.5-27.el7 libtirpc.x86_64 0:0.2.4-0.10.el7    libverto-libevent.x86_64 0:0.2.5-4.el7 quota.x86_64 1:4.01-14.el7
+  quota-nls.noarch 1:4.01-14.el7     rpcbind.x86_64 0:0.2.0-42.el7       tcp_wrappers.x86_64 0:7.6-77.el7
+
+Complete!
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# showmount -e 192.168.29.176
+Export list for 192.168.29.176:
+/infra *
+[root@c111xyz /]#
+[root@c111xyz /]# mount -t nfs 192.168.29.176:/infra /mnt
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G 1023M   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+192.168.29.176:/infra  1.5G   38M  1.5G   3% /mnt
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /mnt
+[root@c111xyz mnt]# ls
+boot.log           boot.log-20250619  cron-20250603  grubby_prune_debug  maillog-20250621   secure           spooler-20250527        vmware-vmsvc.log
+boot.log-20250531  boot.log-20250621  cron-20250612  lastlog             messages           secure-20250527  spooler-20250603        wtmp
+boot.log-20250603  btmp               cron-20250621  maillog             messages-20250527  secure-20250603  spooler-20250612        yum.log
+boot.log-20250610  btmp-20250603      dmesg          maillog-20250527    messages-20250603  secure-20250612  spooler-20250621        yum.log-20250429
+boot.log-20250612  cron               dmesg.old      maillog-20250603    messages-20250612  secure-20250621  tallylog
+boot.log-20250614  cron-20250527      firewalld      maillog-20250612    messages-20250621  spooler          vmware-vgauthsvc.log.0
+[root@c111xyz mnt]#
+[root@c111xyz mnt]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G 1023M   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+192.168.29.176:/infra  1.5G   38M  1.5G   3% /mnt
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# umount /mnt
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# mkdir /shareinfra
+[root@c111xyz /]#
+[root@c111xyz /]# mount -t nfs 192.168.29.176:/infra /shareinfra
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G 1023M   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+/dev/sr0               4.1G  4.1G     0 100% /mnt
+192.168.29.176:/infra  1.5G   38M  1.5G   3% /shareinfra
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /shareinfra
+[root@c111xyz shareinfra]# ls -l
+total 5276
+-rw------- 1 root root       0 Jun 21 20:20 boot.log
+-rw------- 1 root root    9691 Jun 21 20:20 boot.log-20250531
+-rw------- 1 root root   19953 Jun 21 20:20 boot.log-20250603
+-rw------- 1 root root   19722 Jun 21 20:20 boot.log-20250610
+-rw------- 1 root root    9630 Jun 21 20:20 boot.log-20250612
+-rw------- 1 root root   38495 Jun 21 20:20 boot.log-20250614
+-rw------- 1 root root   43237 Jun 21 20:20 boot.log-20250619
+-rw------- 1 root root    9574 Jun 21 20:20 boot.log-20250621
+-rw------- 1 root root  200832 Jun 21 20:20 btmp
+-rw------- 1 root root    3072 Jun 21 20:20 btmp-20250603
+-rw------- 1 root root     490 Jun 21 20:20 cron
+-rw------- 1 root root    8017 Jun 21 20:20 cron-20250527
+-rw------- 1 root root    4042 Jun 21 20:20 cron-20250603
+-rw------- 1 root root    3172 Jun 21 20:20 cron-20250612
+-rw------- 1 root root    5423 Jun 21 20:20 cron-20250621
+-rw-r--r-- 1 root root  131852 Jun 21 20:20 dmesg
+-rw-r--r-- 1 root root  131900 Jun 21 20:20 dmesg.old
+-rw-r--r-- 1 root root     614 Jun 21 20:20 firewalld
+-rw-r--r-- 1 root root     193 Jun 21 20:20 grubby_prune_debug
+-rw-r--r-- 1 root root 1549644 Jun 21 20:20 lastlog
+-rw------- 1 root root       0 Jun 21 20:20 maillog
+-rw------- 1 root root    3458 Jun 21 20:20 maillog-20250527
+-rw------- 1 root root     624 Jun 21 20:20 maillog-20250603
+-rw------- 1 root root     624 Jun 21 20:20 maillog-20250612
+-rw------- 1 root root    1456 Jun 21 20:20 maillog-20250621
+-rw------- 1 root root    2508 Jun 21 20:20 messages
+-rw------- 1 root root  964019 Jun 21 20:20 messages-20250527
+-rw------- 1 root root  531107 Jun 21 20:20 messages-20250603
+-rw------- 1 root root  517159 Jun 21 20:20 messages-20250612
+-rw------- 1 root root 1190312 Jun 21 20:20 messages-20250621
+-rw------- 1 root root     990 Jun 21 20:20 secure
+-rw------- 1 root root   21639 Jun 21 20:20 secure-20250527
+-rw------- 1 root root    4214 Jun 21 20:20 secure-20250603
+-rw------- 1 root root    4639 Jun 21 20:20 secure-20250612
+-rw------- 1 root root  273736 Jun 21 20:20 secure-20250621
+-rw------- 1 root root       0 Jun 21 20:20 spooler
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250527
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250603
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250612
+-rw------- 1 root root       0 Jun 21 20:20 spooler-20250621
+-rw------- 1 root root       0 Jun 21 20:20 tallylog
+-rw-r--r-- 1 root root  120658 Jun 21 20:20 vmware-vgauthsvc.log.0
+-rw-r--r-- 1 root root  233062 Jun 21 20:20 vmware-vmsvc.log
+-rw-r--r-- 1 root root  675456 Jun 21 20:20 wtmp
+-rw------- 1 root root      65 Jun 21 20:20 yum.log
+-rw------- 1 root root   10104 Jun 21 20:20 yum.log-20250429
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]# rm -rf messages*
+[root@c111xyz shareinfra]# rm -rf spooler*
+[root@c111xyz shareinfra]# ls
+boot.log           boot.log-20250614  cron           dmesg               maillog           secure           tallylog                yum.log-20250429
+boot.log-20250531  boot.log-20250619  cron-20250527  dmesg.old           maillog-20250527  secure-20250527  vmware-vgauthsvc.log.0
+boot.log-20250603  boot.log-20250621  cron-20250603  firewalld           maillog-20250603  secure-20250603  vmware-vmsvc.log
+boot.log-20250610  btmp               cron-20250612  grubby_prune_debug  maillog-20250612  secure-20250612  wtmp
+boot.log-20250612  btmp-20250603      cron-20250621  lastlog             maillog-20250621  secure-20250621  yum.log
+[root@c111xyz shareinfra]# rm -rf maillog*
+[root@c111xyz shareinfra]# rm -rf secure*
+[root@c111xyz shareinfra]# ls
+boot.log           boot.log-20250612  btmp           cron-20250603  dmesg.old           tallylog                yum.log
+boot.log-20250531  boot.log-20250614  btmp-20250603  cron-20250612  firewalld           vmware-vgauthsvc.log.0  yum.log-20250429
+boot.log-20250603  boot.log-20250619  cron           cron-20250621  grubby_prune_debug  vmware-vmsvc.log
+boot.log-20250610  boot.log-20250621  cron-20250527  dmesg          lastlog             wtmp
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]# ls -l
+total 1808
+-rw------- 1 root root       0 Jun 21 20:20 boot.log
+-rw------- 1 root root    9691 Jun 21 20:20 boot.log-20250531
+-rw------- 1 root root   19953 Jun 21 20:20 boot.log-20250603
+-rw------- 1 root root   19722 Jun 21 20:20 boot.log-20250610
+-rw------- 1 root root    9630 Jun 21 20:20 boot.log-20250612
+-rw------- 1 root root   38495 Jun 21 20:20 boot.log-20250614
+-rw------- 1 root root   43237 Jun 21 20:20 boot.log-20250619
+-rw------- 1 root root    9574 Jun 21 20:20 boot.log-20250621
+-rw------- 1 root root  200832 Jun 21 20:20 btmp
+-rw------- 1 root root    3072 Jun 21 20:20 btmp-20250603
+-rw------- 1 root root     490 Jun 21 20:20 cron
+-rw------- 1 root root    8017 Jun 21 20:20 cron-20250527
+-rw------- 1 root root    4042 Jun 21 20:20 cron-20250603
+-rw------- 1 root root    3172 Jun 21 20:20 cron-20250612
+-rw------- 1 root root    5423 Jun 21 20:20 cron-20250621
+-rw-r--r-- 1 root root  131852 Jun 21 20:20 dmesg
+-rw-r--r-- 1 root root  131900 Jun 21 20:20 dmesg.old
+-rw-r--r-- 1 root root     614 Jun 21 20:20 firewalld
+-rw-r--r-- 1 root root     193 Jun 21 20:20 grubby_prune_debug
+-rw-r--r-- 1 root root 1549644 Jun 21 20:20 lastlog
+-rw------- 1 root root       0 Jun 21 20:20 tallylog
+-rw-r--r-- 1 root root  120658 Jun 21 20:20 vmware-vgauthsvc.log.0
+-rw-r--r-- 1 root root  233062 Jun 21 20:20 vmware-vmsvc.log
+-rw-r--r-- 1 root root  675456 Jun 21 20:20 wtmp
+-rw------- 1 root root      65 Jun 21 20:20 yum.log
+-rw------- 1 root root   10104 Jun 21 20:20 yum.log-20250429
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]# df -h .
+Filesystem             Size  Used Avail Use% Mounted on
+192.168.29.176:/infra  1.5G   34M  1.5G   3% /shareinfra
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]# ls -l
+total 1808
+-rw------- 1 root root       0 Jun 21 20:20 boot.log
+-rw------- 1 root root    9691 Jun 21 20:20 boot.log-20250531
+-rw------- 1 root root   19953 Jun 21 20:20 boot.log-20250603
+-rw------- 1 root root   19722 Jun 21 20:20 boot.log-20250610
+-rw------- 1 root root    9630 Jun 21 20:20 boot.log-20250612
+-rw------- 1 root root   38495 Jun 21 20:20 boot.log-20250614
+-rw------- 1 root root   43237 Jun 21 20:20 boot.log-20250619
+-rw------- 1 root root    9574 Jun 21 20:20 boot.log-20250621
+-rw------- 1 root root  200832 Jun 21 20:20 btmp
+-rw------- 1 root root    3072 Jun 21 20:20 btmp-20250603
+-rw------- 1 root root     490 Jun 21 20:20 cron
+-rw------- 1 root root    8017 Jun 21 20:20 cron-20250527
+-rw------- 1 root root    4042 Jun 21 20:20 cron-20250603
+-rw------- 1 root root    3172 Jun 21 20:20 cron-20250612
+-rw------- 1 root root    5423 Jun 21 20:20 cron-20250621
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir1
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir2
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir3
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir4
+drwxr-xr-x 2 root root       6 Jun 21 20:40 dir5
+-rw-r--r-- 1 root root  131852 Jun 21 20:20 dmesg
+-rw-r--r-- 1 root root  131900 Jun 21 20:20 dmesg.old
+-rw-r--r-- 1 root root     614 Jun 21 20:20 firewalld
+-rw-r--r-- 1 root root     193 Jun 21 20:20 grubby_prune_debug
+-rw-r--r-- 1 root root 1549644 Jun 21 20:20 lastlog
+-rw------- 1 root root       0 Jun 21 20:20 tallylog
+-rw-r--r-- 1 root root  120658 Jun 21 20:20 vmware-vgauthsvc.log.0
+-rw-r--r-- 1 root root  233062 Jun 21 20:20 vmware-vmsvc.log
+-rw-r--r-- 1 root root  675456 Jun 21 20:20 wtmp
+-rw------- 1 root root      65 Jun 21 20:20 yum.log
+-rw------- 1 root root   10104 Jun 21 20:20 yum.log-20250429
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]#
+[root@c111xyz shareinfra]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G 1023M   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+/dev/sr0               4.1G  4.1G     0 100% /mnt
+192.168.29.176:/infra  1.5G   34M  1.5G   3% /shareinfra
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
