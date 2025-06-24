@@ -1,0 +1,2750 @@
+Class 24 24/06/2025
+
+Autofs File system Configuration
+
+NFS is like mounting a complete partition remotely and you will have availability of whole content of the partition.
+
+1 Shares are accessed automatically and transparently when a user tries to access any files or directories under the designated mount point of the remote filesystem to be mounted.
+
+2 Booting time is significantly reduced because no mounting is done at boot time.
+
+3 Network access and efficiency are improved by reducing the number of permanently active mount points.
+
+4 Failed mount requests can be reduced by designating alternate servers as the source of a filesystem.
+
+5 Security for file systems
+
+Autofs types:
+=============
+1) auto direct (webdata)
+2) auto indirect (servers/prod)
+
+Steps to configure NFS server:
+============================== 
+Step1: Install the NFS package using yum or rpm and enable the service
+	# rpm -qa |grep -i nfs
+	# yum install nfs-utils
+	# rpm -qa |grep -i nfs
+	# systemctl start nfs
+	# systemctl enable nfs
+Step2: Create new file system /data 500Mb added some data
+	# df -h
+	Filesystem                   Size  Used Avail Use% Mounted on
+	/dev/mapper/datavg-data1lv   477M   69M  379M  16% /data1
+	/dev/mapper/datavg-data2lv   477M   62M  387M  14% /data2
+	/dev/mapper/datavg-data3lv   477M  119M  329M  27% /data3
+	/dev/mapper/datavg-data4lv   497M   63M  435M  13% /data4
+	/dev/mapper/datavg-data5lv   497M   83M  414M  17% /data5
+	/dev/mapper/datavg-data6lv   497M  185M  312M  38% /data6
+Step3: Export the directory by editing /etc/exports file and using exportfs command
+	# vi /etc/exports
+	# cat /etc/exports
+	/data1  c111xyz(sync,rw,no_root_sqash)
+	/data2  c111xyz(sync,rw,no_root_sqash)
+	/data3  c111xyz(sync,rw)
+	/data4  c111xyz(sync,rw)
+	/data5  c111xyz(sync,ro,no_root_sqash)
+	/data6  c111xyz(sync,ro,no_root_sqash)
+	# exportfs -avr
+	exporting c111xyz:/data6
+	exporting c111xyz:/data5
+	exporting c111xyz:/data4
+	exporting c111xyz:/data3
+	exporting c111xyz:/data2
+	exporting c111xyz:/data1
+	# showmount -e nfsserver
+	exporting c111xyz:/data6
+	exporting c111xyz:/data5
+	exporting c111xyz:/data4
+	exporting c111xyz:/data3
+	exporting c111xyz:/data2
+	exporting c111xyz:/data1
+Step4: Restart the services and make it permanent
+	# systemctl restart nfs
+	# systemctl status nfs
+ 
+Steps to configure NFS Hards Mount:
+===================================
+Step1: check the NFS server access and shared file system information
+	# ping nfsserver
+	# ssh nfsserver
+	# showmount -e nfsserver
+Step2: mount the file system on clinet server
+	# mount -t nfs nfsserver:/data1 /mnt
+	# df -h /mnt
+	# cd /mnt; ls -l
+	# cd /
+	# umount /mnt
+	# mkdir /sharedata1 /sharedata2
+	# mount -t nfs nfsserver:/data1 /sharedata1
+	# mount -t nfs nfsserver:/data2 /sharedata2
+	# df -h 
+	Filesystem             Size  Used Avail Use% Mounted on
+	nfsserver:/data1       477M   69M  379M  16% /sharedata1
+	nfsserver:/data2       477M   62M  387M  14% /sharedata2
+
+Steps to configure Autofs Direct (Soft direct mounts):
+======================================================
+Step1: check the NFS server access and shared file system information
+	# ping nfsserver
+	# ssh nfsserver
+	# showmount -e nfsserver
+Step2: mount the file system on clinet server
+	# mount -t nfs nfsserver:/data3 /mnt
+	# df -h /mnt
+	# cd /mnt; ls -l
+	# cd /
+	# umount /mnt
+Step3: confugure autofs direct mount (soft direct mounts)
+	# rpm -qa |grep -i autofs
+	# yum install autofs
+	# systemctl enable autofs
+	# systemctl start autofs
+	# systemctl status autofs
+Step4: Add file system entires into autofs files
+	# vi /etc/auto.master
+	# cat /etc/auto.master
+	/-      /etc/auto.direct        --timeout=60
+	# vi /etc/auto.direct
+	# cat /etc/auto.direct
+	/sharedata3     -rw,sync,intr   nfsserver:/data3
+	/sharedata4     -rw,sync,intr   nfsserver:/data4
+	# systectl restart autofs
+Step5: mount the file system by entering into auto directory
+	# cd /sharedata3
+	# df -h 
+	nfsserver:/data3       477M  119M  329M  27% /sharedata3
+	# ls -l 
+	# cd /       ======> move to other location from the autofs file system
+	# df -h 
+	Not show any /sharedata3 file system information
+
+Steps to configure Autofs In-Direct (Soft-indirect Mounts):
+===========================================================
+Step1: check the NFS server access and shared file system information
+	# ping nfsserver
+	# ssh nfsserver
+	# showmount -e nfsserver
+Step2: mount the file system on clinet server
+	# mount -t nfs nfsserver:/data5 /mnt
+	# df -h /mnt
+	# cd /mnt; ls -l
+	# cd /
+	# umount /mnt
+Step3: confugure autofs direct mount (soft indirect mounts)
+	# rpm -qa |grep -i autofs
+	# yum install autofs
+	# systemctl enable autofs
+	# systemctl start autofs
+	# systemctl status autofs
+Step4: Add file system entires into autofs files
+	# cat/etc/auto.master
+	/products       /etc/auto.indirect      --timeout=60
+	# cat /etc/auto.indirect
+	sharedata5      -rw,sync,intr   nfsserver:/data5
+	sharedata6      -rw,sync,intr   nfsserver:/data6
+	# systectl restart autofs
+Step: mount the file systems by entering into autofs directories
+	# cd /product/sharedata5
+	# df -h 
+	nfsserver:/data5       477M  119M  329M  27% /product/sharedata5
+	# ls -l 
+	# cd /       ======> move to other location from the autofs file system
+	# df -h 
+	Not show any /product/sharedata5 file system information
+
+NFS Server Session Outputs:
+===========================
+
+login as: root
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │                 • MobaXterm Personal Edition v24.2 •                 │
+    │               (SSH client, X server and network tools)               │
+    │                                                                      │
+    │ ⮞ SSH session to root@192.168.29.176                                 │
+    │   • Direct SSH      :  ✓                                             │
+    │   • SSH compression :  ✓                                             │
+    │   • SSH-browser     :  ✓                                             │
+    │   • X11-forwarding  :  ✗  (disabled or not supported by server)      │
+    │                                                                      │
+    │ ⮞ For more info, ctrl+click on help or visit our website.            │
+    └──────────────────────────────────────────────────────────────────────┘
+
+Last failed login: Tue Jun 24 19:30:59 IST 2025 from 2405:201:c037:d269:c268:ccff:fe6b:db71 on ssh:notty
+There were 7 failed login attempts since the last successful login.
+Last login: Tue Jun 24 19:24:39 2025 from gateway
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# parted /dev/sde
+GNU Parted 3.1
+Using /dev/sde
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Error: /dev/sde: unrecognised disk label
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sde: 3221MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+(parted)
+(parted) mklabel gpt
+(parted)
+(parted) mkpart
+Partition name?  []? logical
+File system type?  [ext2]?
+Start? 1
+End? -1
+(parted) print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sde: 3221MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  3220MB  3219MB               logical
+
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG      Fmt  Attr PSize    PFree
+  /dev/sda2  rhel    lvm2 a--   <49.00g   4.00m
+  /dev/sdb1  sharevg lvm2 a--  1020.00m  20.00m
+  /dev/sdc1  webvg   lvm2 a--  1020.00m  20.00m
+  /dev/sdd1  infravg lvm2 a--    <2.00g 544.00m
+[root@gvnkansiblesrv ~]# lvs
+  LV      VG      Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  infralv infravg -wi-ao----    1.46g
+  root    rhel    -wi-ao----   46.99g
+  swap    rhel    -wi-ao----    2.00g
+  sharelv sharevg -wi-a----- 1000.00m
+  weblv   webvg   -wi-a----- 1000.00m
+[root@gvnkansiblesrv ~]# vgs
+  VG      #PV #LV #SN Attr   VSize    VFree
+  infravg   1   1   0 wz--n-   <2.00g 544.00m
+  rhel      1   2   0 wz--n-  <49.00g   4.00m
+  sharevg   1   1   0 wz--n- 1020.00m  20.00m
+  webvg     1   1   0 wz--n- 1020.00m  20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+/dev/mapper/infravg-infralv  1.5G   35M  1.5G   3% /infra
+tmpfs                         48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvs
+
+
+  PV         VG      Fmt  Attr PSize    PFree
+  /dev/sda2  rhel    lvm2 a--   <49.00g   4.00m
+  /dev/sdb1  sharevg lvm2 a--  1020.00m  20.00m
+  /dev/sdc1  webvg   lvm2 a--  1020.00m  20.00m
+  /dev/sdd1  infravg lvm2 a--    <2.00g 544.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# pvcreate /dev/sde1
+  Physical volume "/dev/sde1" successfully created.
+[root@gvnkansiblesrv ~]# pvs
+  PV         VG      Fmt  Attr PSize    PFree
+  /dev/sda2  rhel    lvm2 a--   <49.00g   4.00m
+  /dev/sdb1  sharevg lvm2 a--  1020.00m  20.00m
+  /dev/sdc1  webvg   lvm2 a--  1020.00m  20.00m
+  /dev/sdd1  infravg lvm2 a--    <2.00g 544.00m
+  /dev/sde1          lvm2 ---    <3.00g  <3.00g
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgcreate datavg /dev/sde1
+  Volume group "datavg" successfully created
+[root@gvnkansiblesrv ~]# lvcreate -L 500M datavg -n data1lv
+  Logical volume "data1lv" created.
+[root@gvnkansiblesrv ~]# mkfs -t ext4 /dev/datavg/data1lv
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+Stride=0 blocks, Stripe width=0 blocks
+128016 inodes, 512000 blocks
+25600 blocks (5.00%) reserved for the super user
+First data block=1
+Maximum filesystem blocks=34078720
+63 block groups
+8192 blocks per group, 8192 fragments per group
+2032 inodes per group
+Superblock backups stored on blocks:
+        8193, 24577, 40961, 57345, 73729, 204801, 221185, 401409
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkdir /data1
+[root@gvnkansiblesrv ~]# mount -t ext4 /dev/datavg/data1lv /data1/
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+/dev/mapper/infravg-infralv  1.5G   35M  1.5G   3% /infra
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/datavg-data1lv   477M  2.3M  445M   1% /data1
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgs
+  VG      #PV #LV #SN Attr   VSize    VFree
+  datavg    1   1   0 wz--n-   <3.00g  <2.51g
+  infravg   1   1   0 wz--n-   <2.00g 544.00m
+  rhel      1   2   0 wz--n-  <49.00g   4.00m
+  sharevg   1   1   0 wz--n- 1020.00m  20.00m
+  webvg     1   1   0 wz--n- 1020.00m  20.00m
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# lvcreate -L 500M datavg -n data2lv
+  Logical volume "data2lv" created.
+[root@gvnkansiblesrv ~]# lvcreate -L 500M datavg -n data3lv
+  Logical volume "data3lv" created.
+[root@gvnkansiblesrv ~]# lvcreate -L 500M datavg -n data4lv
+  Logical volume "data4lv" created.
+[root@gvnkansiblesrv ~]# lvcreate -L 500M datavg -n data5lv
+  Logical volume "data5lv" created.
+[root@gvnkansiblesrv ~]# lvcreate -L 500M datavg -n data6lv
+  Logical volume "data6lv" created.
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vgs
+  VG      #PV #LV #SN Attr   VSize    VFree
+  datavg    1   6   0 wz--n-   <3.00g  68.00m
+  infravg   1   1   0 wz--n-   <2.00g 544.00m
+  rhel      1   2   0 wz--n-  <49.00g   4.00m
+  sharevg   1   1   0 wz--n- 1020.00m  20.00m
+  webvg     1   1   0 wz--n- 1020.00m  20.00m
+[root@gvnkansiblesrv ~]# mkfs -t ext4 /dev/datavg/data2lv
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+Stride=0 blocks, Stripe width=0 blocks
+128016 inodes, 512000 blocks
+25600 blocks (5.00%) reserved for the super user
+First data block=1
+Maximum filesystem blocks=34078720
+63 block groups
+8192 blocks per group, 8192 fragments per group
+2032 inodes per group
+Superblock backups stored on blocks:
+        8193, 24577, 40961, 57345, 73729, 204801, 221185, 401409
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv ~]# mkfs -t ext4 /dev/datavg/data3lv
+mke2fs 1.42.9 (28-Dec-2013)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+Stride=0 blocks, Stripe width=0 blocks
+128016 inodes, 512000 blocks
+25600 blocks (5.00%) reserved for the super user
+First data block=1
+Maximum filesystem blocks=34078720
+63 block groups
+8192 blocks per group, 8192 fragments per group
+2032 inodes per group
+Superblock backups stored on blocks:
+        8193, 24577, 40961, 57345, 73729, 204801, 221185, 401409
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@gvnkansiblesrv ~]# mkfs -t xfs /dev/datavg/data4lv
+meta-data=/dev/datavg/data4lv    isize=512    agcount=4, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=128000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@gvnkansiblesrv ~]# mkfs -t xfs /dev/datavg/data5lv
+meta-data=/dev/datavg/data5lv    isize=512    agcount=4, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=128000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@gvnkansiblesrv ~]# mkfs -t xfs /dev/datavg/data6lv
+meta-data=/dev/datavg/data6lv    isize=512    agcount=4, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=128000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# blkid
+/dev/sda1: UUID="2e83314c-d3cc-4735-b3b0-c711cec2d699" TYPE="xfs"
+/dev/sda2: UUID="W26kJ5-d31U-9Xsi-CU3S-08qE-iDsx-sqaJpf" TYPE="LVM2_member"
+/dev/sdb1: UUID="VycV4w-Hkmy-Q27T-E5gO-6RY2-3rCq-tmmN6f" TYPE="LVM2_member" PARTLABEL="logical" PARTUUID="c6b8deca-1dd4-4334-a628-bfe08ddc648a"
+/dev/sdc1: UUID="pHACjs-ryGN-Fss5-YJx0-v7a0-Qvj6-DHd4Rm" TYPE="LVM2_member" PARTLABEL="logical" PARTUUID="15e73b19-76b6-4341-ba2f-7ad6bf570248"
+/dev/sdd1: UUID="h06kjO-yO2E-Xe0H-YnaD-3oIG-lioi-6xMPev" TYPE="LVM2_member" PARTLABEL="logical" PARTUUID="ca3cbcfd-c84a-4e17-bd37-9d9267cbe39d"
+/dev/sr0: UUID="2018-01-19-09-23-44-00" LABEL="RHEL-7.4 Server.x86_64" TYPE="iso9660" PTTYPE="dos"
+/dev/mapper/rhel-root: UUID="a0ed92f2-a9b6-439e-9af7-9d0c31e0deb2" TYPE="xfs"
+/dev/mapper/rhel-swap: UUID="424d0bdb-d8b6-45fa-bd6b-811c444b0338" TYPE="swap"
+/dev/mapper/sharevg-sharelv: UUID="28919281-edd7-4f1a-98b8-efa95caa70ec" TYPE="ext4"
+/dev/mapper/infravg-infralv: UUID="43a9b9f9-4747-4a0d-bea9-6ac08b942c41" TYPE="xfs"
+/dev/mapper/webvg-weblv: UUID="02e92193-8216-49ae-83f1-f5d830ce2bfa" TYPE="ext4"
+/dev/sde1: UUID="ASDfPS-ArOV-IR8p-sc57-I0Kd-BoVK-OLJm9b" TYPE="LVM2_member" PARTLABEL="logical" PARTUUID="ddab00ac-6a59-4b08-99fd-4cdd802e7e72"
+/dev/mapper/datavg-data1lv: UUID="d1be23c1-8a08-47b5-8807-90f13ce7e414" TYPE="ext4"
+/dev/mapper/datavg-data2lv: UUID="a05eaab6-4065-4d14-89b7-64d3e871bafa" TYPE="ext4"
+/dev/mapper/datavg-data3lv: UUID="9fc6ae3e-6a0d-497b-9236-d7ad5d9e54db" TYPE="ext4"
+/dev/mapper/datavg-data4lv: UUID="b57be948-19c8-4857-a398-528c36542894" TYPE="xfs"
+/dev/mapper/datavg-data5lv: UUID="bb161d9f-98ea-4cc5-8641-e9ac3178dfbf" TYPE="xfs"
+/dev/mapper/datavg-data6lv: UUID="baa4d419-1cc9-4740-a012-0e6a81136520" TYPE="xfs"
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mkdir /data2 /data3 /data4 /data5 /data6
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mount -t ext4 /dev/datavg/data2lv /data2
+[root@gvnkansiblesrv ~]# mount -t ext4 /dev/datavg/data3lv /data3
+[root@gvnkansiblesrv ~]# mount -t ext4 /dev/datavg/data4lv /data4
+mount: wrong fs type, bad option, bad superblock on /dev/mapper/datavg-data4lv,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/datavg/data4lv /data4
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/datavg/data5lv /data5
+[root@gvnkansiblesrv ~]# mount -t xfs /dev/datavg/data6lv /data6
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+/dev/mapper/infravg-infralv  1.5G   35M  1.5G   3% /infra
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/datavg-data1lv   477M  2.3M  445M   1% /data1
+/dev/mapper/datavg-data2lv   477M  2.3M  445M   1% /data2
+/dev/mapper/datavg-data3lv   477M  2.3M  445M   1% /data3
+/dev/mapper/datavg-data4lv   497M   26M  472M   6% /data4
+/dev/mapper/datavg-data5lv   497M   26M  472M   6% /data5
+/dev/mapper/datavg-data6lv   497M   26M  472M   6% /data6
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vi /etc/fstab
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# umount /data*
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+/dev/mapper/infravg-infralv  1.5G   35M  1.5G   3% /infra
+tmpfs                         48M     0   48M   0% /run/user/0
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mount /data*
+
+Usage:
+ mount [-lhV]
+ mount -a [options]
+ mount [options] [--source] <source> | [--target] <directory>
+ mount [options] <source> <directory>
+ mount <operation> <mountpoint> [<target>]
+
+Options:
+ -a, --all               mount all filesystems mentioned in fstab
+ -c, --no-canonicalize   don't canonicalize paths
+ -f, --fake              dry run; skip the mount(2) syscall
+ -F, --fork              fork off for each device (use with -a)
+ -T, --fstab <path>      alternative file to /etc/fstab
+ -h, --help              display this help text and exit
+ -i, --internal-only     don't call the mount.<type> helpers
+ -l, --show-labels       lists all mounts with LABELs
+ -n, --no-mtab           don't write to /etc/mtab
+ -o, --options <list>    comma-separated list of mount options
+ -O, --test-opts <list>  limit the set of filesystems (use with -a)
+ -r, --read-only         mount the filesystem read-only (same as -o ro)
+ -t, --types <list>      limit the set of filesystem types
+     --source <src>      explicitly specifies source (path, label, uuid)
+     --target <target>   explicitly specifies mountpoint
+ -v, --verbose           say what is being done
+ -V, --version           display version information and exit
+ -w, --rw, --read-write  mount the filesystem read-write (default)
+
+ -h, --help     display this help and exit
+ -V, --version  output version information and exit
+
+Source:
+ -L, --label <label>     synonym for LABEL=<label>
+ -U, --uuid <uuid>       synonym for UUID=<uuid>
+ LABEL=<label>           specifies device by filesystem label
+ UUID=<uuid>             specifies device by filesystem UUID
+ PARTLABEL=<label>       specifies device by partition label
+ PARTUUID=<uuid>         specifies device by partition UUID
+ <device>                specifies device by path
+ <directory>             mountpoint for bind mounts (see --bind/rbind)
+ <file>                  regular file for loopdev setup
+
+Operations:
+ -B, --bind              mount a subtree somewhere else (same as -o bind)
+ -M, --move              move a subtree to some other place
+ -R, --rbind             mount a subtree and all submounts somewhere else
+ --make-shared           mark a subtree as shared
+ --make-slave            mark a subtree as slave
+ --make-private          mark a subtree as private
+ --make-unbindable       mark a subtree as unbindable
+ --make-rshared          recursively mark a whole subtree as shared
+ --make-rslave           recursively mark a whole subtree as slave
+ --make-rprivate         recursively mark a whole subtree as private
+ --make-runbindable      recursively mark a whole subtree as unbindable
+
+For more details see mount(8).
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# mount -a
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+/dev/mapper/infravg-infralv  1.5G   35M  1.5G   3% /infra
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/datavg-data1lv   477M  2.3M  445M   1% /data1
+/dev/mapper/datavg-data2lv   477M  2.3M  445M   1% /data2
+/dev/mapper/datavg-data3lv   477M  2.3M  445M   1% /data3
+/dev/mapper/datavg-data4lv   497M   26M  472M   6% /data4
+/dev/mapper/datavg-data5lv   497M   26M  472M   6% /data5
+/dev/mapper/datavg-data6lv   497M   26M  472M   6% /data6
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cd /data1
+[root@gvnkansiblesrv data1]# cp /var/ftp/pub/rhel7/a* /data1
+[root@gvnkansiblesrv data1]# cp /var/ftp/pub/rhel7/b* /data2
+[root@gvnkansiblesrv data1]# cp /var/ftp/pub/rhel7/c* /data3
+[root@gvnkansiblesrv data1]# cp /var/ftp/pub/rhel7/d* /data4
+[root@gvnkansiblesrv data1]# cp /var/ftp/pub/rhel7/e* /data5
+[root@gvnkansiblesrv data1]# cp /var/ftp/pub/rhel7/f* /data6
+[root@gvnkansiblesrv data1]#
+[root@gvnkansiblesrv data1]#
+[root@gvnkansiblesrv data1]# cd
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# df -h
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root         47G  6.0G   41G  13% /
+devtmpfs                     225M     0  225M   0% /dev
+tmpfs                        236M     0  236M   0% /dev/shm
+tmpfs                        236M  8.8M  227M   4% /run
+tmpfs                        236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                   1014M  125M  890M  13% /boot
+/dev/mapper/infravg-infralv  1.5G   35M  1.5G   3% /infra
+tmpfs                         48M     0   48M   0% /run/user/0
+/dev/mapper/datavg-data1lv   477M   69M  379M  16% /data1
+/dev/mapper/datavg-data2lv   477M   62M  387M  14% /data2
+/dev/mapper/datavg-data3lv   477M  119M  329M  27% /data3
+/dev/mapper/datavg-data4lv   497M   63M  435M  13% /data4
+/dev/mapper/datavg-data5lv   497M   83M  414M  17% /data5
+/dev/mapper/datavg-data6lv   497M  185M  312M  38% /data6
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vi /etc/exports
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# cat /etc/exports
+/infra   *(sync,rw,no_root_squash)
+/data1  c111xyz(sync,rw,no_root_sqash)
+/data2  c111xyz(sync,rw,no_root_sqash)
+/data3  c111xyz(sync,rw)
+/data4  c111xyz(sync,rw)
+/data5  c111xyz(sync,ro,no_root_sqash)
+/data6  c111xyz(sync,ro,no_root_sqash)
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# exportfs -avr
+exportfs: /etc/exports:2: unknown keyword "no_root_sqash"
+
+exporting *:/infra
+[root@gvnkansiblesrv ~]# vi /etc/exports
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# exportfs -avr
+exporting c111xyz:/data6
+exporting c111xyz:/data5
+exporting c111xyz:/data4
+exporting c111xyz:/data3
+exporting c111xyz:/data2
+exporting c111xyz:/data1
+exporting *:/infra
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# exportfs -U /data3
+exportfs: invalid option -- 'U'
+usage: exportfs [-adfhioruvs] [host:/path]
+[root@gvnkansiblesrv ~]# exportfs -u /data3
+exportfs: Invalid export syntax: /data3
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# exportfs -u
+/data6          c111xyz
+/data5          c111xyz
+/data4          c111xyz
+/data3          c111xyz
+/data2          c111xyz
+/data1          c111xyz
+/infra          <world>
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# showmount -a
+All mount points on gvnkansiblesrv:
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# showmount -e
+Export list for gvnkansiblesrv:
+/infra *
+/data1 c111xyz
+/data2 c111xyz
+/data3 c111xyz
+/data4 c111xyz
+/data5 c111xyz
+/data6 c111xyz
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vi /etc/exports
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# exportfs -avr
+exporting c111xyz:/data4
+exporting c111xyz:/data3
+exporting c111xyz:/data2
+exporting c111xyz:/data1
+exporting *:/infra
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# vi /etc/exports
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# showmount -e
+Export list for gvnkansiblesrv:
+/infra *
+/data4 c111xyz
+/data3 c111xyz
+/data2 c111xyz
+/data1 c111xyz
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# exportfs -avr
+exporting c111xyz:/data6
+exporting c111xyz:/data5
+exporting c111xyz:/data4
+exporting c111xyz:/data3
+exporting c111xyz:/data2
+exporting c111xyz:/data1
+exporting *:/infra
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]#
+[root@gvnkansiblesrv ~]# history
+    1  rpm -qf /usr/bin/vi
+    2  parted -l
+    3  parted /dev/sdc
+    4  parted -l |more
+    5  parted /dev/sdb
+    6  parted -l |more
+    7  blkid
+    8  mkfs -t ext4 /dev/sdb1
+    9  blkid
+   10  mkdir /webdata1
+   11  ls
+   12  cd /
+   13  ls
+   14  df -h
+   15  mkdir /oradata1
+   16  mount -t ext4 /dev/sdb1 /oradata1
+   17  df -h
+   18  cd /oradata1/
+   19  mkdir ashok
+   20  touch file1
+   21  cd /
+   22  df -h
+   23  cd /oradata1/
+   24  ls -l
+   25  cd /
+   26  df -h
+   27  cd /oradata1
+   28  ls -l
+   29  cd /
+   30  umount oradata1
+   31  df -h
+   32  cd /oradata1/
+   33  ls -l
+   34  df -h .
+   35  cd /
+   36  df -h
+   37  mount -t ext4 /dev/sdb1 /oradata1
+   38  df -h
+   39  cd /oradata1
+   40  ls -l
+   41  cd /
+   42  df -h
+   43  mkfs -t ext4 /dev/sdb2
+   44  mkfs -t ext4 /dev/sdb3
+   45  mkfs -t ext4 /dev/sdb4
+   46  mkfs -t ext4 /dev/sdb5
+   47  mkfs -t ext4 /dev/sdb6
+   48  mkdir /oradata2 /oradata3 /oradata4 /oradata5 /oradata6
+   49  mount -t ext4 /dev/sdb2 /oradata2
+   50  mount -t ext4 /dev/sdb3 /oradata3
+   51  mount -t ext4 /dev/sdb4 /oradata4
+   52  mount -t ext4 /dev/sdb5 /oradata5
+   53  mount -t ext4 /dev/sdb6 /oradata6
+   54  df -h
+   55  poweroff
+   56  parted -l
+   57  df -h
+   58  blkid
+   59  cd /
+   60  ls -l
+   61  mount -t ext4 /dev/sdd1 /oradata1
+   62  mount -t ext4 /dev/sdb1 /oradata1
+   63  mount -t ext4 /dev/sdb2 /oradata2
+   64  mount -t ext4 /dev/sdb3 /oradata3
+   65  mount -t ext4 /dev/sdb4 /oradata4
+   66  mount -t ext4 /dev/sdb5 /oradata5
+   67  mount -t ext4 /dev/sdb6 /oradata6
+   68  df -h
+   69  cd /oradata3
+   70  df -h .
+   71  cp /r /var/log/* /oradata3/
+   72  cp rr /var/log/* /oradata3/
+   73  rm -rf /oradata3/*
+   74  cp -r /var/log/* /oradata3/
+   75  df -h
+   76  df -h
+   77  cd /
+   78  du -sh *
+   79  cd /var/log/
+   80  du -sh *
+   81  cd ..
+   82  l
+   83  du -sh *
+   84  cd ftp/
+   85  ls
+   86  cd pub/
+   87  ls
+   88  cd rhel7/
+   89  ls
+   90  cp a* /oradata3/
+   91  df -h
+   92  cp b* /oradata3/
+   93  df -h
+   94  cp c* /oradata3/
+   95  cp d* /oradata3/
+   96  df -h
+   97  cp e* /oradata3/
+   98  cp f* /oradata3/
+   99  df -h
+  100  cp g* /oradata3/
+  101  cp h* /oradata3/
+  102  df -h
+  103  parted -l
+  104  cd
+  105  parted /dev/sde
+  106  mkfs -t ext4 /dev/sde1
+  107  mkdir /shareddir
+  108  mount -t ext4 /dev/sde1 /shareddir
+  109  df -h
+  110  umount /shareddir
+  111  parted /dev/sde1
+  112  parted /dev/sdf
+  113  parted -l |more
+  114  pvs
+  115  pvcreate /dev/sdf1
+  116  pvs
+  117  vgcreate shredvg /dev/sdf1
+  118  vgs
+  119  lvs
+  120  lvcreate -L 1020M -n sharedlv sharedvg
+  121  lvcreate -L 1020M -n shrelv shredvg
+  122  lvs
+  123  mkfs -t ext4 /dev/shredvg/shrelv
+  124  mount -t ext4 /dev/shredvg/shrelv /shareddir
+  125  df -h /shareddir
+  126  df -h
+  127  cp /var/ftp/pub/rhel7/a* /shareddir/
+  128  cp /var/ftp/pub/rhel7/b* /shareddir/
+  129  cp /var/ftp/pub/rhel7/c* /shareddir/
+  130  cp /var/ftp/pub/rhel7/d* /shareddir/
+  131  cp /var/ftp/pub/rhel7/e* /shareddir/
+  132  cp /var/ftp/pub/rhel7/f* /shareddir/
+  133  df -h
+  134  cp /var/ftp/pub/rhel7/g* /shareddir/
+  135  df -h
+  136  parted -l |more
+  137  parted /dev/sdg
+  138  pvs
+  139  pvcreate /dev/sdg1
+  140  pvs
+  141  vgextend shredvg /dev/sdg1
+  142  vgs
+  143  lvs
+  144  lvextend -L 1020M /dev/shredvg/shrelv
+  145  lvextend -L 1010M /dev/shredvg/shrelv
+  146  lvs
+  147  lvextend -L 1000M /dev/shredvg/shrelv
+  148  lvextend -L 900M /dev/shredvg/shrelv
+  149  vgs
+  150  lvextend -l 100%FREE /dev/shredvg/shrelv
+  151  vgs
+  152  lvs
+  153  blkid
+  154  df -h
+  155  umount /shareddir/
+  156  lvs
+  157  lvextend -l +100%FREE /dev/shredvg/shrelv
+  158  mount /shareddir/
+  159  df -h
+  160  mount -t ext4 /dev/shredvg/shrelv /shareddir/
+  161  df -h
+  162  resize2fs /dev/shredvg/shrelv
+  163  df -h
+  164  which pvcreate
+  165  rpm -qf /usr/sbin/pvcreate
+  166  echo "- - -"> /sys/class/scsi_host/host0/scan
+  167  echo "- - -"> /sys/class/scsi_host/host1/scan
+  168  echo "- - -"> /sys/class/scsi_host/host2/scan
+  169  parted -l
+  170  parted -l|more
+  171  echo "- - -"> /sys/class/scsi_host/host0/scan
+  172  echo "- - -"> /sys/class/scsi_host/host1/scan
+  173  echo "- - -"> /sys/class/scsi_host/host2/scan
+  174  echo "- - -"> /sys/class/scsi_host/host3/scan
+  175  parted -l|more
+  176  echo "- - -"> /sys/class/scsi_host/host0/scan
+  177  echo "- - -"> /sys/class/scsi_host/host1/scan
+  178  echo "- - -"> /sys/class/scsi_host/host2/scan
+  179  echo "- - -"> /sys/class/scsi_host/host3/scan
+  180  df -h
+  181  parted -l
+  182  pvs
+  183  cd /
+  184  ls -l
+  185  df -h
+  186  cd shareddir
+  187  df -h .
+  188  cd /
+  189  mount -t ext4 /dev/shredvg/shrelv /shareddir
+  190  df -h
+  191  cd /dev/mapper/rhel-root
+  192  cd /shareddir/
+  193  df -h .
+  194  cd /
+  195  df -h
+  196  cat /etc/fstab
+  197  cp /etc/fstab /etc/fstab.shreddir
+  198  ls -l /etc/fstab*
+  199  vi /etc/fstab
+  200  cat /etc/fstab
+  201  df -h
+  202  umount /shareddir
+  203  df -h
+  204  reboot
+  205  df -h
+  206  uptime
+  207  umount /shareddir
+  208  df -h
+  209  mount /shareddir
+  210  df -h
+  211  ls -l /etc/fstab*
+  212  cd /etc/ls -l
+  213  cd /etc/
+  214  ls
+  215  cd /
+  216  vgs
+  217  df -h /shareddir
+  218  cp /var/ftp/pub/rhel7/z* /shareddir/
+  219  cp /var/ftp/pub/rhel7/y* /shareddir/
+  220  cp /var/ftp/pub/rhel7/x* /shareddir/
+  221  df - h /shareddir/
+  222  cp /var/ftp/pub/rhel7/w* /shareddir/
+  223  cp /var/ftp/pub/rhel7/v* /shareddir/
+  224  cp /var/ftp/pub/rhel7/u* /shareddir/
+  225  cp /var/ftp/pub/rhel7/t* /shareddir/
+  226  df - h /shareddir/
+  227  cp /var/ftp/pub/rhel7/s* /shareddir/
+  228  cp /var/ftp/pub/rhel7/r* /shareddir/
+  229  df -h
+  230  vgs
+  231  parted -l
+  232  parted /dev/sdh
+  233  parted -l
+  234  pvs
+  235  pvcreate /dev/sdh1
+  236  pvs
+  237  vgs
+  238  vgextend shredvg /dev/sdh1
+  239  vgs
+  240  pvs
+  241  lvs
+  242  lvextend -L +1G /dev/shredvg/shrelv
+  243  lvs
+  244  df -h /shareddir/
+  245  resize2fs /dev/shredvg/shrelv
+  246  df -h /shareddir/
+  247  vgs
+  248  df -h /shareddir/
+  249  vgs
+  250  lvextend -L +1000M /dev/shredvg/shrelv
+  251  lvs
+  252  resize2fs /dev/shredvg/shrelv
+  253  df -h /shareddir/
+  254  poweroff
+  255  echo "- - -" > /sys/class/scsi_host/host0/scan
+  256  echo "- - -" > /sys/class/scsi_host/host1/scan
+  257  echo "- - -" > /sys/class/scsi_host/host2/scan
+  258  parted -l
+  259  vi /etc/fstab
+  260  parted -l
+  261  pvs
+  262  lvs
+  263  vgs
+  264  pvs
+  265  lvs
+  266  lvremove /dev/webdatavg/webdatalv1
+  267  umount /webdata1
+  268  umount /webdata2
+  269  lvremove /dev/webdatavg/webdatalv1
+  270  lvremove /dev/webdatavg/webdatalv2
+  271  lvremove /dev/shredvg/shrelv
+  272  umount -a
+  273  lvremove /dev/shredvg/shrelv
+  274  lvs
+  275  vgs
+  276  vgremove webdatavg
+  277  vgremove shredvg
+  278  vgs
+  279  pvs
+  280  pvremove /dev/sdd1
+  281  pvremove /dev/sde1
+  282  pvremove /dev/sdf1
+  283  pvremove /dev/sdg1
+  284  pvremove /dev/sdh1
+  285  pvs
+  286  shutdown
+  287  parted -l
+  288  parted /dev/sdb
+  289  pvs
+  290  pvcreate /dev/sdb1
+  291  pvs
+  292  vgcreate crmappvg /dev/sdb1
+  293  vgs
+  294  lvcreate -L 1000M -n crmdatalv crmappvg
+  295  lvs
+  296  mkfs -t ext4 /dev/crmappvg/crmdatalv
+  297  blkid
+  298  mkdir /crmdata
+  299  mount -t ext4 /dev/crmappvg/crmdatalv /crmdata
+  300  df -h
+  301  cd /crmdata
+  302  pwd
+  303  df -h .
+  304  cp -r /var/ftp/pub/rhel7/a* /crmdata/
+  305  cp -r /var/ftp/pub/rhel7/b* /crmdata/
+  306  cp -r /var/ftp/pub/rhel7/c* /crmdata/
+  307  cp -r /var/ftp/pub/rhel7/d* /crmdata/
+  308  cp -r /var/ftp/pub/rhel7/e* /crmdata/
+  309  df -h
+  310  cp -r /var/ftp/pub/rhel7/f* /crmdata/
+  311  cp -r /var/ftp/pub/rhel7/g* /crmdata/
+  312  df -h
+  313  cd /
+  314  df -h
+  315  vgs
+  316  parted -l
+  317  parted /dev/sdc
+  318  pvs
+  319  pvcreate /dev/sdc1
+  320  pvs
+  321  vgextend crmappvg /dev/sdc1
+  322  vgs
+  323  lvs
+  324  lvextend -L +1000M /dev/crmappvg/crmdatalv
+  325  lvs
+  326  df -h
+  327  resize2fs /dev/crmappvg/crmdatalv
+  328  df -h
+  329  vgs
+  330  lvextend -L +1000M /dev/crmappvg/crmdatalv
+  331  lvs
+  332  resize2fs /dev/crmappvg/crmdatalv
+  333  df -h
+  334  umount /crmdata/
+  335  df -h
+  336  mount -t ext4 /dev/crmappvg/crmdatalv /crmdata/
+  337  cd /crmdata/
+  338  ls
+  339  cd /
+  340  df -h
+  341  umount /crmdata/
+  342  e2fsck -f /dev/crmappvg/crmdatalv
+  343  resize2fs /dev/crmappvg/crmdatalv 2000M
+  344  lvreduce -L -1000M /dev/crmappvg/crmdatalv
+  345  lvs
+  346  mount -t ext4 /dev/crmappvg/crmdatalv /crmdata
+  347  df -h
+  348  cd /crmdata/
+  349  ls
+  350  vgs
+  351  ls
+  352  cd /
+  353  df -h
+  354  poweroff
+  355  echo "- - -">/sys/class/scsi_host/host0/scan
+  356  echo "- - -">/sys/class/scsi_host/host1/scan
+  357  echo "- - -">/sys/class/scsi_host/host2/scan
+  358  echo "- - -">/sys/class/scsi_host/host3/scan
+  359  parted -l
+  360  echo "- - -">/sys/class/scsi_host/host0/scan
+  361  echo "- - -">/sys/class/scsi_host/host1/scan
+  362  echo "- - -">/sys/class/scsi_host/host2/scan
+  363  parted -l
+  364  pvs
+  365  df -h
+  366  lvremove /dev/crmappvg/crmdatalv
+  367  vgs
+  368  vgremove crmappvg
+  369  pvs
+  370  pvremove /dev/sdb1 /dev/sdc1
+  371  lvs
+  372  pvs
+  373  vgs
+  374  parted -l
+  375  pvs
+  376  pvcreate /dev/sdb1
+  377  pvs
+  378  vgcreate bigdatavg /dev/sdb1
+  379  lvcreate -L 1000M -n bigdatalv bigdatavg
+  380  lvs
+  381  mkfs -t xfs /dev/bigdatavg/bigdatalv
+  382  mkdir /bigdata
+  383  mount -t xfs /dev/bigdatavg/bigdatalv /bigdata
+  384  df -h /bigdata/
+  385  blkid
+  386  df -h
+  387  cp /var/ftp/pub/rhel7/a* /bigdata/
+  388  cp /var/ftp/pub/rhel7/b* /bigdata/
+  389  cp /var/ftp/pub/rhel7/c* /bigdata/
+  390  cp /var/ftp/pub/rhel7/d* /bigdata/
+  391  cp /var/ftp/pub/rhel7/e* /bigdata/
+  392  cp /var/ftp/pub/rhel7/f* /bigdata/
+  393  df -h
+  394  cp /var/ftp/pub/rhel7/g* /bigdata/
+  395  df -h
+  396  parted -l
+  397  lvs
+  398  pvs
+  399  pvcreate /dev/sdc1
+  400  pvs
+  401  vgextend bigdatavg /dev/sdc1
+  402  vgs
+  403  pvs
+  404  lvextend -L +1000M /dev/bigdatavg/bigdatalv
+  405  lvs
+  406  df -h
+  407  xfs_growfs -d /bigdata
+  408  df -h
+  409  vgs
+  410  lvextend -L +1000M /dev/bigdatavg/bigdatalv
+  411  lvs
+  412  df -h
+  413  xfs_growfs -d /bigdata
+  414  df -h
+  415  df -Th
+  416  history
+  417  poweroff
+  418  parted -l
+  419  parted -l
+  420  pvs
+  421  lvs
+  422  lvremove /dev/bigdatavg/bigdatalv
+  423  vgremove bigdatavg
+  424  pvremove /dev/sdc1
+  425  pvremove /dev/sdb1
+  426  pvs
+  427  parted -l
+  428  parted -l |more
+  429  parted /dev/sdb
+  430  pvs
+  431  pvcreate /dev/sdb1
+  432  vgcreate webvg /dev/sdb1
+  433  lvcreate -L 1000M -n weblv webvg
+  434  lvs
+  435  mkfs -t xfs /dev/webvg/weblv
+  436  mkdir /webdata
+  437  mount -t xfs /dev/webvg/weblv /webdata
+  438  df -h
+  439  cp /var/ftp/pub/rhel7/a* /webdata
+  440  cp /var/ftp/pub/rhel7/b* /webdata
+  441  ls -l /webdata
+  442  df -h
+  443  vgs
+  444  lvs
+  445  pvs
+  446  parted /dev/sdc
+  447  pvcreate /dev/sdc1
+  448  pvs
+  449  vgextend webvg /dev/sdc1
+  450  pvs
+  451  lvs
+  452  vgs
+  453  umount /webdata
+  454  df -h
+  455  pvs
+  456  pvmove /dev/sdb1 /dev/sdc1
+  457  pvs
+  458  mount -t ext4 /dev/webvg/weblv /webdata
+  459  mount -t xfs /dev/webvg/weblv /webdata
+  460  df -h
+  461  ls /webdata
+  462  cd /webdata
+  463  mkdir ashok
+  464  ls -ld ashok/
+  465  rmdir ashok
+  466  cd
+  467  pvs
+  468  vgreduce webvg /dev/sdb1
+  469  pvs
+  470  vgs
+  471  pvremove /dev/sdb1
+  472  pvs
+  473  vgs
+  474  lvs
+  475  cd /webdata
+  476  ls
+  477  cd /
+  478  pvs
+  479  poweroff
+  480  parted -l |more
+  481  blkid
+  482  mount -t xfs /dev/webvg/weblv /webdata
+  483  df -h
+  484  cat /etc/fstab
+  485  vi /etc/fstab
+  486  df -h
+  487  umount /webdata
+  488  df -h
+  489  mount /webdata
+  490  df -h
+  491  cat /etc/fstab
+  492  rpm -qa |grep -i nfs
+  493  systemctl status nfs
+  494  systemctl status nfs-utils
+  495  systemctl status nfs-server
+  496  yum list all |grep -i nfs
+  497  cat /etc/exports
+  498  ping 192.168.1.120
+  499  ping 192.168.29.120
+  500  ssh 192.168.29.120
+  501  parted -l
+  502  pvs
+  503  lvs
+  504  vgs
+  505  parted -l
+  506  parted /dev/sdb
+  507  parted -l |more
+  508  parted /dev/sdc
+  509  parted -l |more
+  510  parted /dev/sdb
+  511  parted -l |more
+  512  pvs
+  513  pvcreate /dev/sdb1
+  514  vgcreate sharevg /dev/sdb1
+  515  lvcreate -L 1000M -n sharelv sharevg
+  516  ls
+  517  lvs
+  518  mkfs -t etx4 /dev/sharevg/sharelv
+  519  mkfs -t ext4 /dev/sharevg/sharelv
+  520  mkdir /sharedata
+  521  mount -t etx4 /dev/sharevg/sharelv /sharedata/
+  522  mount -t ext4 /dev/sharevg/sharelv /sharedata/
+  523  df -h
+  524  cp /var/ftp/pub/rhel7/g* /sharedata/
+  525  ls -l /shared
+  526  ls -l /sharedata/
+  527  cd /
+  528  df -h
+  529  pvs
+  530  lvs
+  531  vgs
+  532  umount /sharedata/
+  533  vgchange -y n sharevg
+  534  vgchange man
+  535  vgchange --help
+  536  vgchange -a y sharevg
+  537  vgchange -a n sharevg
+  538  lvscan
+  539  vgs
+  540  vgexport sharevg
+  541  vgs
+  542  vgscan
+  543  vgs
+  544  lvs
+  545  lvscan
+  546  lvs
+  547  vgs
+  548  df -h
+  549  vgs
+  550  lvs
+  551  vgscan
+  552  vgimport sharevg
+  553  vgscan
+  554  lvs
+  555  lvscan
+  556  vgchange -a y sharevg
+  557  lvscan
+  558  mount -t ext4 /dev/sharevg/sharelv /sharedata/
+  559  df -h
+  560  cd /sharedata/
+  561  ls -l
+  562  cd /
+  563  df -h
+  564  history
+  565  ping 192.168.29.120
+  566  ssh 192.168.29.120
+  567  systemctl status firewalld
+  568  sestatus
+  569  df -h
+  570  df -h
+  571  cat /proc/mounts
+  572  cd /proc/
+  573  ls
+  574  cat cpuinfo
+  575  cat meminfo
+  576  cd /
+  577  df -h
+  578  rpm -qa |grep -i nfs
+  579  rpm -e nfs-utils
+  580  rpm -qa |grep -i nfs
+  581  yum install nfs-utils
+  582  rpm -qa |grep -i nfs
+  583  systemctl status nfs
+  584  systemctl start nfs
+  585  systemctl enable nfs
+  586  systemctl status nfs
+  587  parted -l |more
+  588  parted /dev/sdd
+  589  pvcreate /dev/sdd1
+  590  vgcreate infravg /dev/sdd1
+  591  lvcreate -L 1500MB -n infralv infravg
+  592  mkfs -t xfs /dev/infravg/infralv
+  593  mkdir /infra
+  594  mount -t xfs /dev/infravg/infralv /infra
+  595  cd /infra/
+  596  df -h .
+  597  cp /var/log/* /infra
+  598  ls -l
+  599  ls
+  600  cd /
+  601  df -h
+  602  vi /etc/fstab
+  603  df -h
+  604  umount /infra
+  605  mount /infra
+  606  df -h
+  607  cat /etc/exports
+  608  vi /etc/exports
+  609  cat /etc/exports
+  610  exportfs -avr
+  611  systemctl restart nfs
+  612  systemctl status nfs
+  613  cd /etc/yum.repos.d/
+  614  ls -lrt
+  615  cat rhel7.repo
+  616  systemctl status vsftpd
+  617  systemctl enable vsftpd
+  618  systemctl start vsftpd
+  619  cd /infra
+  620  ls -l
+  621  mkdir dir1 dir2 dir3 dir4 dir5
+  622  ls -l
+  623  history
+  624  echo "- - -">/sys/class/scsi_host/host0/scan
+  625  echo "- - -">/sys/class/scsi_host/host1/scan
+  626  echo "- - -">/sys/class/scsi_host/host2/scan
+  627  ip addr
+  628  vi /etc/hosts
+  629  ping c111xyz
+  630  parted -l
+  631  echo "- - -">/sys/class/scsi_host/host0/scan
+  632  echo "- - -">/sys/class/scsi_host/host1/scan
+  633  echo "- - -">/sys/class/scsi_host/host2/scan
+  634  parted -l |more
+  635  parted /dev/sde
+  636  pvs
+  637  lvs
+  638  vgs
+  639  df -h
+  640  pvs
+  641  pvcreate /dev/sde1
+  642  pvs
+  643  vgcreate datavg /dev/sde1
+  644  lvcreate -L 500M datavg -n data1lv
+  645  mkfs -t ext4 /dev/datavg/data1lv
+  646  mkdir /data1
+  647  mount -t ext4 /dev/datavg/data1lv /data1/
+  648  df -h
+  649  vgs
+  650  lvcreate -L 500M datavg -n data2lv
+  651  lvcreate -L 500M datavg -n data3lv
+  652  lvcreate -L 500M datavg -n data4lv
+  653  lvcreate -L 500M datavg -n data5lv
+  654  lvcreate -L 500M datavg -n data6lv
+  655  vgs
+  656  mkfs -t ext4 /dev/datavg/data2lv
+  657  mkfs -t ext4 /dev/datavg/data3lv
+  658  mkfs -t xfs /dev/datavg/data4lv
+  659  mkfs -t xfs /dev/datavg/data5lv
+  660  mkfs -t xfs /dev/datavg/data6lv
+  661  blkid
+  662  mkdir /data2 /data3 /data4 /data5 /data6
+  663  mount -t ext4 /dev/datavg/data2lv /data2
+  664  mount -t ext4 /dev/datavg/data3lv /data3
+  665  mount -t ext4 /dev/datavg/data4lv /data4
+  666  mount -t xfs /dev/datavg/data4lv /data4
+  667  mount -t xfs /dev/datavg/data5lv /data5
+  668  mount -t xfs /dev/datavg/data6lv /data6
+  669  df -h
+  670  vi /etc/fstab
+  671  umount /data*
+  672  df -h
+  673  mount /data*
+  674  mount -a
+  675  df -h
+  676  cd /data1
+  677  cp /var/ftp/pub/rhel7/a* /data1
+  678  cp /var/ftp/pub/rhel7/b* /data2
+  679  cp /var/ftp/pub/rhel7/c* /data3
+  680  cp /var/ftp/pub/rhel7/d* /data4
+  681  cp /var/ftp/pub/rhel7/e* /data5
+  682  cp /var/ftp/pub/rhel7/f* /data6
+  683  cd
+  684  df -h
+  685  vi /etc/exports
+  686  cat /etc/exports
+  687  exportfs -avr
+  688  vi /etc/exports
+  689  exportfs -avr
+  690  exportfs -U /data3
+  691  exportfs -u /data3
+  692  exportfs -u
+  693  showmount -a
+  694  showmount -e
+  695  vi /etc/exports
+  696  exportfs -avr
+  697  vi /etc/exports
+  698  showmount -e
+  699  exportfs -avr
+  700  history
+[root@gvnkansiblesrv ~]#
+
+
+NFS Client Server Outputs:
+==========================
+login as: root
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v24.2 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to root@192.168.29.120                                 ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (disabled or not supported by server)      ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Last failed login: Tue Jun 24 19:31:10 IST 2025 from 2405:201:c037:d269:c268:ccff:fe6b:db71 on ssh:notty
+There were 21 failed login attempts since the last successful login.
+Last login: Tue Jun 24 19:23:32 2025 from 192.168.29.211
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# rpm -qa |grep -i autofs
+[root@c111xyz ~]#
+[root@c111xyz ~]# rpm -qa |grep -i nfs
+nfs-utils-1.3.0-0.48.el7_4.1.x86_64
+libnfsidmap-0.25-17.el7.x86_64
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# yum install autofs
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+rhel7                                                                                                                          | 2.9 kB  00:00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package autofs.x86_64 1:5.0.7-70.el7_4 will be installed
+--> Processing Dependency: libhesiod.so.0()(64bit) for package: 1:autofs-5.0.7-70.el7_4.x86_64
+--> Running transaction check
+---> Package hesiod.x86_64 0:3.2.1-3.el7 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+======================================================================================================================================================
+ Package                          Arch                             Version                                      Repository                       Size
+======================================================================================================================================================
+Installing:
+ autofs                           x86_64                           1:5.0.7-70.el7_4                             rhel7                           809 k
+Installing for dependencies:
+ hesiod                           x86_64                           3.2.1-3.el7                                  rhel7                            30 k
+
+Transaction Summary
+======================================================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total download size: 839 k
+Installed size: 5.1 M
+Is this ok [y/d/N]: yes
+Downloading packages:
+(1/2): autofs-5.0.7-70.el7_4.x86_64.rpm                                                                                        | 809 kB  00:00:06
+(2/2): hesiod-3.2.1-3.el7.x86_64.rpm                                                                                           |  30 kB  00:00:07
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                 110 kB/s | 839 kB  00:00:07
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : hesiod-3.2.1-3.el7.x86_64                                                                                                          1/2
+  Installing : 1:autofs-5.0.7-70.el7_4.x86_64                                                                                                     2/2
+  Verifying  : hesiod-3.2.1-3.el7.x86_64                                                                                                          1/2
+  Verifying  : 1:autofs-5.0.7-70.el7_4.x86_64                                                                                                     2/2
+
+Installed:
+  autofs.x86_64 1:5.0.7-70.el7_4
+
+Dependency Installed:
+  hesiod.x86_64 0:3.2.1-3.el7
+
+Complete!
+[root@c111xyz ~]# systemctl enable autofs
+Created symlink from /etc/systemd/system/multi-user.target.wants/autofs.service to /usr/lib/systemd/system/autofs.service.
+[root@c111xyz ~]# systemctl startautofs
+Unknown operation 'startautofs'.
+[root@c111xyz ~]# systemctl start autofs
+[root@c111xyz ~]# systemctl status autofs
+? autofs.service - Automounts filesystems on demand
+   Loaded: loaded (/usr/lib/systemd/system/autofs.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2025-06-24 19:57:36 IST; 18s ago
+  Process: 1883 ExecStart=/usr/sbin/automount $OPTIONS --pid-file /run/autofs.pid (code=exited, status=0/SUCCESS)
+ Main PID: 1885 (automount)
+   CGroup: /system.slice/autofs.service
+           +-1885 /usr/sbin/automount --pid-file /run/autofs.pid
+
+Jun 24 19:57:32 c111xyz automount[1885]: open_sss_lib:78: lookup(sss): failed to open /usr/lib64/sssd/modules/libsss_autofs.so: /usr/lib64/...irectory
+Jun 24 19:57:34 c111xyz automount[1885]: master_add_map_source: map source used without taking reference
+Jun 24 19:57:34 c111xyz automount[1885]: master_add_map_source: map source used without taking reference
+Jun 24 19:57:34 c111xyz automount[1885]: open_sss_lib:78: lookup(sss): failed to open /usr/lib64/sssd/modules/libsss_autofs.so: /usr/lib64/...irectory
+Jun 24 19:57:36 c111xyz automount[1885]: problem reading master map, maximum wait exceeded
+Jun 24 19:57:36 c111xyz automount[1885]: /usr/sbin/automount: warning: could not read at least one map source after waiting, continuing ...
+Jun 24 19:57:36 c111xyz automount[1885]: master_add_map_source: map source used without taking reference
+Jun 24 19:57:36 c111xyz automount[1885]: master_add_map_source: map source used without taking reference
+Jun 24 19:57:36 c111xyz automount[1885]: open_sss_lib:78: lookup(sss): failed to open /usr/lib64/sssd/modules/libsss_autofs.so: /usr/lib64/...irectory
+Jun 24 19:57:36 c111xyz systemd[1]: Started Automounts filesystems on demand.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# showmount -e nfsserver
+Export list for nfsserver:
+/infra *
+/data6 c111xyz
+/data5 c111xyz
+/data4 c111xyz
+/data3 c111xyz
+/data2 c111xyz
+/data1 c111xyz
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# showmount -e nfsserver
+Export list for nfsserver:
+/infra *
+/data1 c111xyz
+/data2 c111xyz
+/data3 c111xyz
+/data4 c111xyz
+/data5 c111xyz
+/data6 c111xyz
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# showmount -e nfsserver
+Export list for nfsserver:
+/infra *
+/data4 c111xyz
+/data3 c111xyz
+/data2 c111xyz
+/data1 c111xyz
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# showmount -e nfsserver
+Export list for nfsserver:
+/infra *
+/data4 c111xyz
+/data3 c111xyz
+/data2 c111xyz
+/data1 c111xyz
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# showmount -e nfsserver
+Export list for nfsserver:
+/infra *
+/data6 c111xyz
+/data5 c111xyz
+/data4 c111xyz
+/data3 c111xyz
+/data2 c111xyz
+/data1 c111xyz
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# mount -t nfs nfsserver:/data1 /mnt
+[root@c111xyz ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /mnt
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# cd /mnt
+[root@c111xyz mnt]#
+[root@c111xyz mnt]# ls
+abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm       apr-1.4.8-3.el7_4.1.i686.rpm
+abrt-2.1.11-48.el7.x86_64.rpm                         apr-1.4.8-3.el7_4.1.x86_64.rpm
+abrt-addon-ccpp-2.1.11-48.el7.x86_64.rpm              apr-devel-1.4.8-3.el7_4.1.i686.rpm
+abrt-addon-kerneloops-2.1.11-48.el7.x86_64.rpm        apr-devel-1.4.8-3.el7_4.1.x86_64.rpm
+abrt-addon-pstoreoops-2.1.11-48.el7.x86_64.rpm        apr-util-1.5.2-6.el7.i686.rpm
+abrt-addon-python-2.1.11-48.el7.x86_64.rpm            apr-util-1.5.2-6.el7.x86_64.rpm
+abrt-addon-vmcore-2.1.11-48.el7.x86_64.rpm            apr-util-devel-1.5.2-6.el7.i686.rpm
+abrt-addon-xorg-2.1.11-48.el7.x86_64.rpm              apr-util-devel-1.5.2-6.el7.x86_64.rpm
+abrt-cli-2.1.11-48.el7.x86_64.rpm                     args4j-2.0.16-13.el7.noarch.rpm
+abrt-console-notification-2.1.11-48.el7.x86_64.rpm    ark-4.10.5-4.el7.x86_64.rpm
+abrt-dbus-2.1.11-48.el7.x86_64.rpm                    ark-libs-4.10.5-4.el7.i686.rpm
+abrt-desktop-2.1.11-48.el7.x86_64.rpm                 ark-libs-4.10.5-4.el7.x86_64.rpm
+abrt-gui-2.1.11-48.el7.x86_64.rpm                     arptables-0.0.4-8.el7.x86_64.rpm
+abrt-gui-libs-2.1.11-48.el7.i686.rpm                  arpwatch-2.1a15-36.el7.x86_64.rpm
+abrt-gui-libs-2.1.11-48.el7.x86_64.rpm                at-3.1.13-22.el7_4.2.x86_64.rpm
+abrt-java-connector-1.0.6-12.el7.x86_64.rpm           atk-2.22.0-3.el7.i686.rpm
+abrt-libs-2.1.11-48.el7.i686.rpm                      atk-2.22.0-3.el7.x86_64.rpm
+abrt-libs-2.1.11-48.el7.x86_64.rpm                    atk-devel-2.22.0-3.el7.i686.rpm
+abrt-python-2.1.11-48.el7.x86_64.rpm                  atk-devel-2.22.0-3.el7.x86_64.rpm
+abrt-tui-2.1.11-48.el7.x86_64.rpm                     atkmm-2.24.2-1.el7.i686.rpm
+accountsservice-0.6.45-3.el7_4.1.x86_64.rpm           atkmm-2.24.2-1.el7.x86_64.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.i686.rpm        atlas-3.10.1-12.el7.i686.rpm
+accountsservice-libs-0.6.45-3.el7_4.1.x86_64.rpm      atlas-3.10.1-12.el7.x86_64.rpm
+acl-2.2.51-12.el7.x86_64.rpm                          atlas-sse2-3.10.1-12.el7.i686.rpm
+acpid-2.0.19-8.el7.x86_64.rpm                         atlas-sse3-3.10.1-12.el7.i686.rpm
+adcli-0.8.1-3.el7.x86_64.rpm                          at-spi2-atk-2.22.0-2.el7.i686.rpm
+adwaita-cursor-theme-3.22.0-1.el7.noarch.rpm          at-spi2-atk-2.22.0-2.el7.x86_64.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.i686.rpm              at-spi2-atk-devel-2.22.0-2.el7.i686.rpm
+adwaita-gtk2-theme-3.22.2-1.el7.x86_64.rpm            at-spi2-atk-devel-2.22.0-2.el7.x86_64.rpm
+adwaita-icon-theme-3.22.0-1.el7.noarch.rpm            at-spi2-core-2.22.0-1.el7.i686.rpm
+adwaita-qt-0.4-1.el7.x86_64.rpm                       at-spi2-core-2.22.0-1.el7.x86_64.rpm
+adwaita-qt4-0.4-1.el7.i686.rpm                        at-spi2-core-devel-2.22.0-1.el7.i686.rpm
+adwaita-qt4-0.4-1.el7.x86_64.rpm                      at-spi2-core-devel-2.22.0-1.el7.x86_64.rpm
+adwaita-qt-common-0.4-1.el7.noarch.rpm                attica-0.4.2-1.el7.i686.rpm
+agg-2.5-18.el7.i686.rpm                               attica-0.4.2-1.el7.x86_64.rpm
+agg-2.5-18.el7.x86_64.rpm                             attica-devel-0.4.2-1.el7.i686.rpm
+aic94xx-firmware-30-6.el7.noarch.rpm                  attica-devel-0.4.2-1.el7.x86_64.rpm
+aide-0.15.1-13.el7.x86_64.rpm                         attr-2.4.46-12.el7.x86_64.rpm
+akonadi-1.9.2-4.el7.i686.rpm                          audispd-plugins-2.7.6-3.el7.x86_64.rpm
+akonadi-1.9.2-4.el7.x86_64.rpm                        audit-2.7.6-3.el7.x86_64.rpm
+akonadi-mysql-1.9.2-4.el7.x86_64.rpm                  audit-libs-2.7.6-3.el7.i686.rpm
+alacarte-3.11.91-1.el7.noarch.rpm                     audit-libs-2.7.6-3.el7.x86_64.rpm
+alsa-firmware-1.0.28-2.el7.noarch.rpm                 audit-libs-devel-2.7.6-3.el7.i686.rpm
+alsa-lib-1.1.3-3.el7.i686.rpm                         audit-libs-devel-2.7.6-3.el7.x86_64.rpm
+alsa-lib-1.1.3-3.el7.x86_64.rpm                       audit-libs-python-2.7.6-3.el7.x86_64.rpm
+alsa-lib-devel-1.1.3-3.el7.i686.rpm                   augeas-1.4.0-2.el7_4.2.x86_64.rpm
+alsa-lib-devel-1.1.3-3.el7.x86_64.rpm                 augeas-libs-1.4.0-2.el7_4.2.i686.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.i686.rpm          augeas-libs-1.4.0-2.el7_4.2.x86_64.rpm
+alsa-plugins-pulseaudio-1.1.1-1.el7.x86_64.rpm        authconfig-6.2.8-30.el7.x86_64.rpm
+alsa-tools-firmware-1.1.0-1.el7.x86_64.rpm            authconfig-gtk-6.2.8-30.el7.x86_64.rpm
+alsa-utils-1.1.3-2.el7.x86_64.rpm                     authd-1.4.3-42.el7.x86_64.rpm
+amanda-3.3.3-18.el7.x86_64.rpm                        autoconf-2.69-11.el7.noarch.rpm
+amanda-client-3.3.3-18.el7.x86_64.rpm                 autoconf-archive-2017.03.21-1.el7.noarch.rpm
+amanda-libs-3.3.3-18.el7.x86_64.rpm                   autofs-5.0.7-70.el7_4.x86_64.rpm
+amanda-server-3.3.3-18.el7.x86_64.rpm                 autogen-libopts-5.18-5.el7.i686.rpm
+anaconda-21.48.22.121-1.el7.x86_64.rpm                autogen-libopts-5.18-5.el7.x86_64.rpm
+anaconda-core-21.48.22.121-1.el7.x86_64.rpm           automake-1.13.4-3.el7.noarch.rpm
+anaconda-gui-21.48.22.121-1.el7.x86_64.rpm            automoc-1.0-0.20.rc3.el7.x86_64.rpm
+anaconda-tui-21.48.22.121-1.el7.x86_64.rpm            avahi-0.6.31-17.el7.i686.rpm
+anaconda-user-help-7.3.2-1.el7.noarch.rpm             avahi-0.6.31-17.el7.x86_64.rpm
+anaconda-widgets-21.48.22.121-1.el7.x86_64.rpm        avahi-autoipd-0.6.31-17.el7.x86_64.rpm
+ant-1.9.2-9.el7.noarch.rpm                            avahi-glib-0.6.31-17.el7.i686.rpm
+antlr-tool-2.7.7-30.el7.noarch.rpm                    avahi-glib-0.6.31-17.el7.x86_64.rpm
+apache-commons-cli-1.2-13.el7.noarch.rpm              avahi-gobject-0.6.31-17.el7.i686.rpm
+apache-commons-codec-1.8-7.el7.noarch.rpm             avahi-gobject-0.6.31-17.el7.x86_64.rpm
+apache-commons-collections-3.2.1-22.el7_2.noarch.rpm  avahi-libs-0.6.31-17.el7.i686.rpm
+apache-commons-daemon-1.0.13-6.el7.x86_64.rpm         avahi-libs-0.6.31-17.el7.x86_64.rpm
+apache-commons-dbcp-1.4-17.el7.noarch.rpm             avahi-ui-gtk3-0.6.31-17.el7.i686.rpm
+apache-commons-io-2.4-12.el7.noarch.rpm               avahi-ui-gtk3-0.6.31-17.el7.x86_64.rpm
+apache-commons-lang-2.6-15.el7.noarch.rpm             avalon-framework-4.3-10.el7.noarch.rpm
+apache-commons-logging-1.1.2-7.el7.noarch.rpm         avalon-logkit-2.1-14.el7.noarch.rpm
+apache-commons-pool-1.6-9.el7.noarch.rpm              lost+found
+appstream-data-7-20170301.el7.noarch.rpm
+[root@c111xyz mnt]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /mnt
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# umount /mnt
+[root@c111xyz /]#
+[root@c111xyz /]# mkdir /sharedata1 /sharedata2 /sharedata3 /sharedata4 /sharedata5 /sharedata6
+[root@c111xyz /]# mount -t nfs nfsserver:/data1 /sharedata1
+[root@c111xyz /]# mount -t nfs nfsserver:/data2 /sharedata2
+[root@c111xyz /]# mount -t nfs nfsserver:/data3 /sharedata3
+[root@c111xyz /]# mount -t nfs nfsserver:/data4 /sharedata4
+[root@c111xyz /]# mount -t nfs nfsserver:/data5 /sharedata5
+[root@c111xyz /]# mount -t nfs nfsserver:/data6 /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ls -l /sharedata6
+total 163512
+-r--r--r-- 1 root root   295892 Jun 24 19:58 fabtests-1.4.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   230912 Jun 24 19:58 farstream-0.1.2-8.el7.i686.rpm
+-r--r--r-- 1 root root   235664 Jun 24 19:58 farstream-0.1.2-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   227836 Jun 24 19:58 farstream02-0.2.3-3.el7.i686.rpm
+-r--r--r-- 1 root root   232876 Jun 24 19:58 farstream02-0.2.3-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   122668 Jun 24 19:58 fcoe-utils-1.0.32-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    17992 Jun 24 19:58 fence-agents-all-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22260 Jun 24 19:58 fence-agents-apc-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22284 Jun 24 19:58 fence-agents-apc-snmp-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21340 Jun 24 19:58 fence-agents-bladecenter-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21448 Jun 24 19:58 fence-agents-brocade-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21380 Jun 24 19:58 fence-agents-cisco-mds-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22012 Jun 24 19:58 fence-agents-cisco-ucs-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    66368 Jun 24 19:58 fence-agents-common-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    27564 Jun 24 19:58 fence-agents-compute-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21952 Jun 24 19:58 fence-agents-drac5-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22596 Jun 24 19:58 fence-agents-eaton-snmp-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    20948 Jun 24 19:58 fence-agents-emerson-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21628 Jun 24 19:58 fence-agents-eps-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21456 Jun 24 19:58 fence-agents-hpblade-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21092 Jun 24 19:58 fence-agents-ibmblade-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21700 Jun 24 19:58 fence-agents-ifmib-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    23532 Jun 24 19:58 fence-agents-ilo2-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    20728 Jun 24 19:58 fence-agents-ilo-moonshot-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    20568 Jun 24 19:58 fence-agents-ilo-mp-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    23968 Jun 24 19:58 fence-agents-ilo-ssh-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21504 Jun 24 19:58 fence-agents-intelmodular-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21724 Jun 24 19:58 fence-agents-ipdu-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    30300 Jun 24 19:58 fence-agents-ipmilan-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    31920 Jun 24 19:58 fence-agents-kdump-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22764 Jun 24 19:58 fence-agents-mpath-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21900 Jun 24 19:58 fence-agents-rhevm-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    20992 Jun 24 19:58 fence-agents-rsa-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    21008 Jun 24 19:58 fence-agents-rsb-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22808 Jun 24 19:58 fence-agents-sbd-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    24988 Jun 24 19:58 fence-agents-scsi-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    23136 Jun 24 19:58 fence-agents-vmware-soap-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    22548 Jun 24 19:58 fence-agents-wti-4.0.11-66.el7_4.3.x86_64.rpm
+-r--r--r-- 1 root root    41904 Jun 24 19:58 fence-virt-0.3.2-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    36028 Jun 24 19:58 fence-virtd-0.3.2-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    17156 Jun 24 19:58 fence-virtd-libvirt-0.3.2-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    21332 Jun 24 19:58 fence-virtd-multicast-0.3.2-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    20220 Jun 24 19:58 fence-virtd-serial-0.3.2-12.el7.x86_64.rpm
+-r--r--r-- 1 root root  1408724 Jun 24 19:58 festival-1.96-28.el7.x86_64.rpm
+-r--r--r-- 1 root root    36524 Jun 24 19:58 festival-freebsoft-utils-0.10-7.el7.noarch.rpm
+-r--r--r-- 1 root root   461016 Jun 24 19:58 festival-lib-1.96-28.el7.i686.rpm
+-r--r--r-- 1 root root   469220 Jun 24 19:58 festival-lib-1.96-28.el7.x86_64.rpm
+-r--r--r-- 1 root root  1091972 Jun 24 19:58 festival-speechtools-libs-1.2.96-28.el7.i686.rpm
+-r--r--r-- 1 root root  1071068 Jun 24 19:58 festival-speechtools-libs-1.2.96-28.el7.x86_64.rpm
+-r--r--r-- 1 root root  1046808 Jun 24 19:58 festvox-slt-arctic-hts-0.20061229-28.el7.noarch.rpm
+-r--r--r-- 1 root root   558980 Jun 24 19:58 fetchmail-6.3.24-7.el7.x86_64.rpm
+-r--r--r-- 1 root root    45664 Jun 24 19:58 fftw-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root    46404 Jun 24 19:58 fftw-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   131068 Jun 24 19:58 fftw-devel-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root   131112 Jun 24 19:58 fftw-devel-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root     8772 Jun 24 19:58 fftw-libs-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root     8724 Jun 24 19:58 fftw-libs-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   752928 Jun 24 19:58 fftw-libs-double-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root   776916 Jun 24 19:58 fftw-libs-double-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   513480 Jun 24 19:58 fftw-libs-long-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root   506752 Jun 24 19:58 fftw-libs-long-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   761736 Jun 24 19:58 fftw-libs-single-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root   784012 Jun 24 19:58 fftw-libs-single-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  1710420 Jun 24 19:58 fftw-static-3.3.3-8.el7.i686.rpm
+-r--r--r-- 1 root root  1694436 Jun 24 19:58 fftw-static-3.3.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    57924 Jun 24 19:58 file-5.11-33.el7.x86_64.rpm
+-r--r--r-- 1 root root   118776 Jun 24 19:58 filebench-1.4.9.1-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   349660 Jun 24 19:58 file-libs-5.11-33.el7.i686.rpm
+-r--r--r-- 1 root root   348224 Jun 24 19:58 file-libs-5.11-33.el7.x86_64.rpm
+-r--r--r-- 1 root root   945796 Jun 24 19:58 file-roller-3.22.3-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    29736 Jun 24 19:58 file-roller-nautilus-3.22.3-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  1066600 Jun 24 19:58 filesystem-3.2-21.el7.x86_64.rpm
+-r--r--r-- 1 root root   572012 Jun 24 19:58 findutils-4.5.11-5.el7.x86_64.rpm
+-r--r--r-- 1 root root    26152 Jun 24 19:58 finger-0.17-52.el7.x86_64.rpm
+-r--r--r-- 1 root root    20460 Jun 24 19:58 finger-server-0.17-52.el7.x86_64.rpm
+-r--r--r-- 1 root root    21888 Jun 24 19:58 fipscheck-1.4.1-6.el7.x86_64.rpm
+-r--r--r-- 1 root root    11052 Jun 24 19:58 fipscheck-lib-1.4.1-6.el7.i686.rpm
+-r--r--r-- 1 root root    10932 Jun 24 19:58 fipscheck-lib-1.4.1-6.el7.x86_64.rpm
+-r--r--r-- 1 root root 87311484 Jun 24 19:58 firefox-52.5.1-1.el7_4.x86_64.rpm
+-r--r--r-- 1 root root   136232 Jun 24 19:58 firewall-config-0.4.4.4-6.el7.noarch.rpm
+-r--r--r-- 1 root root   425800 Jun 24 19:58 firewalld-0.4.4.4-6.el7.noarch.rpm
+-r--r--r-- 1 root root    48368 Jun 24 19:58 firewalld-filesystem-0.4.4.4-6.el7.noarch.rpm
+-r--r--r-- 1 root root   114036 Jun 24 19:58 firstboot-19.12-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   175672 Jun 24 19:58 flac-libs-1.3.0-5.el7_1.i686.rpm
+-r--r--r-- 1 root root   173276 Jun 24 19:58 flac-libs-1.3.0-5.el7_1.x86_64.rpm
+-r--r--r-- 1 root root   725780 Jun 24 19:58 flatpak-0.8.7-3.el7_4.x86_64.rpm
+-r--r--r-- 1 root root   433076 Jun 24 19:58 flatpak-libs-0.8.7-3.el7_4.x86_64.rpm
+-r--r--r-- 1 root root   299512 Jun 24 19:58 flex-2.5.37-3.el7.x86_64.rpm
+-r--r--r-- 1 root root  6402800 Jun 24 19:58 flite-1.3-22.el7.i686.rpm
+-r--r--r-- 1 root root  6435680 Jun 24 19:58 flite-1.3-22.el7.x86_64.rpm
+-r--r--r-- 1 root root   571708 Jun 24 19:58 fltk-1.3.4-1.el7.i686.rpm
+-r--r--r-- 1 root root   573472 Jun 24 19:58 fltk-1.3.4-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   610904 Jun 24 19:58 folks-0.11.3-1.el7.i686.rpm
+-r--r--r-- 1 root root   621352 Jun 24 19:58 folks-0.11.3-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   140156 Jun 24 19:58 fontawesome-fonts-4.1.0-1.el7.noarch.rpm
+-r--r--r-- 1 root root   235964 Jun 24 19:58 fontconfig-2.10.95-11.el7.i686.rpm
+-r--r--r-- 1 root root   234804 Jun 24 19:58 fontconfig-2.10.95-11.el7.x86_64.rpm
+-r--r--r-- 1 root root   131480 Jun 24 19:58 fontconfig-devel-2.10.95-11.el7.i686.rpm
+-r--r--r-- 1 root root   131448 Jun 24 19:58 fontconfig-devel-2.10.95-11.el7.x86_64.rpm
+-r--r--r-- 1 root root    10168 Jun 24 19:58 fontpackages-filesystem-1.44-8.el7.noarch.rpm
+-r--r--r-- 1 root root    61268 Jun 24 19:58 fonts-tweak-tool-0.3.2-5.el7.i686.rpm
+-r--r--r-- 1 root root    61260 Jun 24 19:58 fonts-tweak-tool-0.3.2-5.el7.x86_64.rpm
+-r--r--r-- 1 root root   259508 Jun 24 19:58 foomatic-4.0.9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  1098904 Jun 24 19:58 foomatic-db-4.0-41.20130911.el7.noarch.rpm
+-r--r--r-- 1 root root     9460 Jun 24 19:58 foomatic-db-filesystem-4.0-41.20130911.el7.noarch.rpm
+-r--r--r-- 1 root root 30087032 Jun 24 19:58 foomatic-db-ppds-4.0-41.20130911.el7.noarch.rpm
+-r--r--r-- 1 root root   100424 Jun 24 19:58 foomatic-filters-4.0.9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    76900 Jun 24 19:58 fprintd-0.5.0-4.0.el7_0.x86_64.rpm
+-r--r--r-- 1 root root    15280 Jun 24 19:58 fprintd-pam-0.5.0-4.0.el7_0.i686.rpm
+-r--r--r-- 1 root root    15460 Jun 24 19:58 fprintd-pam-0.5.0-4.0.el7_0.x86_64.rpm
+-r--r--r-- 1 root root   181820 Jun 24 19:58 freeglut-2.8.1-3.el7.i686.rpm
+-r--r--r-- 1 root root   186904 Jun 24 19:58 freeglut-2.8.1-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   116480 Jun 24 19:58 freeglut-devel-2.8.1-3.el7.i686.rpm
+-r--r--r-- 1 root root   116448 Jun 24 19:58 freeglut-devel-2.8.1-3.el7.x86_64.rpm
+-r--r--r-- 1 root root  1940940 Jun 24 19:58 freeipmi-1.2.9-8.el7.i686.rpm
+-r--r--r-- 1 root root  2024788 Jun 24 19:58 freeipmi-1.2.9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    83388 Jun 24 19:58 freeipmi-bmc-watchdog-1.2.9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    53916 Jun 24 19:58 freeipmi-ipmidetectd-1.2.9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  1115160 Jun 24 19:58 freeradius-3.0.13-8.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    58320 Jun 24 19:58 freerdp-1.0.2-10.el7.x86_64.rpm
+-r--r--r-- 1 root root   233476 Jun 24 19:58 freerdp-libs-1.0.2-10.el7.i686.rpm
+-r--r--r-- 1 root root   226952 Jun 24 19:58 freerdp-libs-1.0.2-10.el7.x86_64.rpm
+-r--r--r-- 1 root root    94740 Jun 24 19:58 freerdp-plugins-1.0.2-10.el7.x86_64.rpm
+-r--r--r-- 1 root root   398700 Jun 24 19:58 freetype-2.4.11-15.el7.i686.rpm
+-r--r--r-- 1 root root   401188 Jun 24 19:58 freetype-2.4.11-15.el7.x86_64.rpm
+-r--r--r-- 1 root root   365064 Jun 24 19:58 freetype-devel-2.4.11-15.el7.i686.rpm
+-r--r--r-- 1 root root   365044 Jun 24 19:58 freetype-devel-2.4.11-15.el7.x86_64.rpm
+-r--r--r-- 1 root root   469040 Jun 24 19:58 frei0r-plugins-1.3-13.el7.x86_64.rpm
+-r--r--r-- 1 root root    22188 Jun 24 19:58 fros-1.0-2.el7.noarch.rpm
+-r--r--r-- 1 root root    62128 Jun 24 19:58 ftp-0.17-67.el7.x86_64.rpm
+-r--r--r-- 1 root root    87384 Jun 24 19:58 fuse-2.9.2-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    37576 Jun 24 19:58 fuse-devel-2.9.2-8.el7.i686.rpm
+-r--r--r-- 1 root root    37544 Jun 24 19:58 fuse-devel-2.9.2-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    31000 Jun 24 19:58 fuseiso-20070708-15.el7.x86_64.rpm
+-r--r--r-- 1 root root    99684 Jun 24 19:58 fuse-libs-2.9.2-8.el7.i686.rpm
+-r--r--r-- 1 root root    95160 Jun 24 19:58 fuse-libs-2.9.2-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   253668 Jun 24 19:58 fwupd-0.8.2-3.el7.i686.rpm
+-r--r--r-- 1 root root   260104 Jun 24 19:58 fwupd-0.8.2-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    20772 Jun 24 19:58 fwupdate-9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    50036 Jun 24 19:58 fwupdate-efi-9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    22584 Jun 24 19:58 fwupdate-libs-9-8.el7.x86_64.rpm
+-r--r--r-- 1 root root    25904 Jun 24 19:58 fxload-2002_04_11-16.el7.x86_64.rpm
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# vi /etc/auto.
+auto.master    auto.master.d/ auto.misc      auto.net       auto.smb
+[root@c111xyz /]# vi /etc/auto.master
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# tail -2 /etc/auto.master
++auto.master
+/-      /etc/auto.direct        --timeout=60
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ls -l /etc/auto.direct
+ls: cannot access /etc/auto.direct: No such file or directory
+[root@c111xyz /]#
+[root@c111xyz /]# vi /etc/auto.direct
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# rmdir /sharedata3
+rmdir: failed to remove ‘/sharedata3’: Device or resource busy
+[root@c111xyz /]#
+[root@c111xyz /]# umount /sharedata3
+[root@c111xyz /]#
+[root@c111xyz /]# rmdir /sharedata3
+[root@c111xyz /]# umount /sharedata4
+[root@c111xyz /]# rmdir /sharedata4
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ls -l /
+total 54
+lrwxrwxrwx.   1 root root     7 May 22 20:19 bin -> usr/bin
+dr-xr-xr-x.   4 root root  4096 May 22 21:16 boot
+drwxr-xr-x   22 root root  3440 Jun 24 19:23 dev
+drwxr-xr-x.  81 root root  8192 Jun 24 20:16 etc
+drwxr-xr-x.   3 root root    17 Jun  4 19:10 export
+drwxr-xr-x.  10 root root   124 Jun 23 20:19 home
+lrwxrwxrwx.   1 root root     7 May 22 20:19 lib -> usr/lib
+lrwxrwxrwx.   1 root root     9 May 22 20:19 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root     6 Mar 10  2016 media
+drwxr-xr-x    2 root root     0 Jun 24 19:57 misc
+drwxr-xr-x.   2 root root     6 Mar 10  2016 mnt
+drwxr-xr-x    2 root root     0 Jun 24 19:57 net
+drwxr-xr-x.   2 root root     6 Mar 10  2016 opt
+dr-xr-xr-x  180 root root     0 Jun 24 19:22 proc
+drwxrwxrwx.   4 root root    84 Jun 11 20:59 public
+drwxrwxrwt.   2 root root    97 Jun 20 19:47 publicdata
+dr-xr-x---.   4 root root   140 Jun 21 19:13 root
+drwxr-xr-x   25 root root   880 Jun 24 19:57 run
+lrwxrwxrwx.   1 root root     8 May 22 20:19 sbin -> usr/sbin
+drwxr-xr-x.   2 root root     6 Jun 19 19:19 sharedata
+drwxr-xr-x    3 root root 10240 Jun 24 19:53 sharedata1
+drwxr-xr-x    3 root root  8192 Jun 24 19:55 sharedata2
+drwxr-xr-x    2 root root  4096 Jun 24 19:57 sharedata5
+drwxr-xr-x    2 root root  8192 Jun 24 19:58 sharedata6
+drwxr-xr-x    2 root root     6 Jun 21 20:38 shareinfra
+drwxr-xr-x.   2 root root     6 Mar 10  2016 srv
+dr-xr-xr-x   13 root root     0 Jun 24 19:23 sys
+drwxrwxrwt.  12 root root  4096 Jun 24 19:57 tmp
+drwxr-xr-x.   3 root root    20 Jun  2 19:47 tomcat
+drwxr-xr-x.  13 root root   171 May 28 20:07 usr
+drwxr-xr-x.  20 root root   278 Jun 21 20:34 var
+drwxrwxrwx.   4 root root    88 Jun 13 21:19 webdata
+[root@c111xyz /]# systemctl restart autofs
+[root@c111xyz /]# ls -l /
+total 54
+lrwxrwxrwx.   1 root root     7 May 22 20:19 bin -> usr/bin
+dr-xr-xr-x.   4 root root  4096 May 22 21:16 boot
+drwxr-xr-x   22 root root  3440 Jun 24 19:23 dev
+drwxr-xr-x.  81 root root  8192 Jun 24 20:16 etc
+drwxr-xr-x.   3 root root    17 Jun  4 19:10 export
+drwxr-xr-x.  10 root root   124 Jun 23 20:19 home
+lrwxrwxrwx.   1 root root     7 May 22 20:19 lib -> usr/lib
+lrwxrwxrwx.   1 root root     9 May 22 20:19 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root     6 Mar 10  2016 media
+drwxr-xr-x    2 root root     0 Jun 24 20:18 misc
+drwxr-xr-x.   2 root root     6 Mar 10  2016 mnt
+drwxr-xr-x    2 root root     0 Jun 24 20:18 net
+drwxr-xr-x.   2 root root     6 Mar 10  2016 opt
+dr-xr-xr-x  182 root root     0 Jun 24 19:22 proc
+drwxrwxrwx.   4 root root    84 Jun 11 20:59 public
+drwxrwxrwt.   2 root root    97 Jun 20 19:47 publicdata
+dr-xr-x---.   4 root root   140 Jun 21 19:13 root
+drwxr-xr-x   25 root root   900 Jun 24 20:18 run
+lrwxrwxrwx.   1 root root     8 May 22 20:19 sbin -> usr/sbin
+drwxr-xr-x.   2 root root     6 Jun 19 19:19 sharedata
+drwxr-xr-x    3 root root 10240 Jun 24 19:53 sharedata1
+drwxr-xr-x    3 root root  8192 Jun 24 19:55 sharedata2
+drwxr-xr-x    2 root root     0 Jun 24 20:18 sharedata3
+drwxr-xr-x    2 root root     0 Jun 24 20:18 sharedata4
+drwxr-xr-x    2 root root  4096 Jun 24 19:57 sharedata5
+drwxr-xr-x    2 root root  8192 Jun 24 19:58 sharedata6
+drwxr-xr-x    2 root root     6 Jun 21 20:38 shareinfra
+drwxr-xr-x.   2 root root     6 Mar 10  2016 srv
+dr-xr-xr-x   13 root root     0 Jun 24 19:23 sys
+drwxrwxrwt.  12 root root  4096 Jun 24 20:18 tmp
+drwxr-xr-x.   3 root root    20 Jun  2 19:47 tomcat
+drwxr-xr-x.  13 root root   171 May 28 20:07 usr
+drwxr-xr-x.  20 root root   278 Jun 21 20:34 var
+drwxrwxrwx.   4 root root    88 Jun 13 21:19 webdata
+[root@c111xyz /]#
+[root@c111xyz /]# cat /etc/auto.master
+#
+# Sample auto.master file
+# This is a 'master' automounter map and it has the following format:
+# mount-point [map-type[,format]:]map [options]
+# For details of the format look at auto.master(5).
+#
+/misc   /etc/auto.misc
+#
+# NOTE: mounts done from a hosts map will be mounted with the
+#       "nosuid" and "nodev" options unless the "suid" and "dev"
+#       options are explicitly given.
+#
+/net    -hosts
+#
+# Include /etc/auto.master.d/*.autofs
+# The included files must conform to the format of this file.
+#
++dir:/etc/auto.master.d
+#
+# Include central master map if it can be found using
+# nsswitch sources.
+#
+# Note that if there are entries for /net or /misc (as
+# above) in the included master map any keys that are the
+# same will not be seen as the first read key seen takes
+# precedence.
+#
++auto.master
+/-      /etc/auto.direct        --timeout=60
+[root@c111xyz /]# cat /etc/auto.direct
+/sharedata3     -rw,sync,intr   nfsserver:/data3
+/sharedata4     -rw,sync,intr   nfsserver:/data4
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /sharedata3
+[root@c111xyz sharedata3]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]# ls
+ca-certificates-2017.2.14-71.el7.noarch.rpm           compat-libgnome-desktop3-7-3.8.4-2.el7.i686.rpm
+cachefilesd-0.10.9-1.el7.x86_64.rpm                   compat-libgnome-desktop3-7-3.8.4-2.el7.x86_64.rpm
+cairo-1.14.8-2.el7.i686.rpm                           compat-libgweather3-3.8.2-1.el7.i686.rpm
+cairo-1.14.8-2.el7.x86_64.rpm                         compat-libgweather3-3.8.2-1.el7.x86_64.rpm
+cairo-devel-1.14.8-2.el7.i686.rpm                     compat-libmediaart0-0.7.0-1.el7.i686.rpm
+cairo-devel-1.14.8-2.el7.x86_64.rpm                   compat-libmediaart0-0.7.0-1.el7.x86_64.rpm
+cairo-gobject-1.14.8-2.el7.i686.rpm                   compat-libpackagekit-glib2-16-0.8.9-1.el7.i686.rpm
+cairo-gobject-1.14.8-2.el7.x86_64.rpm                 compat-libpackagekit-glib2-16-0.8.9-1.el7.x86_64.rpm
+cairo-gobject-devel-1.14.8-2.el7.i686.rpm             compat-libtiff3-3.9.4-11.el7.i686.rpm
+cairo-gobject-devel-1.14.8-2.el7.x86_64.rpm           compat-libtiff3-3.9.4-11.el7.x86_64.rpm
+cairomm-1.12.0-1.el7.i686.rpm                         compat-libupower-glib1-0.9.20-1.el7.i686.rpm
+cairomm-1.12.0-1.el7.x86_64.rpm                       compat-libupower-glib1-0.9.20-1.el7.x86_64.rpm
+cal10n-0.7.7-4.el7.noarch.rpm                         compat-libxcb-1.9-1.el7.i686.rpm
+c-ares-1.10.0-3.el7.i686.rpm                          compat-libxcb-1.9-1.el7.x86_64.rpm
+c-ares-1.10.0-3.el7.x86_64.rpm                        compat-openldap-2.3.43-5.el7.i686.rpm
+c-ares-devel-1.10.0-3.el7.i686.rpm                    compat-openldap-2.3.43-5.el7.x86_64.rpm
+c-ares-devel-1.10.0-3.el7.x86_64.rpm                  compat-openmpi16-1.6.4-10.5.el7.i686.rpm
+caribou-0.4.21-1.el7.i686.rpm                         compat-openmpi16-1.6.4-10.5.el7.x86_64.rpm
+caribou-0.4.21-1.el7.x86_64.rpm                       compat-opensm-libs-3.3.15-2.el7.i686.rpm
+caribou-gtk2-module-0.4.21-1.el7.i686.rpm             compat-opensm-libs-3.3.15-2.el7.x86_64.rpm
+caribou-gtk2-module-0.4.21-1.el7.x86_64.rpm           compat-poppler022-0.22.5-4.el7.i686.rpm
+caribou-gtk3-module-0.4.21-1.el7.x86_64.rpm           compat-poppler022-0.22.5-4.el7.x86_64.rpm
+cdparanoia-10.2-17.el7.x86_64.rpm                     compat-poppler022-glib-0.22.5-4.el7.i686.rpm
+cdparanoia-libs-10.2-17.el7.i686.rpm                  compat-poppler022-glib-0.22.5-4.el7.x86_64.rpm
+cdparanoia-libs-10.2-17.el7.x86_64.rpm                compat-poppler022-qt-0.22.5-4.el7.i686.rpm
+cdrdao-1.2.3-20.el7.x86_64.rpm                        compat-poppler022-qt-0.22.5-4.el7.x86_64.rpm
+celt051-0.5.1.3-8.el7.i686.rpm                        comps-extras-7-2.el7.noarch.rpm
+celt051-0.5.1.3-8.el7.x86_64.rpm                      conman-0.2.7-15.el7.x86_64.rpm
+ceph-common-0.94.5-2.el7.x86_64.rpm                   conntrack-tools-1.4.4-3.el7.x86_64.rpm
+certmonger-0.78.4-3.el7.x86_64.rpm                    control-center-3.22.2-5.el7.i686.rpm
+cgdcbxd-1.0.2-7.el7.x86_64.rpm                        control-center-3.22.2-5.el7.x86_64.rpm
+check-0.9.9-5.el7.i686.rpm                            control-center-filesystem-3.22.2-5.el7.x86_64.rpm
+check-0.9.9-5.el7.x86_64.rpm                          convmv-1.15-2.el7.noarch.rpm
+check-devel-0.9.9-5.el7.i686.rpm                      coolkey-1.1.0-37.el7.i686.rpm
+check-devel-0.9.9-5.el7.x86_64.rpm                    coolkey-1.1.0-37.el7.x86_64.rpm
+checkpolicy-2.5-4.el7.x86_64.rpm                      copy-jdk-configs-2.2-5.el7_4.noarch.rpm
+cheese-3.22.1-1.el7.x86_64.rpm                        coreutils-8.22-18.el7.x86_64.rpm
+cheese-libs-3.22.1-1.el7.i686.rpm                     cpio-2.11-25.el7_4.x86_64.rpm
+cheese-libs-3.22.1-1.el7.x86_64.rpm                   cpp-4.8.5-16.el7_4.1.x86_64.rpm
+chkconfig-1.7.4-1.el7.x86_64.rpm                      cpuid-20170122-6.el7.x86_64.rpm
+chrony-3.1-2.el7.x86_64.rpm                           cracklib-2.9.0-11.el7.i686.rpm
+chrpath-0.16-0.el7.x86_64.rpm                         cracklib-2.9.0-11.el7.x86_64.rpm
+cifs-utils-6.2-10.el7.x86_64.rpm                      cracklib-dicts-2.9.0-11.el7.x86_64.rpm
+cim-schema-2.33.0-6.el7.noarch.rpm                    crash-7.1.9-2.el7.x86_64.rpm
+cjkuni-ukai-fonts-0.2.20080216.1-51.el7.noarch.rpm    crash-gcore-command-1.3.1-0.el7.x86_64.rpm
+cjkuni-uming-fonts-0.2.20080216.1-53.el7.noarch.rpm   crash-ptdump-command-1.0.3-2.el7.x86_64.rpm
+clevis-6-1.el7.x86_64.rpm                             crash-trace-command-2.0-12.el7.x86_64.rpm
+clevis-dracut-6-1.el7.x86_64.rpm                      crda-3.13_2016.02.08-1.el7.x86_64.rpm
+clevis-luks-6-1.el7.x86_64.rpm                        createrepo-0.9.9-28.el7.noarch.rpm
+clevis-udisks2-6-1.el7.x86_64.rpm                     criu-2.12-2.el7.x86_64.rpm
+cloud-init-0.7.9-9.el7_4.2.x86_64.rpm                 cronie-1.4.11-17.el7.x86_64.rpm
+cloud-utils-growpart-0.29-2.el7.noarch.rpm            cronie-anacron-1.4.11-17.el7.x86_64.rpm
+clucene-core-2.3.3.4-11.el7.i686.rpm                  cronie-noanacron-1.4.11-17.el7.x86_64.rpm
+clucene-core-2.3.3.4-11.el7.x86_64.rpm                crontabs-1.11-6.20121102git.el7.noarch.rpm
+clutter-1.26.0-1.el7.i686.rpm                         crypto-utils-2.4.1-42.el7.x86_64.rpm
+clutter-1.26.0-1.el7.x86_64.rpm                       cryptsetup-1.7.4-3.el7_4.1.x86_64.rpm
+clutter-gst2-2.0.18-1.el7.i686.rpm                    cryptsetup-libs-1.7.4-3.el7_4.1.i686.rpm
+clutter-gst2-2.0.18-1.el7.x86_64.rpm                  cryptsetup-libs-1.7.4-3.el7_4.1.x86_64.rpm
+clutter-gst3-3.0.22-1.el7.i686.rpm                    cryptsetup-python-1.7.4-3.el7_4.1.x86_64.rpm
+clutter-gst3-3.0.22-1.el7.x86_64.rpm                  cryptsetup-reencrypt-1.7.4-3.el7_4.1.x86_64.rpm
+clutter-gtk-1.8.2-1.el7.i686.rpm                      cscope-15.8-10.el7.x86_64.rpm
+clutter-gtk-1.8.2-1.el7.x86_64.rpm                    ctags-5.8-13.el7.x86_64.rpm
+cmake-2.8.12.2-2.el7.x86_64.rpm                       ctags-etags-5.8-13.el7.x86_64.rpm
+cmpi-bindings-pywbem-0.9.5-6.el7.x86_64.rpm           culmus-aharoni-clm-fonts-0.130-3.el7.noarch.rpm
+cockpit-138-10.el7_4.x86_64.rpm                       culmus-caladings-clm-fonts-0.130-3.el7.noarch.rpm
+cockpit-bridge-138-10.el7_4.x86_64.rpm                culmus-david-clm-fonts-0.130-3.el7.noarch.rpm
+cockpit-system-138-10.el7_4.noarch.rpm                culmus-drugulin-clm-fonts-0.130-3.el7.noarch.rpm
+cockpit-ws-138-10.el7_4.i686.rpm                      culmus-ellinia-clm-fonts-0.130-3.el7.noarch.rpm
+cockpit-ws-138-10.el7_4.x86_64.rpm                    culmus-fonts-common-0.130-3.el7.noarch.rpm
+codemodel-2.6-9.el7.noarch.rpm                        culmus-frank-ruehl-clm-fonts-0.130-3.el7.noarch.rpm
+cogl-1.22.2-1.el7.i686.rpm                            culmus-hadasim-clm-fonts-0.130-3.el7.noarch.rpm
+cogl-1.22.2-1.el7.x86_64.rpm                          culmus-keteryg-fonts-0.130-3.el7.noarch.rpm
+colord-1.3.4-1.el7.x86_64.rpm                         culmus-miriam-clm-fonts-0.130-3.el7.noarch.rpm
+colord-gtk-0.1.25-4.el7.i686.rpm                      culmus-miriam-mono-clm-fonts-0.130-3.el7.noarch.rpm
+colord-gtk-0.1.25-4.el7.x86_64.rpm                    culmus-nachlieli-clm-fonts-0.130-3.el7.noarch.rpm
+colord-kde-0.3.0-3.el7.x86_64.rpm                     culmus-simple-clm-fonts-0.130-3.el7.noarch.rpm
+colord-libs-1.3.4-1.el7.i686.rpm                      culmus-stamashkenaz-clm-fonts-0.130-3.el7.noarch.rpm
+colord-libs-1.3.4-1.el7.x86_64.rpm                    culmus-stamsefarad-clm-fonts-0.130-3.el7.noarch.rpm
+color-filesystem-1-13.el7.noarch.rpm                  culmus-yehuda-clm-fonts-0.130-3.el7.noarch.rpm
+compat-cheese314-3.14.2-1.el7.i686.rpm                cups-1.6.3-29.el7.x86_64.rpm
+compat-cheese314-3.14.2-1.el7.x86_64.rpm              cups-client-1.6.3-29.el7.x86_64.rpm
+compat-dapl-1.2.19-4.el7.i686.rpm                     cups-devel-1.6.3-29.el7.i686.rpm
+compat-dapl-1.2.19-4.el7.x86_64.rpm                   cups-devel-1.6.3-29.el7.x86_64.rpm
+compat-db47-4.7.25-28.el7.i686.rpm                    cups-filesystem-1.6.3-29.el7.noarch.rpm
+compat-db47-4.7.25-28.el7.x86_64.rpm                  cups-filters-1.0.35-22.el7.x86_64.rpm
+compat-db-headers-4.7.25-28.el7.noarch.rpm            cups-filters-libs-1.0.35-22.el7.i686.rpm
+compat-gcc-44-4.4.7-8.el7.x86_64.rpm                  cups-filters-libs-1.0.35-22.el7.x86_64.rpm
+compat-gcc-44-c++-4.4.7-8.el7.x86_64.rpm              cups-libs-1.6.3-29.el7.i686.rpm
+compat-glade315-3.15.0-1.el7.i686.rpm                 cups-libs-1.6.3-29.el7.x86_64.rpm
+compat-glade315-3.15.0-1.el7.x86_64.rpm               cups-lpd-1.6.3-29.el7.x86_64.rpm
+compat-glibc-2.12-4.el7.x86_64.rpm                    cups-pk-helper-0.2.6-2.el7.x86_64.rpm
+compat-glibc-headers-2.12-4.el7.x86_64.rpm            curl-7.29.0-42.el7_4.1.x86_64.rpm
+compat-gnome-desktop314-3.14.2-1.el7.i686.rpm         custodia-0.3.1-4.el7.noarch.rpm
+compat-gnome-desktop314-3.14.2-1.el7.x86_64.rpm       cvs-1.11.23-35.el7.x86_64.rpm
+compat-grilo02-0.2.12-1.el7.i686.rpm                  cyrus-imapd-2.4.17-13.el7.x86_64.rpm
+compat-grilo02-0.2.12-1.el7.x86_64.rpm                cyrus-imapd-utils-2.4.17-13.el7.x86_64.rpm
+compat-libcap1-1.10-7.el7.i686.rpm                    cyrus-sasl-2.1.26-21.el7.i686.rpm
+compat-libcap1-1.10-7.el7.x86_64.rpm                  cyrus-sasl-2.1.26-21.el7.x86_64.rpm
+compat-libcogl12-1.14.0-3.el7.i686.rpm                cyrus-sasl-devel-2.1.26-21.el7.i686.rpm
+compat-libcogl12-1.14.0-3.el7.x86_64.rpm              cyrus-sasl-devel-2.1.26-21.el7.x86_64.rpm
+compat-libcogl-pango12-1.14.0-3.el7.i686.rpm          cyrus-sasl-gssapi-2.1.26-21.el7.i686.rpm
+compat-libcogl-pango12-1.14.0-3.el7.x86_64.rpm        cyrus-sasl-gssapi-2.1.26-21.el7.x86_64.rpm
+compat-libcolord1-1.0.4-1.el7.i686.rpm                cyrus-sasl-lib-2.1.26-21.el7.i686.rpm
+compat-libcolord1-1.0.4-1.el7.x86_64.rpm              cyrus-sasl-lib-2.1.26-21.el7.x86_64.rpm
+compat-libf2c-34-3.4.6-32.el7.i686.rpm                cyrus-sasl-md5-2.1.26-21.el7.i686.rpm
+compat-libf2c-34-3.4.6-32.el7.x86_64.rpm              cyrus-sasl-md5-2.1.26-21.el7.x86_64.rpm
+compat-libgdata13-0.13.3-1.el7.i686.rpm               cyrus-sasl-plain-2.1.26-21.el7.i686.rpm
+compat-libgdata13-0.13.3-1.el7.x86_64.rpm             cyrus-sasl-plain-2.1.26-21.el7.x86_64.rpm
+compat-libgfortran-41-4.1.2-44.el7.i686.rpm           cyrus-sasl-scram-2.1.26-21.el7.i686.rpm
+compat-libgfortran-41-4.1.2-44.el7.x86_64.rpm         cyrus-sasl-scram-2.1.26-21.el7.x86_64.rpm
+compat-libgnome-bluetooth11-3.8.2.1-2.el7.i686.rpm    lost+found
+compat-libgnome-bluetooth11-3.8.2.1-2.el7.x86_64.rpm
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# tail -2 /etc/auto.master
++auto.master
+/-      /etc/auto.direct        --timeout=60
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+[root@c111xyz /]#
+[root@c111xyz /]# date
+Tue Jun 24 20:21:14 IST 2025
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /sharedata3
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /sharedata4
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# ls -l
+total 37824
+-r--r--r-- 1 root root  226880 Jun 24 19:57 dapl-2.1.5-2.el7.i686.rpm
+-r--r--r-- 1 root root  227392 Jun 24 19:57 dapl-2.1.5-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   24272 Jun 24 19:57 daxctl-libs-56-2.el7.i686.rpm
+-r--r--r-- 1 root root   24208 Jun 24 19:57 daxctl-libs-56-2.el7.x86_64.rpm
+-r--r--r-- 1 root root  314416 Jun 24 19:57 dbus-1.6.12-17.el7.x86_64.rpm
+-r--r--r-- 1 root root   53920 Jun 24 19:57 dbus-devel-1.6.12-17.el7.i686.rpm
+-r--r--r-- 1 root root   53888 Jun 24 19:57 dbus-devel-1.6.12-17.el7.x86_64.rpm
+-r--r--r-- 1 root root  105864 Jun 24 19:57 dbus-glib-0.100-7.el7.i686.rpm
+-r--r--r-- 1 root root  104824 Jun 24 19:57 dbus-glib-0.100-7.el7.x86_64.rpm
+-r--r--r-- 1 root root   54472 Jun 24 19:57 dbus-glib-devel-0.100-7.el7.i686.rpm
+-r--r--r-- 1 root root   54152 Jun 24 19:57 dbus-glib-devel-0.100-7.el7.x86_64.rpm
+-r--r--r-- 1 root root  155428 Jun 24 19:57 dbus-libs-1.6.12-17.el7.i686.rpm
+-r--r--r-- 1 root root  154736 Jun 24 19:57 dbus-libs-1.6.12-17.el7.x86_64.rpm
+-r--r--r-- 1 root root   87772 Jun 24 19:57 dbusmenu-qt-0.9.2-7.el7.i686.rpm
+-r--r--r-- 1 root root   87816 Jun 24 19:57 dbusmenu-qt-0.9.2-7.el7.x86_64.rpm
+-r--r--r-- 1 root root  211364 Jun 24 19:57 dbus-python-1.1.1-9.el7.x86_64.rpm
+-r--r--r-- 1 root root   47552 Jun 24 19:57 dbus-x11-1.6.12-17.el7.x86_64.rpm
+-r--r--r-- 1 root root   32412 Jun 24 19:57 dbxtool-7-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  110576 Jun 24 19:57 dconf-0.26.0-2.el7.i686.rpm
+-r--r--r-- 1 root root  109176 Jun 24 19:57 dconf-0.26.0-2.el7.x86_64.rpm
+-r--r--r-- 1 root root  315704 Jun 24 19:57 dconf-editor-3.22.3-3.el7.x86_64.rpm
+-r--r--r-- 1 root root  232524 Jun 24 19:57 dcraw-9.19-6.el7.x86_64.rpm
+-r--r--r-- 1 root root  272788 Jun 24 19:57 dejagnu-1.5.1-3.el7.noarch.rpm
+-r--r--r-- 1 root root   65840 Jun 24 19:57 dejavu-fonts-common-2.33-6.el7.noarch.rpm
+-r--r--r-- 1 root root 1482908 Jun 24 19:57 dejavu-sans-fonts-2.33-6.el7.noarch.rpm
+-r--r--r-- 1 root root  443032 Jun 24 19:57 dejavu-sans-mono-fonts-2.33-6.el7.noarch.rpm
+-r--r--r-- 1 root root  795156 Jun 24 19:57 dejavu-serif-fonts-2.33-6.el7.noarch.rpm
+-r--r--r-- 1 root root   84048 Jun 24 19:57 deltarpm-3.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   68972 Jun 24 19:57 desktop-file-utils-0.23-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  286716 Jun 24 19:57 device-mapper-1.02.140-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  183924 Jun 24 19:57 device-mapper-event-1.02.140-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  183188 Jun 24 19:57 device-mapper-event-libs-1.02.140-8.el7.i686.rpm
+-r--r--r-- 1 root root  183476 Jun 24 19:57 device-mapper-event-libs-1.02.140-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  322016 Jun 24 19:57 device-mapper-libs-1.02.140-8.el7.i686.rpm
+-r--r--r-- 1 root root  319436 Jun 24 19:57 device-mapper-libs-1.02.140-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  137712 Jun 24 19:57 device-mapper-multipath-0.4.9-111.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root  251800 Jun 24 19:57 device-mapper-multipath-libs-0.4.9-111.el7_4.2.i686.rpm
+-r--r--r-- 1 root root  257736 Jun 24 19:57 device-mapper-multipath-libs-0.4.9-111.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root  409568 Jun 24 19:57 device-mapper-persistent-data-0.7.0-0.1.rc6.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  288580 Jun 24 19:57 dhclient-4.2.5-58.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  525540 Jun 24 19:57 dhcp-4.2.5-58.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  177868 Jun 24 19:57 dhcp-common-4.2.5-58.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  132892 Jun 24 19:57 dhcp-libs-4.2.5-58.el7_4.1.i686.rpm
+-r--r--r-- 1 root root  133264 Jun 24 19:57 dhcp-libs-4.2.5-58.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root  210896 Jun 24 19:57 dialog-1.2-4.20130523.el7.i686.rpm
+-r--r--r-- 1 root root  213280 Jun 24 19:57 dialog-1.2-4.20130523.el7.x86_64.rpm
+-r--r--r-- 1 root root   35532 Jun 24 19:57 diffstat-1.57-4.el7.x86_64.rpm
+-r--r--r-- 1 root root  329712 Jun 24 19:57 diffutils-3.3-4.el7.x86_64.rpm
+-r--r--r-- 1 root root   20196 Jun 24 19:57 dleyna-connector-dbus-0.2.0-2.el7.i686.rpm
+-r--r--r-- 1 root root   20172 Jun 24 19:57 dleyna-connector-dbus-0.2.0-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   26608 Jun 24 19:57 dleyna-core-0.5.0-1.el7.i686.rpm
+-r--r--r-- 1 root root   26388 Jun 24 19:57 dleyna-core-0.5.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   74404 Jun 24 19:57 dleyna-server-0.5.0-2.el7_4.i686.rpm
+-r--r--r-- 1 root root   73900 Jun 24 19:57 dleyna-server-0.5.0-2.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    8904 Jun 24 19:57 dlm-devel-4.0.7-1.el7.i686.rpm
+-r--r--r-- 1 root root    8888 Jun 24 19:57 dlm-devel-4.0.7-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   24748 Jun 24 19:57 dlm-lib-4.0.7-1.el7.i686.rpm
+-r--r--r-- 1 root root   24484 Jun 24 19:57 dlm-lib-4.0.7-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   90048 Jun 24 19:57 dmidecode-3.0-5.el7.x86_64.rpm
+-r--r--r-- 1 root root  156556 Jun 24 19:57 dmraid-1.0.0.rc16-28.el7.i686.rpm
+-r--r--r-- 1 root root  154536 Jun 24 19:57 dmraid-1.0.0.rc16-28.el7.x86_64.rpm
+-r--r--r-- 1 root root   21744 Jun 24 19:57 dmraid-events-1.0.0.rc16-28.el7.x86_64.rpm
+-r--r--r-- 1 root root  283660 Jun 24 19:57 dnsmasq-2.76-2.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root  120464 Jun 24 19:57 dnssec-trigger-0.11-22.el7.x86_64.rpm
+-r--r--r-- 1 root root  502884 Jun 24 19:57 docbook5-schemas-5.0-10.el7.noarch.rpm
+-r--r--r-- 1 root root 3190876 Jun 24 19:57 docbook5-style-xsl-1.78.1-4.el7.noarch.rpm
+-r--r--r-- 1 root root  231664 Jun 24 19:57 docbook-dtds-1.0-60.el7.noarch.rpm
+-r--r--r-- 1 root root   26964 Jun 24 19:57 docbook-simple-1.1-12.el7.noarch.rpm
+-r--r--r-- 1 root root  228456 Jun 24 19:57 docbook-slides-3.4.0-13.el7.noarch.rpm
+-r--r--r-- 1 root root  256988 Jun 24 19:57 docbook-style-dsssl-1.79-18.el7.noarch.rpm
+-r--r--r-- 1 root root 2110588 Jun 24 19:57 docbook-style-xsl-1.78.1-3.el7.noarch.rpm
+-r--r--r-- 1 root root   72832 Jun 24 19:57 docbook-utils-0.6.14-36.el7.noarch.rpm
+-r--r--r-- 1 root root   16148 Jun 24 19:57 docbook-utils-pdf-0.6.14-36.el7.noarch.rpm
+-r--r--r-- 1 root root  283504 Jun 24 19:57 dom4j-1.6.1-20.el7.noarch.rpm
+-r--r--r-- 1 root root   76160 Jun 24 19:57 dos2unix-6.0.3-7.el7.x86_64.rpm
+-r--r--r-- 1 root root  103540 Jun 24 19:57 dosfstools-3.0.20-9.el7.x86_64.rpm
+-r--r--r-- 1 root root   27452 Jun 24 19:57 dotconf-1.3-8.el7.i686.rpm
+-r--r--r-- 1 root root   27444 Jun 24 19:57 dotconf-1.3-8.el7.x86_64.rpm
+-r--r--r-- 1 root root 3370136 Jun 24 19:57 dovecot-2.2.10-8.el7.i686.rpm
+-r--r--r-- 1 root root 3343912 Jun 24 19:57 dovecot-2.2.10-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   67140 Jun 24 19:57 dovecot-mysql-2.2.10-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   69572 Jun 24 19:57 dovecot-pgsql-2.2.10-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  311560 Jun 24 19:57 dovecot-pigeonhole-2.2.10-8.el7.x86_64.rpm
+-r--r--r-- 1 root root 3726336 Jun 24 19:57 doxygen-1.8.5-3.el7.x86_64.rpm
+-r--r--r-- 1 root root  329188 Jun 24 19:57 dracut-033-502.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   55344 Jun 24 19:57 dracut-config-generic-033-502.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   56908 Jun 24 19:57 dracut-config-rescue-033-502.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   58576 Jun 24 19:57 dracut-fips-033-502.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   62804 Jun 24 19:57 dracut-fips-aesni-033-502.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   99956 Jun 24 19:57 dracut-network-033-502.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   21984 Jun 24 19:57 dropwatch-1.4-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  166572 Jun 24 19:57 dstat-0.7.2-12.el7.noarch.rpm
+-r--r--r-- 1 root root  147284 Jun 24 19:57 dump-0.4-0.22.b44.el7.i686.rpm
+-r--r--r-- 1 root root  151244 Jun 24 19:57 dump-0.4-0.22.b44.el7.x86_64.rpm
+-r--r--r-- 1 root root   22124 Jun 24 19:57 dumpet-2.1-8.el7.x86_64.rpm
+-r--r--r-- 1 root root  135552 Jun 24 19:57 dvd+rw-tools-7.1-15.el7.x86_64.rpm
+-r--r--r-- 1 root root  138072 Jun 24 19:57 dvgrab-3.5-9.el7.x86_64.rpm
+-r--r--r-- 1 root root  101124 Jun 24 19:57 dwz-0.11-3.el7.x86_64.rpm
+-r--r--r-- 1 root root 3593852 Jun 24 19:57 dyninst-9.3.1-1.el7.i686.rpm
+-r--r--r-- 1 root root 3640428 Jun 24 19:57 dyninst-9.3.1-1.el7.x86_64.rpm
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# date
+Tue Jun 24 20:22:13 IST 2025
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /sharedata3
+[root@c111xyz sharedata3]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]#
+[root@c111xyz sharedata3]# cd /sharedata4
+[root@c111xyz sharedata4]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /sharedata5
+nfsserver:/data6       497M  185M  312M  38% /sharedata6
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# umount /sharedata6
+[root@c111xyz sharedata4]# umount /sharedata5
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# rmdir /sharedata5
+[root@c111xyz sharedata4]# rmdir /sharedata6
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# vi /etc/auto.master
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# vi /etc/auto.indirect
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# tail -2 /etc/auto.master
+/-      /etc/auto.direct        --timeout=60
+/products       /etc/auto.indirect      --timeout=60
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# cat /etc/auto.indirect
+sharedata5      -rw,sync,intr   nfsserver:/data5
+sharedata6      -rw,sync,intr   nfsserver:/data6
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]#
+[root@c111xyz sharedata4]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# systemctl restart autofs
+[root@c111xyz /]# ls -l /
+total 38
+lrwxrwxrwx.   1 root root     7 May 22 20:19 bin -> usr/bin
+dr-xr-xr-x.   4 root root  4096 May 22 21:16 boot
+drwxr-xr-x   22 root root  3440 Jun 24 19:23 dev
+drwxr-xr-x.  81 root root  8192 Jun 24 20:29 etc
+drwxr-xr-x.   3 root root    17 Jun  4 19:10 export
+drwxr-xr-x.  10 root root   124 Jun 23 20:19 home
+lrwxrwxrwx.   1 root root     7 May 22 20:19 lib -> usr/lib
+lrwxrwxrwx.   1 root root     9 May 22 20:19 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root     6 Mar 10  2016 media
+drwxr-xr-x    2 root root     0 Jun 24 20:31 misc
+drwxr-xr-x.   2 root root     6 Mar 10  2016 mnt
+drwxr-xr-x    2 root root     0 Jun 24 20:31 net
+drwxr-xr-x.   2 root root     6 Mar 10  2016 opt
+dr-xr-xr-x  180 root root     0 Jun 24 19:22 proc
+drwxr-xr-x    2 root root     0 Jun 24 20:31 products
+drwxrwxrwx.   4 root root    84 Jun 11 20:59 public
+drwxrwxrwt.   2 root root    97 Jun 20 19:47 publicdata
+dr-xr-x---.   4 root root   140 Jun 21 19:13 root
+drwxr-xr-x   25 root root   920 Jun 24 20:31 run
+lrwxrwxrwx.   1 root root     8 May 22 20:19 sbin -> usr/sbin
+drwxr-xr-x.   2 root root     6 Jun 19 19:19 sharedata
+drwxr-xr-x    3 root root 10240 Jun 24 19:53 sharedata1
+drwxr-xr-x    3 root root  8192 Jun 24 19:55 sharedata2
+drwxr-xr-x    2 root root     0 Jun 24 20:31 sharedata3
+drwxr-xr-x    2 root root     0 Jun 24 20:31 sharedata4
+drwxr-xr-x    2 root root     6 Jun 21 20:38 shareinfra
+drwxr-xr-x.   2 root root     6 Mar 10  2016 srv
+dr-xr-xr-x   13 root root     0 Jun 24 19:23 sys
+drwxrwxrwt.  12 root root  4096 Jun 24 20:31 tmp
+drwxr-xr-x.   3 root root    20 Jun  2 19:47 tomcat
+drwxr-xr-x.  13 root root   171 May 28 20:07 usr
+drwxr-xr-x.  20 root root   278 Jun 21 20:34 var
+drwxrwxrwx.   4 root root    88 Jun 13 21:19 webdata
+[root@c111xyz /]# date
+Tue Jun 24 20:32:11 IST 2025
+[root@c111xyz /]# cd /products/
+[root@c111xyz products]# ls -l
+total 0
+[root@c111xyz products]#
+[root@c111xyz products]#
+[root@c111xyz products]# cd sharedata5
+[root@c111xyz sharedata5]# pwd
+/products/sharedata5
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]# ls
+e2fsprogs-1.42.9-10.el7.x86_64.rpm                  elfutils-libelf-0.168-8.el7.x86_64.rpm        espeak-1.47.11-4.el7.x86_64.rpm
+e2fsprogs-devel-1.42.9-10.el7.i686.rpm              elfutils-libelf-devel-0.168-8.el7.i686.rpm    ethtool-4.8-1.el7.x86_64.rpm
+e2fsprogs-devel-1.42.9-10.el7.x86_64.rpm            elfutils-libelf-devel-0.168-8.el7.x86_64.rpm  evince-3.22.1-5.2.el7_4.x86_64.rpm
+e2fsprogs-libs-1.42.9-10.el7.i686.rpm               elfutils-libs-0.168-8.el7.i686.rpm            evince-dvi-3.22.1-5.2.el7_4.x86_64.rpm
+e2fsprogs-libs-1.42.9-10.el7.x86_64.rpm             elfutils-libs-0.168-8.el7.x86_64.rpm          evince-libs-3.22.1-5.2.el7_4.i686.rpm
+easymock2-2.5.2-12.el7.noarch.rpm                   elinks-0.12-0.36.pre6.el7.x86_64.rpm          evince-libs-3.22.1-5.2.el7_4.x86_64.rpm
+ebtables-2.0.10-15.el7.x86_64.rpm                   emacs-24.3-20.el7_4.x86_64.rpm                evince-nautilus-3.22.1-5.2.el7_4.x86_64.rpm
+ecj-4.5.2-3.el7.x86_64.rpm                          emacs-auctex-11.87-4.el7.noarch.rpm           evolution-data-server-3.22.7-6.el7.i686.rpm
+ed-1.9-4.el7.x86_64.rpm                             emacs-common-24.3-20.el7_4.x86_64.rpm         evolution-data-server-3.22.7-6.el7.x86_64.rpm
+edac-utils-0.16-15.el7.i686.rpm                     emacs-filesystem-24.3-20.el7_4.noarch.rpm     evolution-data-server-devel-3.22.7-6.el7.i686.rpm
+edac-utils-0.16-15.el7.x86_64.rpm                   emacs-gnuplot-4.6.2-3.el7.noarch.rpm          evolution-data-server-devel-3.22.7-6.el7.x86_64.rpm
+efax-0.9a-15.el7.x86_64.rpm                         emacs-nox-24.3-20.el7_4.x86_64.rpm            exempi-2.2.0-8.el7.i686.rpm
+efibootmgr-15-2.el7.x86_64.rpm                      empathy-3.12.12-4.el7.x86_64.rpm              exempi-2.2.0-8.el7.x86_64.rpm
+efivar-31-4.el7.x86_64.rpm                          enchant-1.6.0-8.el7.i686.rpm                  exiv2-libs-0.23-6.el7.i686.rpm
+efivar-libs-31-4.el7.x86_64.rpm                     enchant-1.6.0-8.el7.x86_64.rpm                exiv2-libs-0.23-6.el7.x86_64.rpm
+elfutils-0.168-8.el7.x86_64.rpm                     enscript-1.6.6-6.el7.x86_64.rpm               expat-2.1.0-10.el7_3.i686.rpm
+elfutils-default-yama-scope-0.168-8.el7.noarch.rpm  environment-modules-3.2.10-10.el7.x86_64.rpm  expat-2.1.0-10.el7_3.x86_64.rpm
+elfutils-devel-0.168-8.el7.i686.rpm                 eog-3.20.5-2.el7.x86_64.rpm                   expat-devel-2.1.0-10.el7_3.i686.rpm
+elfutils-devel-0.168-8.el7.x86_64.rpm               esc-1.1.0-37.el7.x86_64.rpm                   expat-devel-2.1.0-10.el7_3.x86_64.rpm
+elfutils-libelf-0.168-8.el7.i686.rpm                espeak-1.47.11-4.el7.i686.rpm                 expect-5.45-14.el7_1.x86_64.rpm
+[root@c111xyz sharedata5]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data5       497M   83M  414M  17% /products/sharedata5
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]# pwd
+/products/sharedata5
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]# cd ..
+[root@c111xyz products]#
+[root@c111xyz products]# ls -l
+total 4
+drwxr-xr-x 2 root root 4096 Jun 24 19:57 sharedata5
+[root@c111xyz products]#
+[root@c111xyz products]#
+[root@c111xyz products]# ls -l
+total 4
+drwxr-xr-x 2 root root 4096 Jun 24 19:57 sharedata5
+[root@c111xyz products]#
+[root@c111xyz products]# ls -l
+total 4
+drwxr-xr-x 2 root root 4096 Jun 24 19:57 sharedata5
+[root@c111xyz products]#
+[root@c111xyz products]#
+[root@c111xyz products]# date
+Tue Jun 24 20:34:02 IST 2025
+[root@c111xyz products]#
+[root@c111xyz products]# ls -l
+total 0
+[root@c111xyz products]#
+[root@c111xyz products]#
+[root@c111xyz products]# cd sharedata6
+[root@c111xyz sharedata6]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data6       497M  185M  312M  38% /products/sharedata6
+[root@c111xyz sharedata6]#
+[root@c111xyz sharedata6]#
+[root@c111xyz sharedata6]# ls
+fabtests-1.4.2-1.el7.x86_64.rpm                         filesystem-3.2-21.el7.x86_64.rpm
+farstream-0.1.2-8.el7.i686.rpm                          findutils-4.5.11-5.el7.x86_64.rpm
+farstream-0.1.2-8.el7.x86_64.rpm                        finger-0.17-52.el7.x86_64.rpm
+farstream02-0.2.3-3.el7.i686.rpm                        finger-server-0.17-52.el7.x86_64.rpm
+farstream02-0.2.3-3.el7.x86_64.rpm                      fipscheck-1.4.1-6.el7.x86_64.rpm
+fcoe-utils-1.0.32-1.el7.x86_64.rpm                      fipscheck-lib-1.4.1-6.el7.i686.rpm
+fence-agents-all-4.0.11-66.el7_4.3.x86_64.rpm           fipscheck-lib-1.4.1-6.el7.x86_64.rpm
+fence-agents-apc-4.0.11-66.el7_4.3.x86_64.rpm           firefox-52.5.1-1.el7_4.x86_64.rpm
+fence-agents-apc-snmp-4.0.11-66.el7_4.3.x86_64.rpm      firewall-config-0.4.4.4-6.el7.noarch.rpm
+fence-agents-bladecenter-4.0.11-66.el7_4.3.x86_64.rpm   firewalld-0.4.4.4-6.el7.noarch.rpm
+fence-agents-brocade-4.0.11-66.el7_4.3.x86_64.rpm       firewalld-filesystem-0.4.4.4-6.el7.noarch.rpm
+fence-agents-cisco-mds-4.0.11-66.el7_4.3.x86_64.rpm     firstboot-19.12-1.el7.x86_64.rpm
+fence-agents-cisco-ucs-4.0.11-66.el7_4.3.x86_64.rpm     flac-libs-1.3.0-5.el7_1.i686.rpm
+fence-agents-common-4.0.11-66.el7_4.3.x86_64.rpm        flac-libs-1.3.0-5.el7_1.x86_64.rpm
+fence-agents-compute-4.0.11-66.el7_4.3.x86_64.rpm       flatpak-0.8.7-3.el7_4.x86_64.rpm
+fence-agents-drac5-4.0.11-66.el7_4.3.x86_64.rpm         flatpak-libs-0.8.7-3.el7_4.x86_64.rpm
+fence-agents-eaton-snmp-4.0.11-66.el7_4.3.x86_64.rpm    flex-2.5.37-3.el7.x86_64.rpm
+fence-agents-emerson-4.0.11-66.el7_4.3.x86_64.rpm       flite-1.3-22.el7.i686.rpm
+fence-agents-eps-4.0.11-66.el7_4.3.x86_64.rpm           flite-1.3-22.el7.x86_64.rpm
+fence-agents-hpblade-4.0.11-66.el7_4.3.x86_64.rpm       fltk-1.3.4-1.el7.i686.rpm
+fence-agents-ibmblade-4.0.11-66.el7_4.3.x86_64.rpm      fltk-1.3.4-1.el7.x86_64.rpm
+fence-agents-ifmib-4.0.11-66.el7_4.3.x86_64.rpm         folks-0.11.3-1.el7.i686.rpm
+fence-agents-ilo2-4.0.11-66.el7_4.3.x86_64.rpm          folks-0.11.3-1.el7.x86_64.rpm
+fence-agents-ilo-moonshot-4.0.11-66.el7_4.3.x86_64.rpm  fontawesome-fonts-4.1.0-1.el7.noarch.rpm
+fence-agents-ilo-mp-4.0.11-66.el7_4.3.x86_64.rpm        fontconfig-2.10.95-11.el7.i686.rpm
+fence-agents-ilo-ssh-4.0.11-66.el7_4.3.x86_64.rpm       fontconfig-2.10.95-11.el7.x86_64.rpm
+fence-agents-intelmodular-4.0.11-66.el7_4.3.x86_64.rpm  fontconfig-devel-2.10.95-11.el7.i686.rpm
+fence-agents-ipdu-4.0.11-66.el7_4.3.x86_64.rpm          fontconfig-devel-2.10.95-11.el7.x86_64.rpm
+fence-agents-ipmilan-4.0.11-66.el7_4.3.x86_64.rpm       fontpackages-filesystem-1.44-8.el7.noarch.rpm
+fence-agents-kdump-4.0.11-66.el7_4.3.x86_64.rpm         fonts-tweak-tool-0.3.2-5.el7.i686.rpm
+fence-agents-mpath-4.0.11-66.el7_4.3.x86_64.rpm         fonts-tweak-tool-0.3.2-5.el7.x86_64.rpm
+fence-agents-rhevm-4.0.11-66.el7_4.3.x86_64.rpm         foomatic-4.0.9-8.el7.x86_64.rpm
+fence-agents-rsa-4.0.11-66.el7_4.3.x86_64.rpm           foomatic-db-4.0-41.20130911.el7.noarch.rpm
+fence-agents-rsb-4.0.11-66.el7_4.3.x86_64.rpm           foomatic-db-filesystem-4.0-41.20130911.el7.noarch.rpm
+fence-agents-sbd-4.0.11-66.el7_4.3.x86_64.rpm           foomatic-db-ppds-4.0-41.20130911.el7.noarch.rpm
+fence-agents-scsi-4.0.11-66.el7_4.3.x86_64.rpm          foomatic-filters-4.0.9-8.el7.x86_64.rpm
+fence-agents-vmware-soap-4.0.11-66.el7_4.3.x86_64.rpm   fprintd-0.5.0-4.0.el7_0.x86_64.rpm
+fence-agents-wti-4.0.11-66.el7_4.3.x86_64.rpm           fprintd-pam-0.5.0-4.0.el7_0.i686.rpm
+fence-virt-0.3.2-12.el7.x86_64.rpm                      fprintd-pam-0.5.0-4.0.el7_0.x86_64.rpm
+fence-virtd-0.3.2-12.el7.x86_64.rpm                     freeglut-2.8.1-3.el7.i686.rpm
+fence-virtd-libvirt-0.3.2-12.el7.x86_64.rpm             freeglut-2.8.1-3.el7.x86_64.rpm
+fence-virtd-multicast-0.3.2-12.el7.x86_64.rpm           freeglut-devel-2.8.1-3.el7.i686.rpm
+fence-virtd-serial-0.3.2-12.el7.x86_64.rpm              freeglut-devel-2.8.1-3.el7.x86_64.rpm
+festival-1.96-28.el7.x86_64.rpm                         freeipmi-1.2.9-8.el7.i686.rpm
+festival-freebsoft-utils-0.10-7.el7.noarch.rpm          freeipmi-1.2.9-8.el7.x86_64.rpm
+festival-lib-1.96-28.el7.i686.rpm                       freeipmi-bmc-watchdog-1.2.9-8.el7.x86_64.rpm
+festival-lib-1.96-28.el7.x86_64.rpm                     freeipmi-ipmidetectd-1.2.9-8.el7.x86_64.rpm
+festival-speechtools-libs-1.2.96-28.el7.i686.rpm        freeradius-3.0.13-8.el7_4.x86_64.rpm
+festival-speechtools-libs-1.2.96-28.el7.x86_64.rpm      freerdp-1.0.2-10.el7.x86_64.rpm
+festvox-slt-arctic-hts-0.20061229-28.el7.noarch.rpm     freerdp-libs-1.0.2-10.el7.i686.rpm
+fetchmail-6.3.24-7.el7.x86_64.rpm                       freerdp-libs-1.0.2-10.el7.x86_64.rpm
+fftw-3.3.3-8.el7.i686.rpm                               freerdp-plugins-1.0.2-10.el7.x86_64.rpm
+fftw-3.3.3-8.el7.x86_64.rpm                             freetype-2.4.11-15.el7.i686.rpm
+fftw-devel-3.3.3-8.el7.i686.rpm                         freetype-2.4.11-15.el7.x86_64.rpm
+fftw-devel-3.3.3-8.el7.x86_64.rpm                       freetype-devel-2.4.11-15.el7.i686.rpm
+fftw-libs-3.3.3-8.el7.i686.rpm                          freetype-devel-2.4.11-15.el7.x86_64.rpm
+fftw-libs-3.3.3-8.el7.x86_64.rpm                        frei0r-plugins-1.3-13.el7.x86_64.rpm
+fftw-libs-double-3.3.3-8.el7.i686.rpm                   fros-1.0-2.el7.noarch.rpm
+fftw-libs-double-3.3.3-8.el7.x86_64.rpm                 ftp-0.17-67.el7.x86_64.rpm
+fftw-libs-long-3.3.3-8.el7.i686.rpm                     fuse-2.9.2-8.el7.x86_64.rpm
+fftw-libs-long-3.3.3-8.el7.x86_64.rpm                   fuse-devel-2.9.2-8.el7.i686.rpm
+fftw-libs-single-3.3.3-8.el7.i686.rpm                   fuse-devel-2.9.2-8.el7.x86_64.rpm
+fftw-libs-single-3.3.3-8.el7.x86_64.rpm                 fuseiso-20070708-15.el7.x86_64.rpm
+fftw-static-3.3.3-8.el7.i686.rpm                        fuse-libs-2.9.2-8.el7.i686.rpm
+fftw-static-3.3.3-8.el7.x86_64.rpm                      fuse-libs-2.9.2-8.el7.x86_64.rpm
+file-5.11-33.el7.x86_64.rpm                             fwupd-0.8.2-3.el7.i686.rpm
+filebench-1.4.9.1-3.el7.x86_64.rpm                      fwupd-0.8.2-3.el7.x86_64.rpm
+file-libs-5.11-33.el7.i686.rpm                          fwupdate-9-8.el7.x86_64.rpm
+file-libs-5.11-33.el7.x86_64.rpm                        fwupdate-efi-9-8.el7.x86_64.rpm
+file-roller-3.22.3-1.el7.x86_64.rpm                     fwupdate-libs-9-8.el7.x86_64.rpm
+file-roller-nautilus-3.22.3-1.el7.x86_64.rpm            fxload-2002_04_11-16.el7.x86_64.rpm
+[root@c111xyz sharedata6]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data6       497M  185M  312M  38% /products/sharedata6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cd /sharedata3
+[root@c111xyz sharedata3]# cd /sharedata4
+[root@c111xyz sharedata4]# cd /products/sharedata5
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]#
+[root@c111xyz sharedata5]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data3       477M  119M  329M  27% /sharedata3
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+nfsserver:/data6       497M  185M  312M  38% /products/sharedata6
+nfsserver:/data5       497M   83M  414M  17% /products/sharedata5
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.1G   16G   6% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+nfsserver:/data1       477M   69M  379M  16% /sharedata1
+nfsserver:/data2       477M   62M  387M  14% /sharedata2
+nfsserver:/data4       497M   63M  435M  13% /sharedata4
+nfsserver:/data5       497M   83M  414M  17% /products/sharedata5
+[root@c111xyz /]#
+[root@c111xyz /]#
