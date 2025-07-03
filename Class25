@@ -1,0 +1,67 @@
+Class 25 03/07/2025
+
+NIS, NFS & Client Configuration Setup:
+=======================================
+
+NFS Client Server Configuration:
+================================
+1) Check server and client accesibulity
+	# ping nfsserver ====> If server not accessable with name then add entry in host file
+	# vi /etc/hosts
+	192.168.29.120	nfsserver.linux
+	# ping nfsserver
+2) Check shared home directory accessabulity
+	# showmount -e nfsserver
+	Export list for nfsserver:
+	/sharehome *
+3) Add autofs comfigurations
+	# vi /etc/auto.master
+	/sharehome      /etc/auto.home  --timeout=60
+	# vi /etc/auto.home
+	*       -rw,sync,intr   nfsserver:/sharehome/&
+4) Restart autofs service
+	# systemctl restart autofs
+
+NIS Client Server Configuration:
+================================
+1) Check server and client accesibulity
+	# ping nisserver ====> If server not accessable with name then add entry in host file
+	# vi /etc/hosts
+	192.168.29.120	nisserver.linux
+	# ping nisserver
+2) Add software info in mapping file
+	# vi /etc/nsswitch.conf
+	passwd:     files nis
+	shadow:     files nis
+	group:      files nis
+3) Add domain details and setup
+	# domainname linuxdomain.com
+	# vi /etc/sysconfig/network
+	NISDOMAIN=linuxdomain.com
+4) Install nis client software(ypbind) and enable the service
+	# yum install ypbind
+	# systemctl enable ypbind
+5) Add nisserver details in yp.conf file and restart ypbind service
+	# vi /etc/yp.conf
+	ypserver	192.168.29.120
+ 	# systemctl restart ypbind
+	# ypwhich
+	nisserver
+	# ypcat passwd
+	shareuser1:$6$0x4uuxKW$zzZ6gDfwgh46SMT8hXgNt2Hxy/pQG1UgKVI9dAjKGDtCVFWaQjSLjv1OUwmwP8pnXJKJyIy36HuFf8Bl86AjP.:4503:4503::/sharehome/shareuser1:/bin/bash
+	shareuser2:$6$IcNhD7lJ$vwAk5TQBEgJp7xHX4d8kcOCL3x9MEXkSIQA6b1MPTQkiT9ZAIHE2QKhUvvu668/Lya.Uta3KV1q.EtSb1LBJb/:4504:4504::/sharehome/shareuser2:/bin/bash
+
+Client Server Access Checking:
+==============================
+1) Login any of the user from client server
+	$ login with shareuser1 account with useername and password
+	$ pwd
+	/sharehome/shareuser2
+	$ df -h .
+	Filesystem                       Size  Used Avail Use% Mounted on
+	nfsserver:/sharehome/shareuser2  4.9G   33M  4.9G   1% /sharehome/shareuser2
+	$ id
+	uid=4504(shareuser2) gid=4504(shareuser2) groups=4504(shareuser2)
+	$ uname -a
+	Linux clientsrv 3.10.0-693.17.1.el7.x86_64 #1 SMP Sun Jan 14 10:36:03 EST 2018 x86_64 x86_64 x86_64 GNU/Linux
+	$
