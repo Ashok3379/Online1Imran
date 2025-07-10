@@ -1,0 +1,720 @@
+Class26 05/07/2025
+
+Job Management: Auto metically run the jobs and programes on the servers without manual interventions.
+
+Job Schedulers:
+===============
+Any operating system, it is possible to create jobs that you want to reoccur. This process, known as job scheduling, is usually done based on user-defined jobs.
+The importance of the  job scheduling is that the critical tasks like taking backups, which the clients usually wants to be taken in nights, can  easily be performed without the intervention of the administrator by scheduling a job. 
+
+Job Schedulers:
+1) cron
+2) at
+3) anacron
+
+Cron Scheduling:
+================
+All repeated jobs can be scheduled with cron 
+
+min	hours	dayofmonth	monthofyear	dayofweek	command/instruction
+23	20	10		07		3		/usr/bin/df -h >> /tmp/dfoutput
+
+Important Files related to cron
+===============================
+/etc/crontab is the file which stores all scheduled jobs 
+/etc/cron.deny is the file used to restrict the users from using cron jobs. 
+/etc/cron.allow is used to allow only users whose names are mentioned in this file to use cron jobs. (this file does not exist by default) 
+/var/spool/cron/root is the file which store root user related scheduled jobs
+/var/log/cron is the file will capture all cron related logs
+
+Cron Service:
+=============
+# systemctl start crond		====> To start the service
+# systemctl stop crond		====> To stop the service
+# systemctl status crond	====> To check the service status
+# systemctl restart crond	====> To restart the service
+
+Crontab Commands
+================ 
+# crontab –e		====> Edit your crontab file, or create one if it doesn’t already exist. 
+# crontab –l 		====> Display your crontab file. 
+# crontab –r		====> Remove your crontab file. 
+# crontab -u		====> If combined with –e, edit a particular user’s crontab file and if combined with –l, display a particular user’s crontab file. If combined with –r, deletes a particular user’s crontab file  
+
+at Scheduling:
+==============
+One time jobs can be scheduled with at 
+
+Important Files related to cron
+===============================
+/etc/at.deny same as cron.deny for restricting at jobs 
+/etc/at.allow same as cron.allow for allowing user to use at jobs
+
+at commands
+================ 
+# at now; at <time stamp>	====> Schedule at job 
+# atq			====> Display your scheduled at jobs
+# at –l 		====> Display your scheduled at jobs 
+# atrm <job ID>		====> Remove your scheduled at jobs
+# at -c <job ID>	====> Show detailed entry of the job
+
+Session Outputs:
+================
+login as: root
+root@192.168.29.176's password:
+Last failed login: Thu Jul 10 20:08:15 IST 2025 from 2405:201:c037:d269:c268:ccff:fe6b:db71 on ssh:notty
+There were 2 failed login attempts since the last successful login.
+Last login: Thu Jul  3 18:51:54 2025 from gateway
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l
+no crontab for root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /etc/crontab
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l
+no crontab for root
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /var/spool/cron/
+total 0
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -e
+no crontab for root - using an empty one
+crontab: installing new crontab
+"/tmp/crontab.YhZZ3N":1: bad month
+errors in crontab file, can't install.
+Do you want to retry the same edit?
+Enter Y or N
+Do you want to retry the same edit?
+Enter Y or N
+Do you want to retry the same edit? y
+crontab: installing new crontab
+"/tmp/crontab.YhZZ3N":1: bad month
+errors in crontab file, can't install.
+Do you want to retry the same edit?
+Enter Y or N
+Do you want to retry the same edit? N
+crontab: edits left in /tmp/crontab.YhZZ3N
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /var/spool/cron/
+total 0
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l
+no crontab for root
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -e
+no crontab for root - using an empty one
+crontab: installing new crontab
+"/tmp/crontab.4V5q4J":1: bad month
+errors in crontab file, can't install.
+Do you want to retry the same edit? y
+crontab: installing new crontab
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l
+30      12      10,20,30        07      0,1,2   /usr/local/sbin/checkout.sh
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /var/spool/cron
+total 4
+-rw------- 1 root root 52 Jul 10 20:15 root
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /var/spool/cron/root
+30      12      10,20,30        07      0,1,2   /usr/local/sbin/checkout.sh
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# tail /etc/passwd
+tomcat:x:91:91:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+unixuser1:x:1235:5301:unixuser1@google.comEMID-20645:/home/unixuser1:/bin/bash
+unixuser2:x:1237:5301:unixuser1@google.com;EMID-2045:/home/unixuser2:/bin/bash
+ashok:x:5303:5303::/home/ashok:/bin/bash
+imran:x:5304:5304::/home/imran:/bin/bash
+asadmin:x:1300:5303:asadmin@google.com:/home/asadmin:/bin/bash
+unixadmin:x:5305:5305::/home/unixadmin:/bin/bash
+hussain:x:5306:5306::/home/hussain:/bin/bash
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /var/spool/cron
+total 8
+-rw------- 1 asadmin ashok 55 Jul 10 20:19 asadmin
+-rw------- 1 root    root  52 Jul 10 20:15 root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /var/spool/cron/asadmin
+30,40,50        *       12,13,14,15     07,09,12        *       /usr/sbin/startup.sh
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:20:55 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]# which df
+/usr/bin/df
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /etc/cron.
+cron.d/       cron.daily/   cron.deny     cron.hourly/  cron.monthly/ cron.weekly/
+[root@nfssrv ~]# ls -l /etc/cron.
+cron.d/       cron.daily/   cron.deny     cron.hourly/  cron.monthly/ cron.weekly/
+[root@nfssrv ~]# ls -l /etc/cron.deny
+-rw-------. 1 root root 0 Mar 29  2017 /etc/cron.deny
+[root@nfssrv ~]# cat /etc/cron.deny
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# vi /etc/cron.deny
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /etc/cron.deny
+asadmin
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /var/spool/cron
+total 12
+-rw------- 1 asadmin ashok 102 Jul 10 20:22 asadmin
+-rw------- 1 ashok   ashok  56 Jul 10 20:33 ashok
+-rw------- 1 root    root   52 Jul 10 20:15 root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /etc/cron.deny
+asadmin
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# vi /etc/cron.allow
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l
+30      12      10,20,30        07      0,1,2   /usr/local/sbin/checkout.sh
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# tail /etc/passwd
+tomcat:x:91:91:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+unixuser1:x:1235:5301:unixuser1@google.comEMID-20645:/home/unixuser1:/bin/bash
+unixuser2:x:1237:5301:unixuser1@google.com;EMID-2045:/home/unixuser2:/bin/bash
+ashok:x:5303:5303::/home/ashok:/bin/bash
+imran:x:5304:5304::/home/imran:/bin/bash
+asadmin:x:1300:5303:asadmin@google.com:/home/asadmin:/bin/bash
+unixadmin:x:5305:5305::/home/unixadmin:/bin/bash
+hussain:x:5306:5306::/home/hussain:/bin/bash
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /etc/cron.allow
+ashok
+imran
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# tail /var/log/cron
+cron           cron-20250612  cron-20250621  cron-20250624  cron-20250703
+[root@nfssrv ~]# tail /var/log/cron
+Jul 10 20:35:46 gvnkansiblesrv crontab[1791]: (root) LIST (root)
+Jul 10 20:35:46 gvnkansiblesrv crontab[1791]: PAM pam_end: NULL pam handle passed
+Jul 10 20:37:24 gvnkansiblesrv crontab[1821]: (unixuser1) AUTH (crontab command not allowed)
+Jul 10 20:37:53 gvnkansiblesrv crontab[1825]: (asadmin) AUTH (crontab command not allowed)
+Jul 10 20:38:02 gvnkansiblesrv crontab[1828]: (ashok) LIST (ashok)
+Jul 10 20:38:06 gvnkansiblesrv crontab[1831]: (ashok) BEGIN EDIT (ashok)
+Jul 10 20:39:05 gvnkansiblesrv crontab[1831]: (ashok) REPLACE (ashok)
+Jul 10 20:39:05 gvnkansiblesrv crontab[1831]: (ashok) END EDIT (ashok)
+Jul 10 20:39:08 gvnkansiblesrv crontab[1833]: (ashok) LIST (ashok)
+Jul 10 20:40:01 gvnkansiblesrv crond[1075]: (ashok) RELOAD (/var/spool/cron/ashok)
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# tail -100 /var/log/cron
+Jul  3 19:21:48 gvnkansiblesrv run-parts(/etc/cron.daily)[1646]: finished logrotate
+Jul  3 19:21:48 gvnkansiblesrv run-parts(/etc/cron.daily)[1623]: starting man-db.cron
+Jul  3 19:22:04 gvnkansiblesrv run-parts(/etc/cron.daily)[1657]: finished man-db.cron
+Jul  3 19:22:04 gvnkansiblesrv run-parts(/etc/cron.daily)[1623]: starting rhsmd
+Jul  3 19:22:28 gvnkansiblesrv run-parts(/etc/cron.daily)[1668]: finished rhsmd
+Jul  3 19:22:28 gvnkansiblesrv anacron[1590]: Job `cron.daily' terminated
+Jul  3 19:41:16 gvnkansiblesrv anacron[1590]: Job `cron.weekly' started
+Jul  3 19:41:17 gvnkansiblesrv anacron[1590]: Job `cron.weekly' terminated
+Jul  3 20:01:12 gvnkansiblesrv CROND[1800]: (root) CMD (run-parts /etc/cron.hourly)
+Jul  3 20:01:14 gvnkansiblesrv run-parts(/etc/cron.hourly)[1800]: starting 0anacron
+Jul  3 20:01:16 gvnkansiblesrv anacron[1590]: Job `cron.monthly' started
+Jul  3 20:01:12 gvnkansiblesrv CROND[1800]: (root) CMD (run-parts /etc/cron.hourly)
+Jul  3 20:01:14 gvnkansiblesrv run-parts(/etc/cron.hourly)[1800]: starting 0anacron
+Jul  3 20:01:16 gvnkansiblesrv anacron[1590]: Job `cron.monthly' started
+Jul  3 20:01:18 gvnkansiblesrv run-parts(/etc/cron.hourly)[1810]: finished 0anacron
+Jul  3 20:01:19 gvnkansiblesrv anacron[1590]: Job `cron.monthly' terminated
+Jul  3 20:01:19 gvnkansiblesrv anacron[1590]: Normal exit (3 jobs run)
+Jul 10 20:07:42 gvnkansiblesrv crond[1075]: (CRON) INFO (RANDOM_DELAY will be scaled with factor 39% if used.)
+Jul 10 20:07:42 gvnkansiblesrv crond[1075]: (CRON) INFO (running with inotify support)
+Jul 10 20:09:12 gvnkansiblesrv crontab[1563]: (root) LIST (root)
+Jul 10 20:11:03 gvnkansiblesrv crontab[1579]: (root) LIST (root)
+Jul 10 20:11:19 gvnkansiblesrv crontab[1581]: (root) BEGIN EDIT (root)
+Jul 10 20:13:01 gvnkansiblesrv crontab[1581]: (root) END EDIT (root)
+Jul 10 20:13:01 gvnkansiblesrv crontab[1581]: PAM pam_end: NULL pam handle passed
+Jul 10 20:13:16 gvnkansiblesrv crontab[1592]: (root) LIST (root)
+Jul 10 20:13:20 gvnkansiblesrv crontab[1595]: (root) BEGIN EDIT (root)
+Jul 10 20:15:12 gvnkansiblesrv crontab[1595]: (root) REPLACE (root)
+Jul 10 20:15:12 gvnkansiblesrv crontab[1595]: (root) END EDIT (root)
+Jul 10 20:15:12 gvnkansiblesrv crontab[1595]: PAM pam_end: NULL pam handle passed
+Jul 10 20:15:16 gvnkansiblesrv crontab[1608]: (root) LIST (root)
+Jul 10 20:15:16 gvnkansiblesrv crontab[1608]: PAM pam_end: NULL pam handle passed
+Jul 10 20:17:42 gvnkansiblesrv crontab[1646]: (asadmin) LIST (asadmin)
+Jul 10 20:17:51 gvnkansiblesrv crontab[1647]: (asadmin) BEGIN EDIT (asadmin)
+Jul 10 20:19:41 gvnkansiblesrv crontab[1647]: (asadmin) REPLACE (asadmin)
+Jul 10 20:19:41 gvnkansiblesrv crontab[1647]: (asadmin) END EDIT (asadmin)
+Jul 10 20:19:45 gvnkansiblesrv crontab[1656]: (asadmin) LIST (asadmin)
+Jul 10 20:20:28 gvnkansiblesrv crontab[1665]: (asadmin) BEGIN EDIT (asadmin)
+Jul 10 20:22:16 gvnkansiblesrv crontab[1665]: (asadmin) REPLACE (asadmin)
+Jul 10 20:22:16 gvnkansiblesrv crontab[1665]: (asadmin) END EDIT (asadmin)
+Jul 10 20:22:19 gvnkansiblesrv crontab[1676]: (asadmin) LIST (asadmin)
+Jul 10 20:22:29 gvnkansiblesrv crontab[1678]: (asadmin) LIST (asadmin)
+Jul 10 20:22:32 gvnkansiblesrv crontab[1681]: (asadmin) BEGIN EDIT (asadmin)
+Jul 10 20:22:38 gvnkansiblesrv crontab[1681]: (asadmin) REPLACE (asadmin)
+Jul 10 20:22:38 gvnkansiblesrv crontab[1681]: (asadmin) END EDIT (asadmin)
+Jul 10 20:23:01 gvnkansiblesrv crond[1075]: (asadmin) RELOAD (/var/spool/cron/asadmin)
+Jul 10 20:23:01 gvnkansiblesrv CROND[1690]: (asadmin) CMD (/usr/bin/df -h >> /tmp/dfoutput)
+Jul 10 20:29:41 gvnkansiblesrv crontab[1730]: (asadmin) AUTH (crontab command not allowed)
+Jul 10 20:29:49 gvnkansiblesrv crontab[1733]: (asadmin) AUTH (crontab command not allowed)
+Jul 10 20:31:22 gvnkansiblesrv crontab[1764]: (ashok) LIST (ashok)
+Jul 10 20:31:33 gvnkansiblesrv crontab[1765]: (ashok) BEGIN EDIT (ashok)
+Jul 10 20:33:42 gvnkansiblesrv crontab[1765]: (ashok) REPLACE (ashok)
+Jul 10 20:33:42 gvnkansiblesrv crontab[1765]: (ashok) END EDIT (ashok)
+Jul 10 20:33:47 gvnkansiblesrv crontab[1775]: (ashok) LIST (ashok)
+Jul 10 20:35:46 gvnkansiblesrv crontab[1791]: (root) LIST (root)
+Jul 10 20:35:46 gvnkansiblesrv crontab[1791]: PAM pam_end: NULL pam handle passed
+Jul 10 20:37:24 gvnkansiblesrv crontab[1821]: (unixuser1) AUTH (crontab command not allowed)
+Jul 10 20:37:53 gvnkansiblesrv crontab[1825]: (asadmin) AUTH (crontab command not allowed)
+Jul 10 20:38:02 gvnkansiblesrv crontab[1828]: (ashok) LIST (ashok)
+Jul 10 20:38:06 gvnkansiblesrv crontab[1831]: (ashok) BEGIN EDIT (ashok)
+Jul 10 20:39:05 gvnkansiblesrv crontab[1831]: (ashok) REPLACE (ashok)
+Jul 10 20:39:05 gvnkansiblesrv crontab[1831]: (ashok) END EDIT (ashok)
+Jul 10 20:39:08 gvnkansiblesrv crontab[1833]: (ashok) LIST (ashok)
+Jul 10 20:40:01 gvnkansiblesrv crond[1075]: (ashok) RELOAD (/var/spool/cron/ashok)
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /var/spool/cron/asadmin
+30,40,50        *       12,13,14,15     07,09,12        *       /usr/sbin/startup.sh
+
+23      20      10      07      3       /usr/bin/df -h >> /tmp/dfoutput
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:43:38 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]# tail -f /var/log/cron
+Jul 10 20:39:05 gvnkansiblesrv crontab[1831]: (ashok) REPLACE (ashok)
+Jul 10 20:39:05 gvnkansiblesrv crontab[1831]: (ashok) END EDIT (ashok)
+Jul 10 20:39:08 gvnkansiblesrv crontab[1833]: (ashok) LIST (ashok)
+Jul 10 20:40:01 gvnkansiblesrv crond[1075]: (ashok) RELOAD (/var/spool/cron/ashok)
+Jul 10 20:43:23 gvnkansiblesrv crontab[1858]: (ashok) BEGIN EDIT (ashok)
+Jul 10 20:44:09 gvnkansiblesrv crontab[1858]: (ashok) REPLACE (ashok)
+Jul 10 20:44:09 gvnkansiblesrv crontab[1858]: (ashok) END EDIT (ashok)
+Jul 10 20:44:15 gvnkansiblesrv crontab[1866]: (ashok) BEGIN EDIT (ashok)
+Jul 10 20:44:23 gvnkansiblesrv crontab[1866]: (ashok) REPLACE (ashok)
+Jul 10 20:44:23 gvnkansiblesrv crontab[1866]: (ashok) END EDIT (ashok)
+Jul 10 20:45:01 gvnkansiblesrv crond[1075]: (ashok) RELOAD (/var/spool/cron/ashok)
+Jul 10 20:45:01 gvnkansiblesrv CROND[1876]: (ashok) CMD (/usr/bn/df -h >> /tmp/dfoutput)
+^Z
+[1]+  Stopped                 tail -f /var/log/cron
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# systemctl status crond
+● crond.service - Command Scheduler
+   Loaded: loaded (/usr/lib/systemd/system/crond.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2025-07-10 20:07:42 IST; 38min ago
+ Main PID: 1075 (crond)
+   CGroup: /system.slice/crond.service
+           └─1075 /usr/sbin/crond -n
+
+Jul 10 20:07:42 nfssrv systemd[1]: Started Command Scheduler.
+Jul 10 20:07:42 nfssrv systemd[1]: Starting Command Scheduler...
+Jul 10 20:07:42 nfssrv crond[1075]: (CRON) INFO (RANDOM_DELAY will be scaled with factor 39% if used.)
+Jul 10 20:07:42 nfssrv crond[1075]: (CRON) INFO (running with inotify support)
+Jul 10 20:23:01 nfssrv crond[1075]: (asadmin) RELOAD (/var/spool/cron/asadmin)
+Jul 10 20:40:01 nfssrv crond[1075]: (ashok) RELOAD (/var/spool/cron/ashok)
+Jul 10 20:45:01 nfssrv crond[1075]: (ashok) RELOAD (/var/spool/cron/ashok)
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /var/spool/cron/
+total 8
+-rw------- 1 asadmin ashok 102 Jul 10 20:22 asadmin
+-rw------- 1 root    root   52 Jul 10 20:15 root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l
+30      12      10,20,30        07      0,1,2   /usr/local/sbin/checkout.sh
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l -u asadmin
+30,40,50        *       12,13,14,15     07,09,12        *       /usr/sbin/startup.sh
+
+23      20      10      07      3       /usr/bin/df -h >> /tmp/dfoutput
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# crontab -l -u unixuser1
+no crontab for unixuser1
+[root@nfssrv ~]# crontab -l -u unixuser2
+no crontab for unixuser2
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /var/spool/cron/asadmin
+30,40,50        *       12,13,14,15     07,09,12        *       /usr/sbin/startup.sh
+
+23      20      10      07      3       /usr/bin/df -h >> /tmp/dfoutput
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:50:16 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at 20:53
+-bash: at: command not found
+[root@nfssrv ~]#
+[root@nfssrv ~]# at
+-bash: at: command not found
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# rpm -qa |grep -i at
+python-backports-ssl_match_hostname-3.4.0.2-4.el7.noarch
+python2-jmespath-0.9.4-2.el7.noarch
+libpath_utils-0.2.1-27.el7.x86_64
+python-dateutil-1.5-7.el7.noarch
+redhat-logos-70.0.3-6.el7.noarch
+logrotate-3.8.6-14.el7.x86_64
+perl-PathTools-3.40-5.el7.x86_64
+perl-Data-Dumper-2.145-3.el7.x86_64
+device-mapper-persistent-data-0.7.0-0.1.rc6.el7_4.1.x86_64
+redhat-support-tool-0.9.9-3.el7.noarch
+polkit-pkla-compat-0.1-4.el7.x86_64
+hwdata-0.252-8.6.el7.x86_64
+tzdata-java-2017c-1.el7.noarch
+tomcat-servlet-3.0-api-7.0.76-3.el7_4.noarch
+tomcat-el-2.2-api-7.0.76-3.el7_4.noarch
+tomcat-lib-7.0.76-3.el7_4.noarch
+perl-podlators-2.5.1-3.el7.noarch
+perl-File-Path-2.09-2.el7.noarch
+python-hwdata-1.7.3-4.el7.noarch
+redhat-release-server-7.4-18.el7.x86_64
+tzdata-2017c-1.el7.noarch
+python-rhsm-certificates-1.19.10-1.el7_4.x86_64
+virt-what-1.13-10.el7.x86_64
+Red_Hat_Enterprise_Linux-Release_Notes-7-en-US-7-2.el7.noarch
+libattr-2.4.46-12.el7.x86_64
+expat-2.1.0-10.el7_3.x86_64
+createrepo-0.9.9-28.el7.noarch
+ca-certificates-2017.2.14-71.el7.noarch
+python-decorator-3.4.0-3.el7.noarch
+yum-metadata-parser-1.1.4-10.el7.x86_64
+tomcat-jsp-2.2-api-7.0.76-3.el7_4.noarch
+pyxattr-0.5.1-5.el7.x86_64
+tomcat-7.0.76-3.el7_4.noarch
+redhat-support-lib-python-0.9.7-6.el7.noarch
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# which at
+/usr/bin/which: no at in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin)
+[root@nfssrv ~]#
+[root@nfssrv ~]# yum install at
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+epel/x86_64/metalink                                                                                                                                  | 4.8 kB  00:00:00
+rhel7                                                                                                                                                 | 2.9 kB  00:00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package at.x86_64 0:3.1.13-22.el7_4.2 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+=============================================================================================================================================================================
+ Package                             Arch                                    Version                                            Repository                              Size
+=============================================================================================================================================================================
+Installing:
+ at                                  x86_64                                  3.1.13-22.el7_4.2                                  rhel7                                   51 k
+
+Transaction Summary
+=============================================================================================================================================================================
+Install  1 Package
+
+Total download size: 51 k
+Installed size: 95 k
+Is this ok [y/d/N]: yes
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : at-3.1.13-22.el7_4.2.x86_64                                                                                                                               1/1
+  Verifying  : at-3.1.13-22.el7_4.2.x86_64                                                                                                                               1/1
+
+Installed:
+  at.x86_64 0:3.1.13-22.el7_4.2
+
+Complete!
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at 20:55
+at> /usr/bn/df -h >> /tmp/dfoutput
+at> <EOT>
+job 1 at Thu Jul 10 20:55:00 2025
+Can't open /var/run/atd.pid to signal atd. No atd running?
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# systemctl status atd
+● atd.service - Job spooling tools
+   Loaded: loaded (/usr/lib/systemd/system/atd.service; enabled; vendor preset: enabled)
+   Active: inactive (dead)
+[root@nfssrv ~]#
+[root@nfssrv ~]# systemctl start atd
+[root@nfssrv ~]#
+[root@nfssrv ~]# systemctl status atd
+● atd.service - Job spooling tools
+   Loaded: loaded (/usr/lib/systemd/system/atd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2025-07-10 20:52:50 IST; 2s ago
+ Main PID: 1974 (atd)
+   CGroup: /system.slice/atd.service
+           └─1974 /usr/sbin/atd -f
+
+Jul 10 20:52:50 nfssrv systemd[1]: Started Job spooling tools.
+Jul 10 20:52:50 nfssrv systemd[1]: Starting Job spooling tools...
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:53:04 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at 20:55
+at> /usr/bn/df -h >> /tmp/dfoutputat
+at> <EOT>
+job 2 at Thu Jul 10 20:55:00 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# atq
+1       Thu Jul 10 20:55:00 2025 a root
+2       Thu Jul 10 20:55:00 2025 a root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at -l
+1       Thu Jul 10 20:55:00 2025 a root
+2       Thu Jul 10 20:55:00 2025 a root
+[root@nfssrv ~]#
+[root@nfssrv ~]# atrm 2
+[root@nfssrv ~]# at -l
+1       Thu Jul 10 20:55:00 2025 a root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:54:22 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /tmp/
+total 8
+-rw------- 1 root    root   1321 Jul 10 20:12 crontab.YhZZ3N
+-rw-r--r-- 1 asadmin ashok  1143 Jul 10 20:23 dfoutput
+drwxr-xr-x 2 tomcat  tomcat   18 Jul 10 20:07 hsperfdata_tomcat
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-httpd.service-oUKwa5
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vgauthd.service-aBHDxp
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vmtoolsd.service-UiPbof
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /tmp/
+total 8
+-rw------- 1 root    root   1321 Jul 10 20:12 crontab.YhZZ3N
+-rw-r--r-- 1 asadmin ashok  1143 Jul 10 20:23 dfoutput
+drwxr-xr-x 2 tomcat  tomcat   18 Jul 10 20:07 hsperfdata_tomcat
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-httpd.service-oUKwa5
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vgauthd.service-aBHDxp
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vmtoolsd.service-UiPbof
+You have new mail in /var/spool/mail/root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at -l
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:57:21 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]# at 20:58
+at> /usr/bin/df -h >> /tmp/dfoutput
+at> <EOT>
+job 3 at Thu Jul 10 20:58:00 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:58:11 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]# at -l
+[root@nfssrv ~]#
+[root@nfssrv ~]# at 20:59
+at> /usr/bin/df -h >> /tmp/dfoutput
+at> <EOT>
+job 4 at Thu Jul 10 20:59:00 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at -l
+4       Thu Jul 10 20:59:00 2025 a root
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /tmp/
+total 8
+-rw------- 1 root    root   1321 Jul 10 20:12 crontab.YhZZ3N
+-rw-r--r-- 1 asadmin ashok  2434 Jul 10 20:58 dfoutput
+drwxr-xr-x 2 tomcat  tomcat   18 Jul 10 20:07 hsperfdata_tomcat
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-httpd.service-oUKwa5
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vgauthd.service-aBHDxp
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vmtoolsd.service-UiPbof
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /tmp/
+total 8
+-rw------- 1 root    root   1321 Jul 10 20:12 crontab.YhZZ3N
+-rw-r--r-- 1 asadmin ashok  2434 Jul 10 20:58 dfoutput
+drwxr-xr-x 2 tomcat  tomcat   18 Jul 10 20:07 hsperfdata_tomcat
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-httpd.service-oUKwa5
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vgauthd.service-aBHDxp
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vmtoolsd.service-UiPbof
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /tmp/
+total 8
+-rw------- 1 root    root   1321 Jul 10 20:12 crontab.YhZZ3N
+-rw-r--r-- 1 asadmin ashok  3725 Jul 10 20:59 dfoutput
+drwxr-xr-x 2 tomcat  tomcat   18 Jul 10 20:07 hsperfdata_tomcat
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-httpd.service-oUKwa5
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vgauthd.service-aBHDxp
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vmtoolsd.service-UiPbof
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:59:10 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 20:59:41 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at 21:02
+at> /usr/bin/df -h >> /tmp/dfoutputat
+at> <EOT>
+job 5 at Thu Jul 10 21:02:00 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# date
+Thu Jul 10 21:00:27 IST 2025
+[root@nfssrv ~]#
+[root@nfssrv ~]# atq
+6       Thu Jul 10 21:10:00 2025 a asadmin
+7       Thu Jul 10 21:12:00 2025 a ashok
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at -c 6
+#!/bin/sh
+# atrun uid=1300 gid=5303
+# mail asadmin 0
+umask 22
+XDG_SESSION_ID=2; export XDG_SESSION_ID
+HOSTNAME=nfssrv; export HOSTNAME
+SHELL=/bin/bash; export SHELL
+HISTSIZE=1000; export HISTSIZE
+SSH_CLIENT=192.168.29.211\ 52257\ 22; export SSH_CLIENT
+SSH_TTY=/dev/pts/1; export SSH_TTY
+USER=asadmin; export USER
+LS_COLORS=rs=0:di=01\;34:ln=01\;36:mh=00:pi=40\;33:so=01\;35:do=01\;35:bd=40\;33\;01:cd=40\;33\;01:or=40\;31\;01:mi=01\;05\;37\;41:su=37\;41:sg=30\;43:ca=30\;41:tw=30\;42:ow=34\;42:st=37\;44:ex=01\;32:\*.tar=01\;31:\*.tgz=01\;31:\*.arc=01\;31:\*.arj=01\;31:\*.taz=01\;31:\*.lha=01\;31:\*.lz4=01\;31:\*.lzh=01\;31:\*.lzma=01\;31:\*.tlz=01\;31:\*.txz=01\;31:\*.tzo=01\;31:\*.t7z=01\;31:\*.zip=01\;31:\*.z=01\;31:\*.Z=01\;31:\*.dz=01\;31:\*.gz=01\;31:\*.lrz=01\;31:\*.lz=01\;31:\*.lzo=01\;31:\*.xz=01\;31:\*.bz2=01\;31:\*.bz=01\;31:\*.tbz=01\;31:\*.tbz2=01\;31:\*.tz=01\;31:\*.deb=01\;31:\*.rpm=01\;31:\*.jar=01\;31:\*.war=01\;31:\*.ear=01\;31:\*.sar=01\;31:\*.rar=01\;31:\*.alz=01\;31:\*.ace=01\;31:\*.zoo=01\;31:\*.cpio=01\;31:\*.7z=01\;31:\*.rz=01\;31:\*.cab=01\;31:\*.jpg=01\;35:\*.jpeg=01\;35:\*.gif=01\;35:\*.bmp=01\;35:\*.pbm=01\;35:\*.pgm=01\;35:\*.ppm=01\;35:\*.tga=01\;35:\*.xbm=01\;35:\*.xpm=01\;35:\*.tif=01\;35:\*.tiff=01\;35:\*.png=01\;35:\*.svg=01\;35:\*.svgz=01\;35:\*.mng=01\;35:\*.pcx=01\;35:\*.mov=01\;35:\*.mpg=01\;35:\*.mpeg=01\;35:\*.m2v=01\;35:\*.mkv=01\;35:\*.webm=01\;35:\*.ogm=01\;35:\*.mp4=01\;35:\*.m4v=01\;35:\*.mp4v=01\;35:\*.vob=01\;35:\*.qt=01\;35:\*.nuv=01\;35:\*.wmv=01\;35:\*.asf=01\;35:\*.rm=01\;35:\*.rmvb=01\;35:\*.flc=01\;35:\*.avi=01\;35:\*.fli=01\;35:\*.flv=01\;35:\*.gl=01\;35:\*.dl=01\;35:\*.xcf=01\;35:\*.xwd=01\;35:\*.yuv=01\;35:\*.cgm=01\;35:\*.emf=01\;35:\*.axv=01\;35:\*.anx=01\;35:\*.ogv=01\;35:\*.ogx=01\;35:\*.aac=01\;36:\*.au=01\;36:\*.flac=01\;36:\*.mid=01\;36:\*.midi=01\;36:\*.mka=01\;36:\*.mp3=01\;36:\*.mpc=01\;36:\*.ogg=01\;36:\*.ra=01\;36:\*.wav=01\;36:\*.axa=01\;36:\*.oga=01\;36:\*.spx=01\;36:\*.xspf=01\;36:; export LS_COLORS
+MAIL=/var/spool/mail/asadmin; export MAIL
+PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/asadmin/.local/bin:/home/asadmin/bin; export PATH
+PWD=/home/asadmin; export PWD
+LANG=en_US.UTF-8; export LANG
+HISTCONTROL=ignoredups; export HISTCONTROL
+SHLVL=1; export SHLVL
+HOME=/home/asadmin; export HOME
+LOGNAME=asadmin; export LOGNAME
+SSH_CONNECTION=192.168.29.211\ 52257\ 192.168.29.176\ 22; export SSH_CONNECTION
+LESSOPEN=\|\|/usr/bin/lesspipe.sh\ %s; export LESSOPEN
+XDG_RUNTIME_DIR=/run/user/1300; export XDG_RUNTIME_DIR
+cd /home/asadmin || {
+         echo 'Execution directory inaccessible' >&2
+         exit 1
+}
+${SHELL:-/bin/sh} << 'marcinDELIMITER75dbd7b2'
+/usr/bin/df -h >> /tmp/dfoutputasadmin
+ls -l / >> /tmp/dfoutputasadmin
+
+marcinDELIMITER75dbd7b2
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /tmp/
+total 12
+-rw------- 1 root    root   1321 Jul 10 20:12 crontab.YhZZ3N
+-rw-r--r-- 1 asadmin ashok  3725 Jul 10 20:59 dfoutput
+-rw-r--r-- 1 root    root   1291 Jul 10 21:02 dfoutputat
+drwxr-xr-x 2 tomcat  tomcat   18 Jul 10 20:07 hsperfdata_tomcat
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-httpd.service-oUKwa5
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vgauthd.service-aBHDxp
+drwx------ 3 root    root     17 Jul 10 20:07 systemd-private-e8e70b0ed5b846f2bcce106e2f512bec-vmtoolsd.service-UiPbof
+[root@nfssrv ~]# cat /tmp/dfoutputat
+Filesystem                           Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root                 47G  6.0G   41G  13% /
+devtmpfs                             225M     0  225M   0% /dev
+tmpfs                                236M     0  236M   0% /dev/shm
+tmpfs                                236M  9.0M  227M   4% /run
+tmpfs                                236M     0  236M   0% /sys/fs/cgroup
+/dev/sda1                           1014M  125M  890M  13% /boot
+/dev/mapper/datavg-data5lv           497M   83M  414M  17% /data5
+/dev/mapper/datavg-data4lv           497M   63M  435M  13% /data4
+/dev/mapper/datavg-data2lv           477M   62M  387M  14% /data2
+/dev/mapper/datavg-data1lv           477M   69M  379M  16% /data1
+/dev/mapper/datavg-data3lv           477M  119M  329M  27% /data3
+/dev/mapper/datavg-data6lv           497M  185M  312M  38% /data6
+/dev/mapper/infravg-infralv          1.5G   35M  1.5G   3% /infra
+/dev/mapper/sharehomevg-sharehomelv  4.9G   33M  4.9G   1% /sharehome
+tmpfs                                 48M     0   48M   0% /run/user/0
+tmpfs                                 48M     0   48M   0% /run/user/1300
+tmpfs                                 48M     0   48M   0% /run/user/5303
+tmpfs                                 48M     0   48M   0% /run/user/1235
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# at -l
+6       Thu Jul 10 21:10:00 2025 a asadmin
+7       Thu Jul 10 21:12:00 2025 a ashok
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]# ls -l /etc/at.deny
+-rw-r--r-- 1 root root 1 Dec 20  2017 /etc/at.deny
+[root@nfssrv ~]# cat /etc/at.deny
+
+[root@nfssrv ~]#
+[root@nfssrv ~]# vi /etc/at.deny
+[root@nfssrv ~]#
+[root@nfssrv ~]# cat /etc/at.deny
+ashok
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
+[root@nfssrv ~]#
