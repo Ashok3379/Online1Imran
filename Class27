@@ -1,0 +1,1760 @@
+Class 27/07/2025
+
+Process Management
+===================
+A Linux process is a program running in the Linux system. Depending on linux distributions, it's also known as service. In Linux community however, a Linux process is called daemon. 
+
+When you start a program or running an application in Linux, you actually execute that 
+program. A Linux process (a daemon), running in foreground or in the background, uses 
+memory and CPU resources. That's why we need to manage Linux process. Keeping unused 
+Linux process running in the system is a waste and also exposes your system to security 
+threat. 
+ 
+In Linux, every running process or daemon is given an identity number called PID (Process 
+ID). The process id is unique. We can terminate unused program in the system by stopping 
+its process id. 
+ 
+There are generally three types of processes that run on Linux.  
+ 
+1) Interactive Processes 
+2) System Process or Daemon 
+3) Automatic or batch processes
+
+Interactive Processes:
+======================
+Interactive processes are those processes that are invoked by a user and can interact with the user. VI is an example of an interactive process. Interactive processes can be classified into foreground and background processes.
+
+System Process or Daemon:
+=========================
+The second general type of process that runs on Linux is a System Process or Daemon (day
+mon). Daemon is the term used to refer to processes that are running on the computer and 
+provide services but do not interact with the console. Most server software is implemented as a daemon. Apache, Samba, and inn are all examples of daemons.  
+
+Automatic Processes:
+====================
+Automatic processes are not connected to a terminal. Rather, these are tasks that can be 
+queued into a spooler area, where they wait to be executed on a FIFO (first-in, first-out) basis. Such tasks can be executed using one of two criteria.At certain date and time: done using the “at “command.
+
+Parent and Child Process:
+========================= 
+1) The Process which starts or creates another process is called parent process and the one which got created is known as child process. 
+2) Every process will be having a parent process except systemd process. 
+3) The systemd process is the parent of all the process in the system. It is the first process which gets started by the kernel at the time of booting. 
+4) The PID of systemd will be 1. 
+5) Only after systemd process gets started the remaining process are called by it, and hence it is responsible for all the remaining processes in the system. 
+
+# ps	    =====> Check the running processess info of the session
+# ps -ef    =====> this will show all running processes information of the server
+# ps -aux   =====> CPU usage sorting of running processes
+# top	    =====> Dynamical running processes information
+
+Signals in Linux:
+=================
+Every signal has a unique signal name, an abbreviation that begins with SIG (SIGINT for 
+interrupt signal, for example). Each signal name is a macro which stands for a positive 
+integer - the signal number for that kind of signal. Your programs should never make 
+assumptions about the numeric code for a particular kind of signal, but rather refer to them always by the names defined.
+
+The most common signals used are:
+================================= 
+1 for reloading the process 
+9 for killing the process 
+15 for Terminating the process 
+20 for stopping the process 
+
+# kill -9 PID  ===> kill the process
+# kill -1 PID  ===> Reload the process
+# pkill -9 process name
+# pkill -1 process name
+
+Lab Sessions:
+=============
+login as: root
+root@192.168.29.120's password:
+Last failed login: Tue Jul 22 19:31:12 IST 2025 from 2405:201:c03c:7041:b6a7:c6f                                          f:fec8:485c on ssh:notty
+There was 1 failed login attempt since the last successful login.
+Last login: Tue Jul 22 19:30:30 2025
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]# cd
+[root@c111xyz ~]#
+[root@c111xyz ~]#
+[root@c111xyz ~]# ls -la
+total 36
+dr-xr-x---.  4 root root   140 Jun 21 19:13 .
+dr-xr-xr-x. 57 root root  4096 Jul 22 19:29 ..
+-rw-------.  1 root root 11452 Jul 21 21:41 .bash_history
+-rw-r--r--.  1 root root    18 Dec 29  2013 .bash_logout
+-rw-r--r--.  1 root root   176 Dec 29  2013 .bash_profile
+-rw-r--r--.  1 root root   176 Dec 29  2013 .bashrc
+-rw-r--r--.  1 root root   100 Dec 29  2013 .cshrc
+drwxr-xr-x.  2 root root     6 Jun  4 20:05 IPL-2025
+drwx------.  2 root root    25 Jun 21 19:13 .ssh
+-rw-r--r--.  1 root root   129 Dec 29  2013 .tcshrc
+[root@c111xyz ~]#
+[root@c111xyz ~]# cd IPL-2025/
+[root@c111xyz IPL-2025]# ls
+[root@c111xyz IPL-2025]#
+[root@c111xyz IPL-2025]# mount /dev/sr0 /mnt
+mount: /dev/sr0 is write-protected, mounting read-only
+[root@c111xyz IPL-2025]#
+[root@c111xyz IPL-2025]#
+[root@c111xyz IPL-2025]# cp /mnt/Packages/a* .
+[root@c111xyz IPL-2025]# cd /
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.4G   16G   9% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+/dev/sr0               4.1G  4.1G     0 100% /mnt
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# umount /mnt
+[root@c111xyz /]#
+[root@c111xyz /]# ls -l /root/IPL-2025/
+total 67756
+-r--r--r-- 1 root root   153008 Jul 22 19:32 abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm
+-r--r--r-- 1 root root   549628 Jul 22 19:32 abrt-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   195708 Jul 22 19:32 abrt-addon-ccpp-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   107036 Jul 22 19:32 abrt-addon-kerneloops-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    97304 Jul 22 19:32 abrt-addon-pstoreoops-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   103144 Jul 22 19:32 abrt-addon-python-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   107512 Jul 22 19:32 abrt-addon-vmcore-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    97932 Jul 22 19:32 abrt-addon-xorg-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    88180 Jul 22 19:32 abrt-cli-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    89368 Jul 22 19:32 abrt-console-notification-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   122700 Jul 22 19:32 abrt-dbus-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    88256 Jul 22 19:32 abrt-desktop-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   193308 Jul 22 19:32 abrt-gui-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    95872 Jul 22 19:32 abrt-gui-libs-2.1.11-48.el7.i686.rpm
+-r--r--r-- 1 root root    95900 Jul 22 19:32 abrt-gui-libs-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    35092 Jul 22 19:32 abrt-java-connector-1.0.6-12.el7.x86_64.rpm
+-r--r--r-- 1 root root   110192 Jul 22 19:32 abrt-libs-2.1.11-48.el7.i686.rpm
+-r--r--r-- 1 root root   110400 Jul 22 19:32 abrt-libs-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   110316 Jul 22 19:32 abrt-python-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root   101324 Jul 22 19:32 abrt-tui-2.1.11-48.el7.x86_64.rpm
+-r--r--r-- 1 root root    96744 Jul 22 19:32 accountsservice-0.6.45-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    78440 Jul 22 19:32 accountsservice-libs-0.6.45-3.el7_4.1.i686.rpm
+-r--r--r-- 1 root root    79584 Jul 22 19:32 accountsservice-libs-0.6.45-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    82920 Jul 22 19:32 acl-2.2.51-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    70100 Jul 22 19:32 acpid-2.0.19-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   105396 Jul 22 19:32 adcli-0.8.1-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   656448 Jul 22 19:32 adwaita-cursor-theme-3.22.0-1.el7.noarch.rpm
+-r--r--r-- 1 root root   130412 Jul 22 19:32 adwaita-gtk2-theme-3.22.2-1.el7.i686.rpm
+-r--r--r-- 1 root root   130464 Jul 22 19:32 adwaita-gtk2-theme-3.22.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root 11696184 Jul 22 19:32 adwaita-icon-theme-3.22.0-1.el7.noarch.rpm
+-r--r--r-- 1 root root     3132 Jul 22 19:32 adwaita-qt-0.4-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    49832 Jul 22 19:32 adwaita-qt4-0.4-1.el7.i686.rpm
+-r--r--r-- 1 root root    48444 Jul 22 19:32 adwaita-qt4-0.4-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   310448 Jul 22 19:32 adwaita-qt-common-0.4-1.el7.noarch.rpm
+-r--r--r-- 1 root root   151428 Jul 22 19:32 agg-2.5-18.el7.i686.rpm
+-r--r--r-- 1 root root   148060 Jul 22 19:32 agg-2.5-18.el7.x86_64.rpm
+-r--r--r-- 1 root root    23612 Jul 22 19:32 aic94xx-firmware-30-6.el7.noarch.rpm
+-r--r--r-- 1 root root   136456 Jul 22 19:32 aide-0.15.1-13.el7.x86_64.rpm
+-r--r--r-- 1 root root   740312 Jul 22 19:32 akonadi-1.9.2-4.el7.i686.rpm
+-r--r--r-- 1 root root   742312 Jul 22 19:32 akonadi-1.9.2-4.el7.x86_64.rpm
+-r--r--r-- 1 root root    15928 Jul 22 19:32 akonadi-mysql-1.9.2-4.el7.x86_64.rpm
+-r--r--r-- 1 root root   133976 Jul 22 19:32 alacarte-3.11.91-1.el7.noarch.rpm
+-r--r--r-- 1 root root  2422232 Jul 22 19:32 alsa-firmware-1.0.28-2.el7.noarch.rpm
+-r--r--r-- 1 root root   430572 Jul 22 19:32 alsa-lib-1.1.3-3.el7.i686.rpm
+-r--r--r-- 1 root root   431436 Jul 22 19:32 alsa-lib-1.1.3-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   980480 Jul 22 19:32 alsa-lib-devel-1.1.3-3.el7.i686.rpm
+-r--r--r-- 1 root root   980460 Jul 22 19:32 alsa-lib-devel-1.1.3-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    41396 Jul 22 19:32 alsa-plugins-pulseaudio-1.1.1-1.el7.i686.rpm
+-r--r--r-- 1 root root    42068 Jul 22 19:32 alsa-plugins-pulseaudio-1.1.1-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    36128 Jul 22 19:32 alsa-tools-firmware-1.1.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  1092268 Jul 22 19:32 alsa-utils-1.1.3-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   129264 Jul 22 19:32 amanda-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root   137336 Jul 22 19:32 amanda-client-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root  1327720 Jul 22 19:32 amanda-libs-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root   265136 Jul 22 19:32 amanda-server-3.3.3-18.el7.x86_64.rpm
+-r--r--r-- 1 root root   195024 Jul 22 19:32 anaconda-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  1690824 Jul 22 19:32 anaconda-core-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   507304 Jul 22 19:32 anaconda-gui-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   285276 Jul 22 19:32 anaconda-tui-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   130744 Jul 22 19:32 anaconda-user-help-7.3.2-1.el7.noarch.rpm
+-r--r--r-- 1 root root   215164 Jul 22 19:32 anaconda-widgets-21.48.22.121-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  2030692 Jul 22 19:32 ant-1.9.2-9.el7.noarch.rpm
+-r--r--r-- 1 root root   365776 Jul 22 19:32 antlr-tool-2.7.7-30.el7.noarch.rpm
+-r--r--r-- 1 root root    51816 Jul 22 19:32 apache-commons-cli-1.2-13.el7.noarch.rpm
+-r--r--r-- 1 root root   228448 Jul 22 19:32 apache-commons-codec-1.8-7.el7.noarch.rpm
+-r--r--r-- 1 root root   520720 Jul 22 19:32 apache-commons-collections-3.2.1-22.el7_2.noarch.rpm
+-r--r--r-- 1 root root    55352 Jul 22 19:32 apache-commons-daemon-1.0.13-6.el7.x86_64.rpm
+-r--r--r-- 1 root root   171120 Jul 22 19:32 apache-commons-dbcp-1.4-17.el7.noarch.rpm
+-r--r--r-- 1 root root   193672 Jul 22 19:32 apache-commons-io-2.4-12.el7.noarch.rpm
+-r--r--r-- 1 root root   283028 Jul 22 19:32 apache-commons-lang-2.6-15.el7.noarch.rpm
+-r--r--r-- 1 root root    79584 Jul 22 19:32 apache-commons-logging-1.1.2-7.el7.noarch.rpm
+-r--r--r-- 1 root root   115888 Jul 22 19:32 apache-commons-pool-1.6-9.el7.noarch.rpm
+-r--r--r-- 1 root root  7080292 Jul 22 19:32 appstream-data-7-20170301.el7.noarch.rpm
+-r--r--r-- 1 root root   110480 Jul 22 19:32 apr-1.4.8-3.el7_4.1.i686.rpm
+-r--r--r-- 1 root root   105772 Jul 22 19:32 apr-1.4.8-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root   192768 Jul 22 19:32 apr-devel-1.4.8-3.el7_4.1.i686.rpm
+-r--r--r-- 1 root root   192700 Jul 22 19:32 apr-devel-1.4.8-3.el7_4.1.x86_64.rpm
+-r--r--r-- 1 root root    95564 Jul 22 19:32 apr-util-1.5.2-6.el7.i686.rpm
+-r--r--r-- 1 root root    94176 Jul 22 19:32 apr-util-1.5.2-6.el7.x86_64.rpm
+-r--r--r-- 1 root root    78164 Jul 22 19:32 apr-util-devel-1.5.2-6.el7.i686.rpm
+-r--r--r-- 1 root root    78120 Jul 22 19:32 apr-util-devel-1.5.2-6.el7.x86_64.rpm
+-r--r--r-- 1 root root    71956 Jul 22 19:32 args4j-2.0.16-13.el7.noarch.rpm
+-r--r--r-- 1 root root   283628 Jul 22 19:32 ark-4.10.5-4.el7.x86_64.rpm
+-r--r--r-- 1 root root   110356 Jul 22 19:32 ark-libs-4.10.5-4.el7.i686.rpm
+-r--r--r-- 1 root root   110820 Jul 22 19:32 ark-libs-4.10.5-4.el7.x86_64.rpm
+-r--r--r-- 1 root root    47844 Jul 22 19:32 arptables-0.0.4-8.el7.x86_64.rpm
+-r--r--r-- 1 root root   196404 Jul 22 19:32 arpwatch-2.1a15-36.el7.x86_64.rpm
+-r--r--r-- 1 root root    52032 Jul 22 19:32 at-3.1.13-22.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   263736 Jul 22 19:32 atk-2.22.0-3.el7.i686.rpm
+-r--r--r-- 1 root root   264740 Jul 22 19:32 atk-2.22.0-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   187076 Jul 22 19:32 atk-devel-2.22.0-3.el7.i686.rpm
+-r--r--r-- 1 root root   187040 Jul 22 19:32 atk-devel-2.22.0-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    83272 Jul 22 19:32 atkmm-2.24.2-1.el7.i686.rpm
+-r--r--r-- 1 root root    80596 Jul 22 19:32 atkmm-2.24.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root  4375064 Jul 22 19:32 atlas-3.10.1-12.el7.i686.rpm
+-r--r--r-- 1 root root  4545084 Jul 22 19:32 atlas-3.10.1-12.el7.x86_64.rpm
+-r--r--r-- 1 root root  4410760 Jul 22 19:32 atlas-sse2-3.10.1-12.el7.i686.rpm
+-r--r--r-- 1 root root  4458552 Jul 22 19:32 atlas-sse3-3.10.1-12.el7.i686.rpm
+-r--r--r-- 1 root root    82008 Jul 22 19:32 at-spi2-atk-2.22.0-2.el7.i686.rpm
+-r--r--r-- 1 root root    82012 Jul 22 19:32 at-spi2-atk-2.22.0-2.el7.x86_64.rpm
+-r--r--r-- 1 root root    12480 Jul 22 19:32 at-spi2-atk-devel-2.22.0-2.el7.i686.rpm
+-r--r--r-- 1 root root    12444 Jul 22 19:32 at-spi2-atk-devel-2.22.0-2.el7.x86_64.rpm
+-r--r--r-- 1 root root   160152 Jul 22 19:32 at-spi2-core-2.22.0-1.el7.i686.rpm
+-r--r--r-- 1 root root   161188 Jul 22 19:32 at-spi2-core-2.22.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   142296 Jul 22 19:32 at-spi2-core-devel-2.22.0-1.el7.i686.rpm
+-r--r--r-- 1 root root   142264 Jul 22 19:32 at-spi2-core-devel-2.22.0-1.el7.x86_64.rpm
+-r--r--r-- 1 root root   239468 Jul 22 19:32 attica-0.4.2-1.el7.i686.rpm
+-r--r--r-- 1 root root   238140 Jul 22 19:32 attica-0.4.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    29380 Jul 22 19:32 attica-devel-0.4.2-1.el7.i686.rpm
+-r--r--r-- 1 root root    29348 Jul 22 19:32 attica-devel-0.4.2-1.el7.x86_64.rpm
+-r--r--r-- 1 root root    67240 Jul 22 19:32 attr-2.4.46-12.el7.x86_64.rpm
+-r--r--r-- 1 root root    51024 Jul 22 19:32 audispd-plugins-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root   247892 Jul 22 19:32 audit-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    98188 Jul 22 19:32 audit-libs-2.7.6-3.el7.i686.rpm
+-r--r--r-- 1 root root    98000 Jul 22 19:32 audit-libs-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    78428 Jul 22 19:32 audit-libs-devel-2.7.6-3.el7.i686.rpm
+-r--r--r-- 1 root root    78392 Jul 22 19:32 audit-libs-devel-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    75076 Jul 22 19:32 audit-libs-python-2.7.6-3.el7.x86_64.rpm
+-r--r--r-- 1 root root    39680 Jul 22 19:32 augeas-1.4.0-2.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   360808 Jul 22 19:32 augeas-libs-1.4.0-2.el7_4.2.i686.rpm
+-r--r--r-- 1 root root   363456 Jul 22 19:32 augeas-libs-1.4.0-2.el7_4.2.x86_64.rpm
+-r--r--r-- 1 root root   434392 Jul 22 19:32 authconfig-6.2.8-30.el7.x86_64.rpm
+-r--r--r-- 1 root root   111996 Jul 22 19:32 authconfig-gtk-6.2.8-30.el7.x86_64.rpm
+-r--r--r-- 1 root root    49404 Jul 22 19:32 authd-1.4.3-42.el7.x86_64.rpm
+-r--r--r-- 1 root root   717972 Jul 22 19:32 autoconf-2.69-11.el7.noarch.rpm
+-r--r--r-- 1 root root   626824 Jul 22 19:32 autoconf-archive-2017.03.21-1.el7.noarch.rpm
+-r--r--r-- 1 root root   828340 Jul 22 19:32 autofs-5.0.7-70.el7_4.x86_64.rpm
+-r--r--r-- 1 root root    65892 Jul 22 19:32 autogen-libopts-5.18-5.el7.i686.rpm
+-r--r--r-- 1 root root    67672 Jul 22 19:32 autogen-libopts-5.18-5.el7.x86_64.rpm
+-r--r--r-- 1 root root   695728 Jul 22 19:32 automake-1.13.4-3.el7.noarch.rpm
+-r--r--r-- 1 root root    34516 Jul 22 19:32 automoc-1.0-0.20.rc3.el7.x86_64.rpm
+-r--r--r-- 1 root root   267976 Jul 22 19:32 avahi-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root   269668 Jul 22 19:32 avahi-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    40340 Jul 22 19:32 avahi-autoipd-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    25556 Jul 22 19:32 avahi-glib-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    25312 Jul 22 19:32 avahi-glib-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    34484 Jul 22 19:32 avahi-gobject-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    35340 Jul 22 19:32 avahi-gobject-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    62376 Jul 22 19:32 avahi-libs-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    62696 Jul 22 19:32 avahi-libs-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    37220 Jul 22 19:32 avahi-ui-gtk3-0.6.31-17.el7.i686.rpm
+-r--r--r-- 1 root root    37704 Jul 22 19:32 avahi-ui-gtk3-0.6.31-17.el7.x86_64.rpm
+-r--r--r-- 1 root root    89556 Jul 22 19:32 avalon-framework-4.3-10.el7.noarch.rpm
+-r--r--r-- 1 root root    89372 Jul 22 19:32 avalon-logkit-2.1-14.el7.noarch.rpm
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# \
+>
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i sshd
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       1581   1482  0 19:35 pts/0    00:00:00 grep --color=auto -i sshd
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps
+   PID TTY          TIME CMD
+  1482 pts/0    00:00:00 bash
+  1650 pts/0    00:00:00 ps
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# top
+top - 19:40:32 up 11 min,  2 users,  load average: 0.00, 0.04, 0.06
+Tasks: 174 total,   1 running, 173 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.3 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  1865964 total,  1517172 free,   117532 used,   231260 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.  1570660 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+  1634 root      20   0       0      0      0 S  0.3  0.0   0:00.08 kworker/0:1
+  1652 root      20   0  157712   2256   1544 R  0.3  0.1   0:00.01 top
+     1 root      20   0  125292   3836   2500 S  0.0  0.2   0:02.63 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.03 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:00.37 ksoftirqd/0
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:00.56 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:00.01 watchdog/0
+    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    14 root      20   0       0      0      0 S  0.0  0.0   0:00.00 khungtaskd
+    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md
+    25 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kswapd0
+    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd
+    27 root      39  19       0      0      0 S  0.0  0.0   0:00.02 khugepaged
+    28 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto
+    36 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld
+    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd
+    39 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused
+    40 root      20   0       0      0      0 S  0.0  0.0   0:00.78 kworker/0:2
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -aux |more
+USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root          1  0.3  0.2 125292  3836 ?        Ss   19:29   0:02 /usr/lib/systemd/systemd --switched-root --system --dese
+rialize 21
+root          2  0.0  0.0      0     0 ?        S    19:29   0:00 [kthreadd]
+root          3  0.0  0.0      0     0 ?        S    19:29   0:00 [ksoftirqd/0]
+root          5  0.0  0.0      0     0 ?        S<   19:29   0:00 [kworker/0:0H]
+root          7  0.0  0.0      0     0 ?        S    19:29   0:00 [migration/0]
+root          8  0.0  0.0      0     0 ?        S    19:29   0:00 [rcu_bh]
+root          9  0.0  0.0      0     0 ?        R    19:29   0:00 [rcu_sched]
+root         10  0.0  0.0      0     0 ?        S    19:29   0:00 [watchdog/0]
+root         12  0.0  0.0      0     0 ?        S    19:29   0:00 [kdevtmpfs]
+root         13  0.0  0.0      0     0 ?        S<   19:29   0:00 [netns]
+root         14  0.0  0.0      0     0 ?        S    19:29   0:00 [khungtaskd]
+root         15  0.0  0.0      0     0 ?        S<   19:29   0:00 [writeback]
+root         16  0.0  0.0      0     0 ?        S<   19:29   0:00 [kintegrityd]
+root         17  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root         18  0.0  0.0      0     0 ?        S<   19:29   0:00 [kblockd]
+root         19  0.0  0.0      0     0 ?        S<   19:29   0:00 [md]
+root         25  0.0  0.0      0     0 ?        S    19:29   0:00 [kswapd0]
+root         26  0.0  0.0      0     0 ?        SN   19:29   0:00 [ksmd]
+root         27  0.0  0.0      0     0 ?        SN   19:29   0:00 [khugepaged]
+root         28  0.0  0.0      0     0 ?        S<   19:29   0:00 [crypto]
+root         36  0.0  0.0      0     0 ?        S<   19:29   0:00 [kthrotld]
+root         38  0.0  0.0      0     0 ?        S<   19:29   0:00 [kmpath_rdacd]
+root         39  0.0  0.0      0     0 ?        S<   19:29   0:00 [kpsmoused]
+root         40  0.1  0.0      0     0 ?        S    19:29   0:00 [kworker/0:2]
+root         41  0.0  0.0      0     0 ?        S<   19:29   0:00 [ipv6_addrconf]
+root         60  0.0  0.0      0     0 ?        S<   19:29   0:00 [deferwq]
+root         92  0.0  0.0      0     0 ?        S    19:29   0:00 [kauditd]
+root        273  0.0  0.0      0     0 ?        S<   19:29   0:00 [mpt_poll_0]
+root        274  0.0  0.0      0     0 ?        S<   19:29   0:00 [mpt/0]
+root        275  0.0  0.0      0     0 ?        S<   19:29   0:00 [ata_sff]
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.4G   16G   9% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.7M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# systemctl -a |more
+  UNIT                                                                                                             LOAD
+   ACTIVE   SUB       DESCRIPTION
+  proc-sys-fs-binfmt_misc.automount                                                                                loaded
+   active   waiting   Arbitrary Executable File Formats File System Automount Point
+  dev-block-8:17.device                                                                                            loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  dev-block-8:2.device                                                                                             loaded
+   active   plugged   LVM PV hF7unB-ZgVE-Nz2b-4xKa-mcQS-gepv-YU7nXw on /dev/sda2 2
+  dev-block-8:33.device                                                                                            loaded
+   active   plugged   LVM PV l6xzga-CYBS-VFYp-D0Mz-bGty-yTBc-K1Kddp on /dev/sdc1 logical
+  dev-cdrom.device                                                                                                 loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  dev-disk-by\x2did-ata\x2dVMware_Virtual_SATA_CDRW_Drive_01000000000000000001.device                              loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  dev-disk-by\x2did-dm\x2dname\x2drhel\x2droot.device                                                              loaded
+   active   plugged   /dev/disk/by-id/dm-name-rhel-root
+  dev-disk-by\x2did-dm\x2dname\x2drhel\x2dswap.device                                                              loaded
+   active   plugged   /dev/disk/by-id/dm-name-rhel-swap
+  dev-disk-by\x2did-dm\x2dname\x2dwebdatavg\x2dwebdata1lv.device                                                   loaded
+   active   plugged   /dev/disk/by-id/dm-name-webdatavg-webdata1lv
+  dev-disk-by\x2did-dm\x2dname\x2dwebdatavg\x2dwebdata2lv.device                                                   loaded
+   active   plugged   /dev/disk/by-id/dm-name-webdatavg-webdata2lv
+  dev-disk-by\x2did-dm\x2dname\x2dwebdatavg\x2dwebdata3lv.device                                                   loaded
+   active   plugged   /dev/disk/by-id/dm-name-webdatavg-webdata3lv
+  dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2dDPRQcBQwrQNxNtkb6O0LAIrdFHLZY3wn2sJGjnvngNqvTJtv89yt78MFHtM81Smy.device   loaded
+   active   plugged   /dev/disk/by-id/dm-uuid-LVM-DPRQcBQwrQNxNtkb6O0LAIrdFHLZY3wn2sJGjnvngNqvTJtv89yt78MFHtM81Smy
+  dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2dDPRQcBQwrQNxNtkb6O0LAIrdFHLZY3wn8KydMD2p0UlSlR0pYEFfdRL932frK6Xi.device   loaded
+   active   plugged   /dev/disk/by-id/dm-uuid-LVM-DPRQcBQwrQNxNtkb6O0LAIrdFHLZY3wn8KydMD2p0UlSlR0pYEFfdRL932frK6Xi
+  dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2dFJgZ5rY5YytZos2Fda1p1V62OU1SkDtpGjdMI0PgfJem4kotyYm26xnvuxOY04qO.device   loaded
+   active   plugged   /dev/disk/by-id/dm-uuid-LVM-FJgZ5rY5YytZos2Fda1p1V62OU1SkDtpGjdMI0PgfJem4kotyYm26xnvuxOY04qO
+  dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2dFJgZ5rY5YytZos2Fda1p1V62OU1SkDtpgP162RjbPsRuZyZFOTpmkTrsr2xIo1b4.device   loaded
+   active   plugged   /dev/disk/by-id/dm-uuid-LVM-FJgZ5rY5YytZos2Fda1p1V62OU1SkDtpgP162RjbPsRuZyZFOTpmkTrsr2xIo1b4
+  dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2dFJgZ5rY5YytZos2Fda1p1V62OU1SkDtpMkOz21buqdS6ObnP64TiLM0Tc0uRFf6w.device   loaded
+   active   plugged   /dev/disk/by-id/dm-uuid-LVM-FJgZ5rY5YytZos2Fda1p1V62OU1SkDtpMkOz21buqdS6ObnP64TiLM0Tc0uRFf6w
+  dev-disk-by\x2did-lvm\x2dpv\x2duuid\x2dhF7unB\x2dZgVE\x2dNz2b\x2d4xKa\x2dmcQS\x2dgepv\x2dYU7nXw.device           loaded
+   active   plugged   LVM PV hF7unB-ZgVE-Nz2b-4xKa-mcQS-gepv-YU7nXw on /dev/sda2 2
+  dev-disk-by\x2did-lvm\x2dpv\x2duuid\x2dl6xzga\x2dCYBS\x2dVFYp\x2dD0Mz\x2dbGty\x2dyTBc\x2dK1Kddp.device           loaded
+   active   plugged   LVM PV l6xzga-CYBS-VFYp-D0Mz-bGty-yTBc-K1Kddp on /dev/sdc1 logical
+  dev-disk-by\x2did-lvm\x2dpv\x2duuid\x2dN1yFXo\x2dSIB6\x2d3RSv\x2d9FjX\x2dtM3C\x2dckts\x2dKB8uf7.device           loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  dev-disk-by\x2dlabel-RHEL\x2d7.4\x5cx20Server.x86_64.device                                                      loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  dev-disk-by\x2dpartlabel-logical.device                                                                          loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  dev-disk-by\x2dpartuuid-c9c4a7cc\x2d3082\x2d4d37\x2d9052\x2dfa9744120882.device                                  loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  dev-disk-by\x2dpartuuid-e73d93d2\x2d9a9b\x2d4f64\x2d8ad6\x2d293275c19465.device                                  loaded
+   active   plugged   LVM PV l6xzga-CYBS-VFYp-D0Mz-bGty-yTBc-K1Kddp on /dev/sdc1 logical
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:0:0.device                                                loaded
+   active   plugged   VMware_Virtual_S
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:0:0\x2dpart1.device                                       loaded
+   active   plugged   VMware_Virtual_S 1
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:0:0\x2dpart2.device                                       loaded
+   active   plugged   LVM PV hF7unB-ZgVE-Nz2b-4xKa-mcQS-gepv-YU7nXw on /dev/sda2 2
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:1:0.device                                                loaded
+   active   plugged   VMware_Virtual_S
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:1:0\x2dpart1.device                                       loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:2:0.device                                                loaded
+   active   plugged   VMware_Virtual_S
+  dev-disk-by\x2dpath-pci\x2d0000:00:10.0\x2dscsi\x2d0:0:2:0\x2dpart1.device                                       loaded
+   active   plugged   LVM PV l6xzga-CYBS-VFYp-D0Mz-bGty-yTBc-K1Kddp on /dev/sdc1 logical
+  dev-disk-by\x2dpath-pci\x2d0000:02:05.0\x2data\x2d2.0.device                                                     loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  dev-disk-by\x2duuid-2018\x2d01\x2d19\x2d09\x2d23\x2d44\x2d00.device                                              loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  dev-disk-by\x2duuid-366b7a0b\x2dc2ee\x2d4474\x2d816b\x2d9418785b2cb2.device                                      loaded
+   active   plugged   VMware_Virtual_S 1
+  dev-disk-by\x2duuid-77aedbab\x2d6a66\x2d41b8\x2d9bd7\x2dd6358c002e0e.device                                      loaded
+   active   plugged   /dev/disk/by-uuid/77aedbab-6a66-41b8-9bd7-d6358c002e0e
+  dev-disk-by\x2duuid-79d89d6c\x2d5697\x2d4c3e\x2db608\x2dfe20b2d2a712.device                                      loaded
+   active   plugged   /dev/disk/by-uuid/79d89d6c-5697-4c3e-b608-fe20b2d2a712
+  dev-disk-by\x2duuid-9552d125\x2db3fb\x2d4d22\x2d9d88\x2ddfea506ea21d.device                                      loaded
+   active   plugged   /dev/disk/by-uuid/9552d125-b3fb-4d22-9d88-dfea506ea21d
+  dev-disk-by\x2duuid-d476faa5\x2dd7bc\x2d4886\x2d830f\x2db7428a8e3c37.device                                      loaded
+   active   plugged   /dev/disk/by-uuid/d476faa5-d7bc-4886-830f-b7428a8e3c37
+  dev-disk-by\x2duuid-ec3b5f76\x2deaa9\x2d4d66\x2d85ac\x2dfab75e73e9af.device                                      loaded
+   active   plugged   /dev/disk/by-uuid/ec3b5f76-eaa9-4d66-85ac-fab75e73e9af
+  dev-dm\x2d0.device                                                                                               loaded
+   active   plugged   /dev/dm-0
+  dev-dm\x2d1.device                                                                                               loaded
+   active   plugged   /dev/dm-1
+  dev-dm\x2d2.device                                                                                               loaded
+   active   plugged   /dev/dm-2
+  dev-dm\x2d3.device                                                                                               loaded
+   active   plugged   /dev/dm-3
+  dev-dm\x2d4.device                                                                                               loaded
+   active   plugged   /dev/dm-4
+  dev-mapper-rhel\x2droot.device                                                                                   loaded
+   active   plugged   /dev/mapper/rhel-root
+  dev-mapper-rhel\x2dswap.device                                                                                   loaded
+   active   plugged   /dev/mapper/rhel-swap
+  dev-mapper-webdatavg\x2dwebdata1lv.device                                                                        loaded
+   active   plugged   /dev/mapper/webdatavg-webdata1lv
+  dev-mapper-webdatavg\x2dwebdata2lv.device                                                                        loaded
+   active   plugged   /dev/mapper/webdatavg-webdata2lv
+  dev-mapper-webdatavg\x2dwebdata3lv.device                                                                        loaded
+   active   plugged   /dev/mapper/webdatavg-webdata3lv
+  dev-rhel-root.device                                                                                             loaded
+   active   plugged   /dev/rhel/root
+  dev-rhel-swap.device                                                                                             loaded
+   active   plugged   /dev/rhel/swap
+  dev-sda.device                                                                                                   loaded
+   active   plugged   VMware_Virtual_S
+  dev-sda1.device                                                                                                  loaded
+   active   plugged   VMware_Virtual_S 1
+  dev-sda2.device                                                                                                  loaded
+   active   plugged   LVM PV hF7unB-ZgVE-Nz2b-4xKa-mcQS-gepv-YU7nXw on /dev/sda2 2
+  dev-sdb.device                                                                                                   loaded
+   active   plugged   VMware_Virtual_S
+  dev-sdb1.device                                                                                                  loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  dev-sdc.device                                                                                                   loaded
+   active   plugged   VMware_Virtual_S
+  dev-sdc1.device                                                                                                  loaded
+   active   plugged   LVM PV l6xzga-CYBS-VFYp-D0Mz-bGty-yTBc-K1Kddp on /dev/sdc1 logical
+  dev-sr0.device                                                                                                   loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  dev-ttyS0.device                                                                                                 loaded
+   active   plugged   /dev/ttyS0
+  dev-ttyS1.device                                                                                                 loaded
+   active   plugged   /dev/ttyS1
+  dev-ttyS2.device                                                                                                 loaded
+   active   plugged   /dev/ttyS2
+  dev-ttyS3.device                                                                                                 loaded
+   active   plugged   /dev/ttyS3
+  dev-webdatavg-webdata1lv.device                                                                                  loaded
+   active   plugged   /dev/webdatavg/webdata1lv
+  dev-webdatavg-webdata2lv.device                                                                                  loaded
+   active   plugged   /dev/webdatavg/webdata2lv
+  dev-webdatavg-webdata3lv.device                                                                                  loaded
+   active   plugged   /dev/webdatavg/webdata3lv
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:0-0:0:0:0-block-sda-sda1.device                              loaded
+   active   plugged   VMware_Virtual_S 1
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:0-0:0:0:0-block-sda-sda2.device                              loaded
+   active   plugged   LVM PV hF7unB-ZgVE-Nz2b-4xKa-mcQS-gepv-YU7nXw on /dev/sda2 2
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:0-0:0:0:0-block-sda.device                                   loaded
+   active   plugged   VMware_Virtual_S
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:1-0:0:1:0-block-sdb-sdb1.device                              loaded
+   active   plugged   LVM PV N1yFXo-SIB6-3RSv-9FjX-tM3C-ckts-KB8uf7 on /dev/sdb1 logical
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:1-0:0:1:0-block-sdb.device                                   loaded
+   active   plugged   VMware_Virtual_S
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:2-0:0:2:0-block-sdc-sdc1.device                              loaded
+   active   plugged   LVM PV l6xzga-CYBS-VFYp-D0Mz-bGty-yTBc-K1Kddp on /dev/sdc1 logical
+  sys-devices-pci0000:00-0000:00:10.0-host0-target0:0:2-0:0:2:0-block-sdc.device                                   loaded
+   active   plugged   VMware_Virtual_S
+  sys-devices-pci0000:00-0000:00:11.0-0000:02:00.0-usb2-2\x2d2-2\x2d2.1-2\x2d2.1:1.0-bluetooth-hci0-rfkill0.device loaded
+   active   plugged   /sys/devices/pci0000:00/0000:00:11.0/0000:02:00.0/usb2/2-2/2-2.1/2-2.1:1.0/bluetooth/hci0/rfkill0
+  sys-devices-pci0000:00-0000:00:11.0-0000:02:00.0-usb2-2\x2d2-2\x2d2.1-2\x2d2.1:1.0-bluetooth-hci0.device         loaded
+   active   plugged   /sys/devices/pci0000:00/0000:00:11.0/0000:02:00.0/usb2/2-2/2-2.1/2-2.1:1.0/bluetooth/hci0
+  sys-devices-pci0000:00-0000:00:11.0-0000:02:01.0-net-ens33.device                                                loaded
+   active   plugged   82545EM Gigabit Ethernet Controller (Copper) (PRO/1000 MT Single Port Adapter)
+  sys-devices-pci0000:00-0000:00:11.0-0000:02:02.0-sound-card0.device                                              loaded
+   active   plugged   ES1371/ES1373 / Creative Labs CT2518 (Audio PCI 64V/128/5200 / Creative CT4810/CT5803/CT5806 [Sound
+Blaster PCI])
+  sys-devices-pci0000:00-0000:00:11.0-0000:02:05.0-ata4-host4-target4:0:0-4:0:0:0-block-sr0.device                 loaded
+   active   plugged   VMware_Virtual_SATA_CDRW_Drive RHEL-7.4_Server.x86_64
+  sys-devices-platform-serial8250-tty-ttyS1.device                                                                 loaded
+   active   plugged   /sys/devices/platform/serial8250/tty/ttyS1
+  sys-devices-platform-serial8250-tty-ttyS2.device                                                                 loaded
+   active   plugged   /sys/devices/platform/serial8250/tty/ttyS2
+  sys-devices-platform-serial8250-tty-ttyS3.device                                                                 loaded
+   active   plugged   /sys/devices/platform/serial8250/tty/ttyS3
+  sys-devices-pnp0-00:05-tty-ttyS0.device                                                                          loaded
+   active   plugged   /sys/devices/pnp0/00:05/tty/ttyS0
+  sys-devices-virtual-block-dm\x2d0.device                                                                         loaded
+   active   plugged   /sys/devices/virtual/block/dm-0
+  sys-devices-virtual-block-dm\x2d1.device                                                                         loaded
+   active   plugged   /sys/devices/virtual/block/dm-1
+  sys-devices-virtual-block-dm\x2d2.device                                                                         loaded
+   active   plugged   /sys/devices/virtual/block/dm-2
+  sys-devices-virtual-block-dm\x2d3.device                                                                         loaded
+   active   plugged   /sys/devices/virtual/block/dm-3
+  sys-devices-virtual-block-dm\x2d4.device                                                                         loaded
+   active   plugged   /sys/devices/virtual/block/dm-4
+  sys-module-configfs.device                                                                                       loaded
+   active   plugged   /sys/module/configfs
+  sys-subsystem-bluetooth-devices-hci0.device                                                                      loaded
+   active   plugged   /sys/subsystem/bluetooth/devices/hci0
+  sys-subsystem-net-devices-ens33.device                                                                           loaded
+   active   plugged   82545EM Gigabit Ethernet Controller (Copper) (PRO/1000 MT Single Port Adapter)
+  sys-subsystem-rfkill-devices-rfkill0.device                                                                      loaded
+   active   plugged   /sys/subsystem/rfkill/devices/rfkill0
+  -.mount                                                                                                          loaded
+   active   mounted   /
+  boot.mount                                                                                                       loaded
+   active   mounted   /boot
+  dev-hugepages.mount                                                                                              loaded
+   active   mounted   Huge Pages File System
+  dev-mqueue.mount                                                                                                 loaded
+   active   mounted   POSIX Message Queue File System
+  proc-fs-nfsd.mount                                                                                               loaded
+   active   mounted   NFSD configuration filesystem
+  proc-sys-fs-binfmt_misc.mount                                                                                    loaded
+   inactive dead      Arbitrary Executable File Formats File System
+  run-user-0.mount                                                                                                 loaded
+   active   mounted   /run/user/0
+  sys-fs-fuse-connections.mount                                                                                    loaded
+   inactive dead      FUSE Control File System
+  sys-kernel-config.mount                                                                                          loaded
+   active   mounted   Configuration File System
+  sys-kernel-debug.mount                                                                                           loaded
+   active   mounted   Debug File System
+  tmp.mount                                                                                                        loaded
+   inactive dead      Temporary Directory
+  var-lib-nfs-rpc_pipefs.mount                                                                                     loaded
+   active   mounted   RPC Pipe File System
+  brandbot.path                                                                                                    loaded
+   active   waiting   Flexible branding
+  systemd-ask-password-console.path                                                                                loaded
+   inactive dead      Dispatch Password Requests to Console Directory Watch
+  systemd-ask-password-plymouth.path                                                                               loaded
+   active   waiting   Forward Password Requests to Plymouth Directory Watch
+  systemd-ask-password-wall.path                                                                                   loaded
+   active   waiting   Forward Password Requests to Wall Directory Watch
+  session-1.scope                                                                                                  loaded
+   active   running   Session 1 of user root
+  session-2.scope                                                                                                  loaded
+   active   running   Session 2 of user root
+  auditd.service                                                                                                   loaded
+   active   running   Security Auditing Service
+  auth-rpcgss-module.service                                                                                       loaded
+   inactive dead      Kernel Module supporting RPCSEC_GSS
+  autofs.service                                                                                                   loaded
+   active   running   Automounts filesystems on demand
+  brandbot.service                                                                                                 loaded
+   inactive dead      Flexible Branding Service
+  cpupower.service                                                                                                 loaded
+   inactive dead      Configure CPU power related settings
+  crond.service                                                                                                    loaded
+   active   running   Command Scheduler
+  dbus.service                                                                                                     loaded
+   active   running   D-Bus System Message Bus
+● display-manager.service                                                                                          not-fou
+nd inactive dead      display-manager.service
+  dm-event.service                                                                                                 loaded
+   inactive dead      Device-mapper event daemon
+  dracut-shutdown.service                                                                                          loaded
+   inactive dead      Restore /run/initramfs
+  emergency.service                                                                                                loaded
+   inactive dead      Emergency Shell
+● exim.service                                                                                                     not-fou
+nd inactive dead      exim.service
+  getty@tty1.service                                                                                               loaded
+   active   running   Getty on tty1
+  gssproxy.service                                                                                                 loaded
+   active   running   GSSAPI Proxy Daemon
+● ip6tables.service                                                                                                not-fou
+nd inactive dead      ip6tables.service
+● iptables.service                                                                                                 not-fou
+nd inactive dead      iptables.service
+  irqbalance.service                                                                                               loaded
+   inactive dead      irqbalance daemon
+  kdump.service                                                                                                    loaded
+   active   exited    Crash recovery kernel arming
+  kmod-static-nodes.service                                                                                        loaded
+   active   exited    Create list of required static device nodes for the current kernel
+● lvm2-activation.service                                                                                          not-fou
+nd inactive dead      lvm2-activation.service
+  lvm2-lvmetad.service                                                                                             loaded
+   active   running   LVM2 metadata daemon
+  lvm2-lvmpolld.service                                                                                            loaded
+   inactive dead      LVM2 poll daemon
+● lvm2-monitor.service                                                                                             loaded
+   failed   failed    Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling
+  lvm2-pvscan@8:17.service                                                                                         loaded
+   active   exited    LVM2 PV scan on device 8:17
+  lvm2-pvscan@8:2.service                                                                                          loaded
+   active   exited    LVM2 PV scan on device 8:2
+  lvm2-pvscan@8:33.service                                                                                         loaded
+   active   exited    LVM2 PV scan on device 8:33
+  microcode.service                                                                                                loaded
+   inactive dead      Load CPU microcode update
+  network.service                                                                                                  loaded
+   active   exited    LSB: Bring up/down networking
+  NetworkManager-wait-online.service                                                                               loaded
+   active   exited    Network Manager Wait Online
+  NetworkManager.service                                                                                           loaded
+   active   running   Network Manager
+  nfs-config.service                                                                                               loaded
+   inactive dead      Preprocess NFS configuration
+  nfs-idmapd.service                                                                                               loaded
+   inactive dead      NFSv4 ID-name mapping service
+  nfs-mountd.service                                                                                               loaded
+   inactive dead      NFS Mount Daemon
+● nfs-secure-server.service                                                                                        not-fou
+nd inactive dead      nfs-secure-server.service
+  nfs-server.service                                                                                               loaded
+   inactive dead      NFS server and services
+  nfs-utils.service                                                                                                loaded
+   inactive dead      NFS server and client services
+  plymouth-quit-wait.service                                                                                       loaded
+   inactive dead      Wait for Plymouth Boot Screen to Quit
+  plymouth-quit.service                                                                                            loaded
+   inactive dead      Terminate Plymouth Boot Screen
+  plymouth-read-write.service                                                                                      loaded
+   inactive dead      Tell Plymouth To Write Out Runtime Data
+  plymouth-start.service                                                                                           loaded
+   inactive dead      Show Plymouth Boot Screen
+  polkit.service                                                                                                   loaded
+   active   running   Authorization Manager
+  postfix.service                                                                                                  loaded
+   active   running   Postfix Mail Transport Agent
+  rc-local.service                                                                                                 loaded
+   inactive dead      /etc/rc.d/rc.local Compatibility
+  rescue.service                                                                                                   loaded
+   inactive dead      Rescue Shell
+  rhel-autorelabel-mark.service                                                                                    loaded
+   inactive dead      Mark the need to relabel after reboot
+  rhel-autorelabel.service                                                                                         loaded
+   inactive dead      Relabel all filesystems, if necessary
+  rhel-configure.service                                                                                           loaded
+   inactive dead      Reconfigure the system on administrator request
+  rhel-dmesg.service                                                                                               loaded
+   active   exited    Dump dmesg to /var/log/dmesg
+  rhel-import-state.service                                                                                        loaded
+   active   exited    Import network configuration from initramfs
+  rhel-loadmodules.service                                                                                         loaded
+   inactive dead      Load legacy module configuration
+  rhel-readonly.service                                                                                            loaded
+   active   exited    Configure read-only root support
+  rhnsd.service                                                                                                    loaded
+   active   running   LSB: Starts the Spacewalk Daemon
+  rhsmcertd.service                                                                                                loaded
+   active   running   Enable periodic update of entitlement certificates.
+  rpc-gssd.service                                                                                                 loaded
+   inactive dead      RPC security service for NFS client and server
+  rpc-statd-notify.service                                                                                         loaded
+   inactive dead      Notify NFS peers of a restart
+  rpc-statd.service                                                                                                loaded
+   inactive dead      NFS status monitor for NFSv2/3 locking.
+  rpcbind.service                                                                                                  loaded
+   active   running   RPC bind service
+  rsyslog.service                                                                                                  loaded
+   active   running   System Logging Service
+  selinux-policy-migrate-local-changes@targeted.service                                                            loaded
+   inactive dead      Migrate local SELinux policy changes from the old store structure to the new structure
+● sendmail.service                                                                                                 not-fou
+nd inactive dead      sendmail.service
+  sshd-keygen.service                                                                                              loaded
+   inactive dead      OpenSSH Server Key Generation
+  sshd.service                                                                                                     loaded
+   active   running   OpenSSH server daemon
+● sssd.service                                                                                                     not-fou
+nd inactive dead      sssd.service
+● syslog.service                                                                                                   not-fou
+nd inactive dead      syslog.service
+  systemd-ask-password-console.service                                                                             loaded
+   inactive dead      Dispatch Password Requests to Console
+  systemd-ask-password-plymouth.service                                                                            loaded
+   inactive dead      Forward Password Requests to Plymouth
+  systemd-ask-password-wall.service                                                                                loaded
+   inactive dead      Forward Password Requests to Wall
+  systemd-binfmt.service                                                                                           loaded
+   inactive dead      Set Up Additional Binary Formats
+  systemd-firstboot.service                                                                                        loaded
+   inactive dead      First Boot Wizard
+  systemd-fsck-root.service                                                                                        loaded
+   inactive dead      File System Check on Root Device
+  systemd-hwdb-update.service                                                                                      loaded
+   inactive dead      Rebuild Hardware Database
+  systemd-initctl.service                                                                                          loaded
+   inactive dead      /dev/initctl Compatibility Daemon
+  systemd-journal-catalog-update.service                                                                           loaded
+   inactive dead      Rebuild Journal Catalog
+  systemd-journal-flush.service                                                                                    loaded
+   active   exited    Flush Journal to Persistent Storage
+  systemd-journald.service                                                                                         loaded
+   active   running   Journal Service
+  systemd-logind.service                                                                                           loaded
+   active   running   Login Service
+  systemd-machine-id-commit.service                                                                                loaded
+   inactive dead      Commit a transient machine-id on disk
+  systemd-modules-load.service                                                                                     loaded
+   inactive dead      Load Kernel Modules
+● systemd-random-seed-load.service                                                                                 not-fou
+nd inactive dead      systemd-random-seed-load.service
+  systemd-random-seed.service                                                                                      loaded
+   active   exited    Load/Save Random Seed
+  systemd-readahead-collect.service                                                                                loaded
+   inactive dead      Collect Read-Ahead Data
+  systemd-readahead-done.service                                                                                   loaded
+   inactive dead      Stop Read-Ahead Data Collection
+  systemd-readahead-replay.service                                                                                 loaded
+   inactive dead      Replay Read-Ahead Data
+  systemd-reboot.service                                                                                           loaded
+   inactive dead      Reboot
+  systemd-remount-fs.service                                                                                       loaded
+   active   exited    Remount Root and Kernel File Systems
+  systemd-rfkill@rfkill0.service                                                                                   loaded
+   active   exited    Load/Save RF Kill Switch Status of rfkill0
+  systemd-shutdownd.service                                                                                        loaded
+   inactive dead      Delayed Shutdown Service
+  systemd-sysctl.service                                                                                           loaded
+   active   exited    Apply Kernel Variables
+● systemd-sysusers.service                                                                                         not-fou
+nd inactive dead      systemd-sysusers.service
+  systemd-tmpfiles-clean.service                                                                                   loaded
+   inactive dead      Cleanup of Temporary Directories
+  systemd-tmpfiles-setup-dev.service                                                                               loaded
+   active   exited    Create Static Device Nodes in /dev
+  systemd-tmpfiles-setup.service                                                                                   loaded
+   active   exited    Create Volatile Files and Directories
+  systemd-udev-trigger.service                                                                                     loaded
+   active   exited    udev Coldplug all Devices
+  systemd-udevd.service                                                                                            loaded
+   active   running   udev Kernel Device Manager
+  systemd-update-done.service                                                                                      loaded
+   inactive dead      Update is Completed
+  systemd-update-utmp-runlevel.service                                                                             loaded
+   inactive dead      Update UTMP about System Runlevel Changes
+  systemd-update-utmp.service                                                                                      loaded
+   active   exited    Update UTMP about System Boot/Shutdown
+  systemd-user-sessions.service                                                                                    loaded
+   active   exited    Permit User Sessions
+  systemd-vconsole-setup.service                                                                                   loaded
+   active   exited    Setup Virtual Console
+  tuned.service                                                                                                    loaded
+   active   running   Dynamic System Tuning Daemon
+  vgauthd.service                                                                                                  loaded
+   active   running   VGAuth Service for open-vm-tools
+  vmtoolsd.service                                                                                                 loaded
+   active   running   Service for virtual machines hosted on VMware
+  vsftpd.service                                                                                                   loaded
+   active   running   Vsftpd ftp daemon
+  ypbind.service                                                                                                   loaded
+   active   running   NIS/YP (Network Information Service) Clients to NIS Domain Binder
+  yppasswdd.service                                                                                                loaded
+   active   running   NIS/YP (Network Information Service) Users Passwords Change Server
+  ypserv.service                                                                                                   loaded
+   active   running   NIS/YP (Network Information Service) Server
+  ypxfrd.service                                                                                                   loaded
+   active   running   NIS/YP (Network Information Service) Maps Transferring Accelerator
+  -.slice                                                                                                          loaded
+   active   active    Root Slice
+  system-getty.slice                                                                                               loaded
+   active   active    system-getty.slice
+  system-lvm2\x2dpvscan.slice                                                                                      loaded
+   active   active    system-lvm2\x2dpvscan.slice
+  system-selinux\x2dpolicy\x2dmigrate\x2dlocal\x2dchanges.slice                                                    loaded
+   active   active    system-selinux\x2dpolicy\x2dmigrate\x2dlocal\x2dchanges.slice
+  system-systemd\x2drfkill.slice                                                                                   loaded
+   active   active    system-systemd\x2drfkill.slice
+  system.slice                                                                                                     loaded
+   active   active    System Slice
+  user-0.slice                                                                                                     loaded
+   active   active    User Slice of root
+  user.slice                                                                                                       loaded
+   active   active    User and Session Slice
+  dbus.socket                                                                                                      loaded
+   active   running   D-Bus System Message Bus Socket
+  dm-event.socket                                                                                                  loaded
+   active   listening Device-mapper event daemon FIFOs
+  lvm2-lvmetad.socket                                                                                              loaded
+   active   running   LVM2 metadata daemon socket
+  lvm2-lvmpolld.socket                                                                                             loaded
+   active   listening LVM2 poll daemon socket
+  rpcbind.socket                                                                                                   loaded
+   active   running   RPCbind Server Activation Socket
+  sshd.socket                                                                                                      loaded
+   inactive dead      OpenSSH Server Socket
+  syslog.socket                                                                                                    loaded
+   inactive dead      Syslog Socket
+  systemd-initctl.socket                                                                                           loaded
+   active   listening /dev/initctl Compatibility Named Pipe
+  systemd-journald.socket                                                                                          loaded
+   active   running   Journal Socket
+  systemd-shutdownd.socket                                                                                         loaded
+   active   listening Delayed Shutdown Socket
+  systemd-udevd-control.socket                                                                                     loaded
+   active   running   udev Control Socket
+  systemd-udevd-kernel.socket                                                                                      loaded
+   active   running   udev Kernel Socket
+  dev-disk-by\x2did-dm\x2dname\x2drhel\x2dswap.swap                                                                loaded
+   active   active    /dev/disk/by-id/dm-name-rhel-swap
+  dev-disk-by\x2did-dm\x2duuid\x2dLVM\x2dDPRQcBQwrQNxNtkb6O0LAIrdFHLZY3wn8KydMD2p0UlSlR0pYEFfdRL932frK6Xi.swap     loaded
+   active   active    /dev/disk/by-id/dm-uuid-LVM-DPRQcBQwrQNxNtkb6O0LAIrdFHLZY3wn8KydMD2p0UlSlR0pYEFfdRL932frK6Xi
+  dev-disk-by\x2duuid-d476faa5\x2dd7bc\x2d4886\x2d830f\x2db7428a8e3c37.swap                                        loaded
+   active   active    /dev/disk/by-uuid/d476faa5-d7bc-4886-830f-b7428a8e3c37
+  dev-dm\x2d1.swap                                                                                                 loaded
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i sshd
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       1733   1482  0 19:45 pts/0    00:00:00 grep --color=auto -i sshd
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# systemctl -a |grep -i sshd
+  sshd-keygen.service                                                                                              loaded    inactive dead      OpenSSH Server Key Generation
+  sshd.service                                                                                                     loaded    active   running   OpenSSH server daemon
+  sshd.socket                                                                                                      loaded    inactive dead      OpenSSH Server Socket
+[root@c111xyz /]# ps
+   PID TTY          TIME CMD
+  1482 pts/0    00:00:00 bash
+  1766 pts/0    00:00:00 ps
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef
+UID         PID   PPID  C STIME TTY          TIME CMD
+root          1      0  0 19:29 ?        00:00:02 /usr/lib/systemd/systemd --switched-root --system --deserialize 21
+root          2      0  0 19:29 ?        00:00:00 [kthreadd]
+root          3      2  0 19:29 ?        00:00:00 [ksoftirqd/0]
+root          5      2  0 19:29 ?        00:00:00 [kworker/0:0H]
+root          7      2  0 19:29 ?        00:00:00 [migration/0]
+root          8      2  0 19:29 ?        00:00:00 [rcu_bh]
+root          9      2  0 19:29 ?        00:00:00 [rcu_sched]
+root         10      2  0 19:29 ?        00:00:00 [watchdog/0]
+root         12      2  0 19:29 ?        00:00:00 [kdevtmpfs]
+root         13      2  0 19:29 ?        00:00:00 [netns]
+root         14      2  0 19:29 ?        00:00:00 [khungtaskd]
+root         15      2  0 19:29 ?        00:00:00 [writeback]
+root         16      2  0 19:29 ?        00:00:00 [kintegrityd]
+root         17      2  0 19:29 ?        00:00:00 [bioset]
+root         18      2  0 19:29 ?        00:00:00 [kblockd]
+root         19      2  0 19:29 ?        00:00:00 [md]
+root         25      2  0 19:29 ?        00:00:00 [kswapd0]
+root         26      2  0 19:29 ?        00:00:00 [ksmd]
+root         27      2  0 19:29 ?        00:00:00 [khugepaged]
+root         28      2  0 19:29 ?        00:00:00 [crypto]
+root         36      2  0 19:29 ?        00:00:00 [kthrotld]
+root         38      2  0 19:29 ?        00:00:00 [kmpath_rdacd]
+root         39      2  0 19:29 ?        00:00:00 [kpsmoused]
+root         41      2  0 19:29 ?        00:00:00 [ipv6_addrconf]
+root         60      2  0 19:29 ?        00:00:00 [deferwq]
+root         92      2  0 19:29 ?        00:00:00 [kauditd]
+root        273      2  0 19:29 ?        00:00:00 [mpt_poll_0]
+root        274      2  0 19:29 ?        00:00:00 [mpt/0]
+root        275      2  0 19:29 ?        00:00:00 [ata_sff]
+root        278      2  0 19:29 ?        00:00:00 [scsi_eh_0]
+root        280      2  0 19:29 ?        00:00:00 [scsi_tmf_0]
+root        284      2  0 19:29 ?        00:00:00 [scsi_eh_1]
+root        285      2  0 19:29 ?        00:00:00 [scsi_tmf_1]
+root        286      2  0 19:29 ?        00:00:00 [scsi_eh_2]
+root        287      2  0 19:29 ?        00:00:00 [scsi_tmf_2]
+root        291      2  0 19:29 ?        00:00:00 [ttm_swap]
+root        298      2  0 19:29 ?        00:00:00 [scsi_eh_3]
+root        299      2  0 19:29 ?        00:00:00 [scsi_tmf_3]
+root        300      2  0 19:29 ?        00:00:00 [scsi_eh_4]
+root        301      2  0 19:29 ?        00:00:00 [scsi_tmf_4]
+root        302      2  0 19:29 ?        00:00:00 [scsi_eh_5]
+root        303      2  0 19:29 ?        00:00:00 [scsi_tmf_5]
+root        304      2  0 19:29 ?        00:00:00 [scsi_eh_6]
+root        305      2  0 19:29 ?        00:00:00 [scsi_tmf_6]
+root        306      2  0 19:29 ?        00:00:00 [scsi_eh_7]
+root        307      2  0 19:29 ?        00:00:00 [scsi_tmf_7]
+root        308      2  0 19:29 ?        00:00:00 [scsi_eh_8]
+root        309      2  0 19:29 ?        00:00:00 [scsi_tmf_8]
+root        310      2  0 19:29 ?        00:00:00 [scsi_eh_9]
+root        311      2  0 19:29 ?        00:00:00 [scsi_tmf_9]
+root        312      2  0 19:29 ?        00:00:00 [scsi_eh_10]
+root        313      2  0 19:29 ?        00:00:00 [scsi_tmf_10]
+root        314      2  0 19:29 ?        00:00:00 [scsi_eh_11]
+root        315      2  0 19:29 ?        00:00:00 [scsi_tmf_11]
+root        316      2  0 19:29 ?        00:00:00 [scsi_eh_12]
+root        317      2  0 19:29 ?        00:00:00 [scsi_tmf_12]
+root        318      2  0 19:29 ?        00:00:00 [scsi_eh_13]
+root        319      2  0 19:29 ?        00:00:00 [scsi_tmf_13]
+root        320      2  0 19:29 ?        00:00:00 [scsi_eh_14]
+root        321      2  0 19:29 ?        00:00:00 [scsi_tmf_14]
+root        322      2  0 19:29 ?        00:00:00 [scsi_eh_15]
+root        323      2  0 19:29 ?        00:00:00 [scsi_tmf_15]
+root        324      2  0 19:29 ?        00:00:00 [scsi_eh_16]
+root        325      2  0 19:29 ?        00:00:00 [scsi_tmf_16]
+root        326      2  0 19:29 ?        00:00:00 [scsi_eh_17]
+root        327      2  0 19:29 ?        00:00:00 [scsi_tmf_17]
+root        328      2  0 19:29 ?        00:00:00 [scsi_eh_18]
+root        329      2  0 19:29 ?        00:00:00 [scsi_tmf_18]
+root        330      2  0 19:29 ?        00:00:00 [scsi_eh_19]
+root        331      2  0 19:29 ?        00:00:00 [scsi_tmf_19]
+root        332      2  0 19:29 ?        00:00:00 [scsi_eh_20]
+root        333      2  0 19:29 ?        00:00:00 [scsi_tmf_20]
+root        334      2  0 19:29 ?        00:00:00 [scsi_eh_21]
+root        335      2  0 19:29 ?        00:00:00 [scsi_tmf_21]
+root        336      2  0 19:29 ?        00:00:00 [scsi_eh_22]
+root        337      2  0 19:29 ?        00:00:00 [scsi_tmf_22]
+root        338      2  0 19:29 ?        00:00:00 [scsi_eh_23]
+root        339      2  0 19:29 ?        00:00:00 [scsi_tmf_23]
+root        340      2  0 19:29 ?        00:00:00 [scsi_eh_24]
+root        341      2  0 19:29 ?        00:00:00 [scsi_tmf_24]
+root        342      2  0 19:29 ?        00:00:00 [scsi_eh_25]
+root        343      2  0 19:29 ?        00:00:00 [scsi_tmf_25]
+root        344      2  0 19:29 ?        00:00:00 [scsi_eh_26]
+root        345      2  0 19:29 ?        00:00:00 [scsi_tmf_26]
+root        346      2  0 19:29 ?        00:00:00 [scsi_eh_27]
+root        347      2  0 19:29 ?        00:00:00 [scsi_tmf_27]
+root        348      2  0 19:29 ?        00:00:00 [scsi_eh_28]
+root        349      2  0 19:29 ?        00:00:00 [scsi_tmf_28]
+root        350      2  0 19:29 ?        00:00:00 [scsi_eh_29]
+root        351      2  0 19:29 ?        00:00:00 [scsi_tmf_29]
+root        352      2  0 19:29 ?        00:00:00 [scsi_eh_30]
+root        353      2  0 19:29 ?        00:00:00 [scsi_tmf_30]
+root        354      2  0 19:29 ?        00:00:00 [scsi_eh_31]
+root        355      2  0 19:29 ?        00:00:00 [scsi_tmf_31]
+root        356      2  0 19:29 ?        00:00:00 [scsi_eh_32]
+root        357      2  0 19:29 ?        00:00:00 [scsi_tmf_32]
+root        358      2  0 19:29 ?        00:00:00 [mpt_poll_1]
+root        360      2  0 19:29 ?        00:00:00 [mpt/1]
+root        384      2  0 19:29 ?        00:00:00 [kworker/u256:28]
+root        385      2  0 19:29 ?        00:00:00 [kworker/u256:29]
+root        388      2  0 19:29 ?        00:00:00 [scsi_eh_33]
+root        389      2  0 19:29 ?        00:00:00 [scsi_tmf_33]
+root        504      2  0 19:29 ?        00:00:00 [kdmflush]
+root        505      2  0 19:29 ?        00:00:00 [bioset]
+root        515      2  0 19:29 ?        00:00:00 [kdmflush]
+root        516      2  0 19:29 ?        00:00:00 [bioset]
+root        530      2  0 19:29 ?        00:00:00 [bioset]
+root        531      2  0 19:29 ?        00:00:00 [xfsalloc]
+root        532      2  0 19:29 ?        00:00:00 [xfs_mru_cache]
+root        533      2  0 19:29 ?        00:00:00 [xfs-buf/dm-0]
+root        534      2  0 19:29 ?        00:00:00 [xfs-data/dm-0]
+root        535      2  0 19:29 ?        00:00:00 [xfs-conv/dm-0]
+root        536      2  0 19:29 ?        00:00:00 [xfs-cil/dm-0]
+root        537      2  0 19:29 ?        00:00:00 [xfs-reclaim/dm-]
+root        538      2  0 19:29 ?        00:00:00 [xfs-log/dm-0]
+root        539      2  0 19:29 ?        00:00:00 [xfs-eofblocks/d]
+root        540      2  0 19:29 ?        00:00:00 [xfsaild/dm-0]
+root        572      2  0 19:29 ?        00:00:00 [kworker/0:1H]
+root        617      1  0 19:29 ?        00:00:00 /usr/lib/systemd/systemd-journald
+root        644      1  0 19:29 ?        00:00:00 /usr/lib/systemd/systemd-udevd
+root        645      1  0 19:29 ?        00:00:00 /usr/sbin/lvmetad -f
+root        649      2  0 19:29 ?        00:00:00 [rpciod]
+root        650      2  0 19:29 ?        00:00:00 [xprtiod]
+root        669      2  0 19:29 ?        00:00:00 [nfit]
+root        703      2  0 19:29 ?        00:00:00 [kworker/u257:0]
+root        706      2  0 19:29 ?        00:00:00 [hci0]
+root        707      2  0 19:29 ?        00:00:00 [hci0]
+root        709      2  0 19:29 ?        00:00:00 [kworker/u257:2]
+root        710      2  0 19:29 ?        00:00:00 [xfs-buf/sda1]
+root        711      2  0 19:29 ?        00:00:00 [xfs-data/sda1]
+root        712      2  0 19:29 ?        00:00:00 [xfs-conv/sda1]
+root        713      2  0 19:29 ?        00:00:00 [xfs-cil/sda1]
+root        714      2  0 19:29 ?        00:00:00 [xfs-reclaim/sda]
+root        715      2  0 19:29 ?        00:00:00 [xfs-log/sda1]
+root        716      2  0 19:29 ?        00:00:00 [xfs-eofblocks/s]
+root        717      2  0 19:29 ?        00:00:00 [xfsaild/sda1]
+root        772      2  0 19:29 ?        00:00:00 [kdmflush]
+root        773      2  0 19:29 ?        00:00:00 [bioset]
+root        775      2  0 19:29 ?        00:00:00 [kdmflush]
+root        776      2  0 19:29 ?        00:00:00 [bioset]
+root        778      2  0 19:29 ?        00:00:00 [kdmflush]
+root        780      2  0 19:29 ?        00:00:00 [bioset]
+root        816      1  0 19:29 ?        00:00:00 /sbin/auditd
+root        839      1  0 19:29 ?        00:00:00 /usr/sbin/rsyslogd -n
+dbus        840      1  0 19:29 ?        00:00:00 /bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --syst
+root        844      1  0 19:29 ?        00:00:00 /usr/sbin/NetworkManager --no-daemon
+root        846      1  0 19:29 ?        00:00:00 /usr/bin/VGAuthService -s
+root        848      1  0 19:29 ?        00:00:01 /usr/bin/vmtoolsd
+polkitd     849      1  0 19:29 ?        00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+rpc         850      1  0 19:29 ?        00:00:00 /sbin/rpcbind -w
+root        857      1  0 19:29 ?        00:00:00 /usr/sbin/gssproxy -D
+root       1081      1  0 19:29 ?        00:00:00 /usr/bin/python -Es /usr/sbin/tuned -l -P
+root       1082      1  0 19:29 ?        00:00:00 /usr/sbin/ypserv -f
+root       1083      1  0 19:29 ?        00:00:00 /usr/sbin/rpc.ypxfrd -f
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1094      1  0 19:29 ?        00:00:00 /usr/sbin/rpc.yppasswdd -f
+root       1099      1  0 19:29 ?        00:00:00 /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+root       1105      1  0 19:29 ?        00:00:00 /usr/bin/rhsmcertd
+root       1143      1  0 19:29 ?        00:00:00 rhnsd
+root       1146      1  0 19:29 ?        00:00:00 /usr/sbin/ypbind -n
+root       1190      1  0 19:29 ?        00:00:00 /usr/lib/systemd/systemd-logind
+root       1207      1  0 19:29 ?        00:00:00 /usr/sbin/crond -n
+root       1214      1  0 19:29 ?        00:00:00 login -- root
+root       1215      1  0 19:29 ?        00:00:00 /usr/sbin/automount --pid-file /run/autofs.pid
+root       1350      1  0 19:29 ?        00:00:00 /usr/libexec/postfix/master -w
+postfix    1351   1350  0 19:29 ?        00:00:00 pickup -l -t unix -u
+postfix    1352   1350  0 19:29 ?        00:00:00 qmgr -l -t unix -u
+root       1450   1214  0 19:30 tty1     00:00:00 -bash
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       1482   1472  0 19:31 pts/0    00:00:00 -bash
+root       1555      2  0 19:34 ?        00:00:00 [kworker/0:0]
+root       1634      2  0 19:39 ?        00:00:00 [kworker/0:1]
+root       1719      2  0 19:44 ?        00:00:00 [kworker/0:2]
+root       1770   1482  0 19:47 pts/0    00:00:00 ps -ef
+[root@c111xyz /]# ps -ef |grep -i sshd
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       1790   1482  0 19:48 pts/0    00:00:00 grep --color=auto -i sshd
+[root@c111xyz /]# ps -ef |grep -i cron
+root       1207      1  0 19:29 ?        00:00:00 /usr/sbin/crond -n
+root       1803   1482  0 19:48 pts/0    00:00:00 grep --color=auto -i cron
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps
+   PID TTY          TIME CMD
+  1482 pts/0    00:00:00 bash
+  1984 pts/0    00:00:00 ps
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# vi /ashok
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps
+   PID TTY          TIME CMD
+  1482 pts/0    00:00:00 bash
+  2042 pts/0    00:00:00 ps
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |more
+UID         PID   PPID  C STIME TTY          TIME CMD
+root          1      0  0 19:29 ?        00:00:02 /usr/lib/systemd/systemd --switched-root --system --deserialize 21
+root          2      0  0 19:29 ?        00:00:00 [kthreadd]
+root          3      2  0 19:29 ?        00:00:00 [ksoftirqd/0]
+root          5      2  0 19:29 ?        00:00:00 [kworker/0:0H]
+root          7      2  0 19:29 ?        00:00:00 [migration/0]
+root          8      2  0 19:29 ?        00:00:00 [rcu_bh]
+root          9      2  0 19:29 ?        00:00:00 [rcu_sched]
+root         10      2  0 19:29 ?        00:00:00 [watchdog/0]
+root         12      2  0 19:29 ?        00:00:00 [kdevtmpfs]
+root         13      2  0 19:29 ?        00:00:00 [netns]
+root         14      2  0 19:29 ?        00:00:00 [khungtaskd]
+root         15      2  0 19:29 ?        00:00:00 [writeback]
+root         16      2  0 19:29 ?        00:00:00 [kintegrityd]
+root         17      2  0 19:29 ?        00:00:00 [bioset]
+root         18      2  0 19:29 ?        00:00:00 [kblockd]
+root         19      2  0 19:29 ?        00:00:00 [md]
+root         25      2  0 19:29 ?        00:00:00 [kswapd0]
+root         26      2  0 19:29 ?        00:00:00 [ksmd]
+root         27      2  0 19:29 ?        00:00:00 [khugepaged]
+root         28      2  0 19:29 ?        00:00:00 [crypto]
+root         36      2  0 19:29 ?        00:00:00 [kthrotld]
+root         38      2  0 19:29 ?        00:00:00 [kmpath_rdacd]
+root         39      2  0 19:29 ?        00:00:00 [kpsmoused]
+root         41      2  0 19:29 ?        00:00:00 [ipv6_addrconf]
+root         60      2  0 19:29 ?        00:00:00 [deferwq]
+root         92      2  0 19:29 ?        00:00:00 [kauditd]
+root        273      2  0 19:29 ?        00:00:00 [mpt_poll_0]
+root        274      2  0 19:29 ?        00:00:00 [mpt/0]
+root        275      2  0 19:29 ?        00:00:00 [ata_sff]
+root        278      2  0 19:29 ?        00:00:00 [scsi_eh_0]
+root        280      2  0 19:29 ?        00:00:00 [scsi_tmf_0]
+[root@c111xyz /]# ps -ef |more
+UID         PID   PPID  C STIME TTY          TIME CMD
+root          1      0  0 19:29 ?        00:00:02 /usr/lib/systemd/systemd --switched-root --system --deserialize 21
+root          2      0  0 19:29 ?        00:00:00 [kthreadd]
+root          3      2  0 19:29 ?        00:00:00 [ksoftirqd/0]
+root          5      2  0 19:29 ?        00:00:00 [kworker/0:0H]
+root          7      2  0 19:29 ?        00:00:00 [migration/0]
+root          8      2  0 19:29 ?        00:00:00 [rcu_bh]
+root          9      2  0 19:29 ?        00:00:00 [rcu_sched]
+root         10      2  0 19:29 ?        00:00:00 [watchdog/0]
+root         12      2  0 19:29 ?        00:00:00 [kdevtmpfs]
+root         13      2  0 19:29 ?        00:00:00 [netns]
+root         14      2  0 19:29 ?        00:00:00 [khungtaskd]
+root         15      2  0 19:29 ?        00:00:00 [writeback]
+root         16      2  0 19:29 ?        00:00:00 [kintegrityd]
+root         17      2  0 19:29 ?        00:00:00 [bioset]
+root         18      2  0 19:29 ?        00:00:00 [kblockd]
+root         19      2  0 19:29 ?        00:00:00 [md]
+root         25      2  0 19:29 ?        00:00:00 [kswapd0]
+root         26      2  0 19:29 ?        00:00:00 [ksmd]
+root         27      2  0 19:29 ?        00:00:00 [khugepaged]
+root         28      2  0 19:29 ?        00:00:00 [crypto]
+root         36      2  0 19:29 ?        00:00:00 [kthrotld]
+root         38      2  0 19:29 ?        00:00:00 [kmpath_rdacd]
+root         39      2  0 19:29 ?        00:00:00 [kpsmoused]
+root         41      2  0 19:29 ?        00:00:00 [ipv6_addrconf]
+root         60      2  0 19:29 ?        00:00:00 [deferwq]
+root         92      2  0 19:29 ?        00:00:00 [kauditd]
+root        273      2  0 19:29 ?        00:00:00 [mpt_poll_0]
+root        274      2  0 19:29 ?        00:00:00 [mpt/0]
+root        275      2  0 19:29 ?        00:00:00 [ata_sff]
+root        278      2  0 19:29 ?        00:00:00 [scsi_eh_0]
+root        280      2  0 19:29 ?        00:00:00 [scsi_tmf_0]
+root        284      2  0 19:29 ?        00:00:00 [scsi_eh_1]
+root        285      2  0 19:29 ?        00:00:00 [scsi_tmf_1]
+root        286      2  0 19:29 ?        00:00:00 [scsi_eh_2]
+root        287      2  0 19:29 ?        00:00:00 [scsi_tmf_2]
+root        291      2  0 19:29 ?        00:00:00 [ttm_swap]
+root        298      2  0 19:29 ?        00:00:00 [scsi_eh_3]
+root        299      2  0 19:29 ?        00:00:00 [scsi_tmf_3]
+root        300      2  0 19:29 ?        00:00:00 [scsi_eh_4]
+root        301      2  0 19:29 ?        00:00:00 [scsi_tmf_4]
+root        302      2  0 19:29 ?        00:00:00 [scsi_eh_5]
+root        303      2  0 19:29 ?        00:00:00 [scsi_tmf_5]
+root        304      2  0 19:29 ?        00:00:00 [scsi_eh_6]
+root        305      2  0 19:29 ?        00:00:00 [scsi_tmf_6]
+root        306      2  0 19:29 ?        00:00:00 [scsi_eh_7]
+root        307      2  0 19:29 ?        00:00:00 [scsi_tmf_7]
+root        308      2  0 19:29 ?        00:00:00 [scsi_eh_8]
+root        309      2  0 19:29 ?        00:00:00 [scsi_tmf_8]
+root        310      2  0 19:29 ?        00:00:00 [scsi_eh_9]
+root        311      2  0 19:29 ?        00:00:00 [scsi_tmf_9]
+root        312      2  0 19:29 ?        00:00:00 [scsi_eh_10]
+root        313      2  0 19:29 ?        00:00:00 [scsi_tmf_10]
+root        314      2  0 19:29 ?        00:00:00 [scsi_eh_11]
+root        315      2  0 19:29 ?        00:00:00 [scsi_tmf_11]
+root        316      2  0 19:29 ?        00:00:00 [scsi_eh_12]
+root        317      2  0 19:29 ?        00:00:00 [scsi_tmf_12]
+root        318      2  0 19:29 ?        00:00:00 [scsi_eh_13]
+root        319      2  0 19:29 ?        00:00:00 [scsi_tmf_13]
+root        320      2  0 19:29 ?        00:00:00 [scsi_eh_14]
+root        321      2  0 19:29 ?        00:00:00 [scsi_tmf_14]
+root        322      2  0 19:29 ?        00:00:00 [scsi_eh_15]
+root        323      2  0 19:29 ?        00:00:00 [scsi_tmf_15]
+root        324      2  0 19:29 ?        00:00:00 [scsi_eh_16]
+root        325      2  0 19:29 ?        00:00:00 [scsi_tmf_16]
+root        326      2  0 19:29 ?        00:00:00 [scsi_eh_17]
+root        327      2  0 19:29 ?        00:00:00 [scsi_tmf_17]
+root        328      2  0 19:29 ?        00:00:00 [scsi_eh_18]
+root        329      2  0 19:29 ?        00:00:00 [scsi_tmf_18]
+root        330      2  0 19:29 ?        00:00:00 [scsi_eh_19]
+root        331      2  0 19:29 ?        00:00:00 [scsi_tmf_19]
+root        332      2  0 19:29 ?        00:00:00 [scsi_eh_20]
+root        333      2  0 19:29 ?        00:00:00 [scsi_tmf_20]
+root        334      2  0 19:29 ?        00:00:00 [scsi_eh_21]
+root        335      2  0 19:29 ?        00:00:00 [scsi_tmf_21]
+root        336      2  0 19:29 ?        00:00:00 [scsi_eh_22]
+root        337      2  0 19:29 ?        00:00:00 [scsi_tmf_22]
+root        338      2  0 19:29 ?        00:00:00 [scsi_eh_23]
+root        339      2  0 19:29 ?        00:00:00 [scsi_tmf_23]
+root        340      2  0 19:29 ?        00:00:00 [scsi_eh_24]
+root        341      2  0 19:29 ?        00:00:00 [scsi_tmf_24]
+root        342      2  0 19:29 ?        00:00:00 [scsi_eh_25]
+root        343      2  0 19:29 ?        00:00:00 [scsi_tmf_25]
+root        344      2  0 19:29 ?        00:00:00 [scsi_eh_26]
+root        345      2  0 19:29 ?        00:00:00 [scsi_tmf_26]
+root        346      2  0 19:29 ?        00:00:00 [scsi_eh_27]
+root        347      2  0 19:29 ?        00:00:00 [scsi_tmf_27]
+root        348      2  0 19:29 ?        00:00:00 [scsi_eh_28]
+root        349      2  0 19:29 ?        00:00:00 [scsi_tmf_28]
+root        350      2  0 19:29 ?        00:00:00 [scsi_eh_29]
+root        351      2  0 19:29 ?        00:00:00 [scsi_tmf_29]
+root        352      2  0 19:29 ?        00:00:00 [scsi_eh_30]
+root        353      2  0 19:29 ?        00:00:00 [scsi_tmf_30]
+root        354      2  0 19:29 ?        00:00:00 [scsi_eh_31]
+root        355      2  0 19:29 ?        00:00:00 [scsi_tmf_31]
+root        356      2  0 19:29 ?        00:00:00 [scsi_eh_32]
+root        357      2  0 19:29 ?        00:00:00 [scsi_tmf_32]
+root        358      2  0 19:29 ?        00:00:00 [mpt_poll_1]
+root        360      2  0 19:29 ?        00:00:00 [mpt/1]
+root        384      2  0 19:29 ?        00:00:00 [kworker/u256:28]
+root        385      2  0 19:29 ?        00:00:00 [kworker/u256:29]
+root        388      2  0 19:29 ?        00:00:00 [scsi_eh_33]
+root        389      2  0 19:29 ?        00:00:00 [scsi_tmf_33]
+root        504      2  0 19:29 ?        00:00:00 [kdmflush]
+root        505      2  0 19:29 ?        00:00:00 [bioset]
+root        515      2  0 19:29 ?        00:00:00 [kdmflush]
+root        516      2  0 19:29 ?        00:00:00 [bioset]
+root        530      2  0 19:29 ?        00:00:00 [bioset]
+root        531      2  0 19:29 ?        00:00:00 [xfsalloc]
+root        532      2  0 19:29 ?        00:00:00 [xfs_mru_cache]
+root        533      2  0 19:29 ?        00:00:00 [xfs-buf/dm-0]
+root        534      2  0 19:29 ?        00:00:00 [xfs-data/dm-0]
+root        535      2  0 19:29 ?        00:00:00 [xfs-conv/dm-0]
+root        536      2  0 19:29 ?        00:00:00 [xfs-cil/dm-0]
+root        537      2  0 19:29 ?        00:00:00 [xfs-reclaim/dm-]
+root        538      2  0 19:29 ?        00:00:00 [xfs-log/dm-0]
+root        539      2  0 19:29 ?        00:00:00 [xfs-eofblocks/d]
+root        540      2  0 19:29 ?        00:00:00 [xfsaild/dm-0]
+root        572      2  0 19:29 ?        00:00:00 [kworker/0:1H]
+root        617      1  0 19:29 ?        00:00:00 /usr/lib/systemd/systemd-journald
+root        644      1  0 19:29 ?        00:00:00 /usr/lib/systemd/systemd-udevd
+root        645      1  0 19:29 ?        00:00:00 /usr/sbin/lvmetad -f
+root        649      2  0 19:29 ?        00:00:00 [rpciod]
+root        650      2  0 19:29 ?        00:00:00 [xprtiod]
+root        669      2  0 19:29 ?        00:00:00 [nfit]
+root        703      2  0 19:29 ?        00:00:00 [kworker/u257:0]
+root        706      2  0 19:29 ?        00:00:00 [hci0]
+root        707      2  0 19:29 ?        00:00:00 [hci0]
+root        709      2  0 19:29 ?        00:00:00 [kworker/u257:2]
+root        710      2  0 19:29 ?        00:00:00 [xfs-buf/sda1]
+root        711      2  0 19:29 ?        00:00:00 [xfs-data/sda1]
+root        712      2  0 19:29 ?        00:00:00 [xfs-conv/sda1]
+root        713      2  0 19:29 ?        00:00:00 [xfs-cil/sda1]
+root        714      2  0 19:29 ?        00:00:00 [xfs-reclaim/sda]
+root        715      2  0 19:29 ?        00:00:00 [xfs-log/sda1]
+root        716      2  0 19:29 ?        00:00:00 [xfs-eofblocks/s]
+root        717      2  0 19:29 ?        00:00:00 [xfsaild/sda1]
+root        772      2  0 19:29 ?        00:00:00 [kdmflush]
+root        773      2  0 19:29 ?        00:00:00 [bioset]
+root        775      2  0 19:29 ?        00:00:00 [kdmflush]
+root        776      2  0 19:29 ?        00:00:00 [bioset]
+root        778      2  0 19:29 ?        00:00:00 [kdmflush]
+root        780      2  0 19:29 ?        00:00:00 [bioset]
+root        816      1  0 19:29 ?        00:00:00 /sbin/auditd
+root        839      1  0 19:29 ?        00:00:00 /usr/sbin/rsyslogd -n
+dbus        840      1  0 19:29 ?        00:00:00 /bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --syst
+emd-activation
+root        844      1  0 19:29 ?        00:00:00 /usr/sbin/NetworkManager --no-daemon
+root        846      1  0 19:29 ?        00:00:00 /usr/bin/VGAuthService -s
+root        848      1  0 19:29 ?        00:00:02 /usr/bin/vmtoolsd
+polkitd     849      1  0 19:29 ?        00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+rpc         850      1  0 19:29 ?        00:00:00 /sbin/rpcbind -w
+root        857      1  0 19:29 ?        00:00:00 /usr/sbin/gssproxy -D
+root       1081      1  0 19:29 ?        00:00:00 /usr/bin/python -Es /usr/sbin/tuned -l -P
+root       1082      1  0 19:29 ?        00:00:00 /usr/sbin/ypserv -f
+root       1083      1  0 19:29 ?        00:00:00 /usr/sbin/rpc.ypxfrd -f
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1094      1  0 19:29 ?        00:00:00 /usr/sbin/rpc.yppasswdd -f
+root       1099      1  0 19:29 ?        00:00:00 /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+root       1105      1  0 19:29 ?        00:00:00 /usr/bin/rhsmcertd
+root       1143      1  0 19:29 ?        00:00:00 rhnsd
+root       1146      1  0 19:29 ?        00:00:00 /usr/sbin/ypbind -n
+root       1190      1  0 19:29 ?        00:00:00 /usr/lib/systemd/systemd-logind
+root       1207      1  0 19:29 ?        00:00:00 /usr/sbin/crond -n
+root       1214      1  0 19:29 ?        00:00:00 login -- root
+root       1215      1  0 19:29 ?        00:00:00 /usr/sbin/automount --pid-file /run/autofs.pid
+root       1350      1  0 19:29 ?        00:00:00 /usr/libexec/postfix/master -w
+postfix    1351   1350  0 19:29 ?        00:00:00 pickup -l -t unix -u
+postfix    1352   1350  0 19:29 ?        00:00:00 qmgr -l -t unix -u
+root       1450   1214  0 19:30 tty1     00:00:00 -bash
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       1482   1472  0 19:31 pts/0    00:00:00 -bash
+root       1719      2  0 19:44 ?        00:00:00 [kworker/0:2]
+root       1889      2  0 19:54 ?        00:00:00 [kworker/0:0]
+root       1962      2  0 19:59 ?        00:00:00 [kworker/0:1]
+root       1995      1  0 20:01 ?        00:00:00 /usr/sbin/anacron -s
+root       2010   1086  0 20:01 ?        00:00:00 sshd: root@pts/1
+root       2014   2010  0 20:01 pts/1    00:00:00 -bash
+root       2072   1482  0 20:04 pts/0    00:00:00 ps -ef
+root       2073   1482  0 20:04 pts/0    00:00:00 more
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# top
+top - 20:11:11 up 41 min,  3 users,  load average: 0.04, 0.06, 0.05
+Tasks: 177 total,   1 running, 176 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  0.3 sy,  0.0 ni, 99.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  1865964 total,  1498912 free,   123300 used,   243752 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.  1561524 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+     1 root      20   0  125468   3888   2500 S  0.0  0.2   0:02.68 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.03 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:00.45 ksoftirqd/0
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:00.64 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:00.05 watchdog/0
+    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    14 root      20   0       0      0      0 S  0.0  0.0   0:00.00 khungtaskd
+    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md
+    25 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kswapd0
+    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd
+    27 root      39  19       0      0      0 S  0.0  0.0   0:00.03 khugepaged
+    28 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto
+    36 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld
+    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd
+    39 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused
+    41 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ipv6_addrconf
+    60 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 deferwq
+    92 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kauditd
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -aux
+USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root          1  0.1  0.2 125468  3888 ?        Ss   19:29   0:02 /usr/lib/systemd/systemd --switched-root --system --dese
+root          2  0.0  0.0      0     0 ?        S    19:29   0:00 [kthreadd]
+root          3  0.0  0.0      0     0 ?        S    19:29   0:00 [ksoftirqd/0]
+root          5  0.0  0.0      0     0 ?        S<   19:29   0:00 [kworker/0:0H]
+root          7  0.0  0.0      0     0 ?        S    19:29   0:00 [migration/0]
+root          8  0.0  0.0      0     0 ?        S    19:29   0:00 [rcu_bh]
+root          9  0.0  0.0      0     0 ?        R    19:29   0:00 [rcu_sched]
+root         10  0.0  0.0      0     0 ?        S    19:29   0:00 [watchdog/0]
+root         12  0.0  0.0      0     0 ?        S    19:29   0:00 [kdevtmpfs]
+root         13  0.0  0.0      0     0 ?        S<   19:29   0:00 [netns]
+root         14  0.0  0.0      0     0 ?        S    19:29   0:00 [khungtaskd]
+root         15  0.0  0.0      0     0 ?        S<   19:29   0:00 [writeback]
+root         16  0.0  0.0      0     0 ?        S<   19:29   0:00 [kintegrityd]
+root         17  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root         18  0.0  0.0      0     0 ?        S<   19:29   0:00 [kblockd]
+root         19  0.0  0.0      0     0 ?        S<   19:29   0:00 [md]
+root         25  0.0  0.0      0     0 ?        S    19:29   0:00 [kswapd0]
+root         26  0.0  0.0      0     0 ?        SN   19:29   0:00 [ksmd]
+root         27  0.0  0.0      0     0 ?        SN   19:29   0:00 [khugepaged]
+root         28  0.0  0.0      0     0 ?        S<   19:29   0:00 [crypto]
+root         36  0.0  0.0      0     0 ?        S<   19:29   0:00 [kthrotld]
+root         38  0.0  0.0      0     0 ?        S<   19:29   0:00 [kmpath_rdacd]
+root         39  0.0  0.0      0     0 ?        S<   19:29   0:00 [kpsmoused]
+root         41  0.0  0.0      0     0 ?        S<   19:29   0:00 [ipv6_addrconf]
+root         60  0.0  0.0      0     0 ?        S<   19:29   0:00 [deferwq]
+root         92  0.0  0.0      0     0 ?        S    19:29   0:00 [kauditd]
+root        273  0.0  0.0      0     0 ?        S<   19:29   0:00 [mpt_poll_0]
+root        274  0.0  0.0      0     0 ?        S<   19:29   0:00 [mpt/0]
+root        275  0.0  0.0      0     0 ?        S<   19:29   0:00 [ata_sff]
+root        278  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_0]
+root        280  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_0]
+root        284  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_1]
+root        285  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_1]
+root        286  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_2]
+root        287  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_2]
+root        291  0.0  0.0      0     0 ?        S<   19:29   0:00 [ttm_swap]
+root        298  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_3]
+root        299  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_3]
+root        300  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_4]
+root        301  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_4]
+root        302  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_5]
+root        303  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_5]
+root        304  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_6]
+root        305  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_6]
+root        306  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_7]
+root        307  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_7]
+root        308  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_8]
+root        309  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_8]
+root        310  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_9]
+root        311  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_9]
+root        312  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_10]
+root        313  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_10]
+root        314  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_11]
+root        315  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_11]
+root        316  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_12]
+root        317  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_12]
+root        318  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_13]
+root        319  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_13]
+root        320  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_14]
+root        321  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_14]
+root        322  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_15]
+root        323  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_15]
+root        324  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_16]
+root        325  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_16]
+root        326  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_17]
+root        327  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_17]
+root        328  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_18]
+root        329  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_18]
+root        330  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_19]
+root        331  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_19]
+root        332  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_20]
+root        333  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_20]
+root        334  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_21]
+root        335  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_21]
+root        336  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_22]
+root        337  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_22]
+root        338  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_23]
+root        339  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_23]
+root        340  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_24]
+root        341  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_24]
+root        342  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_25]
+root        343  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_25]
+root        344  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_26]
+root        345  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_26]
+root        346  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_27]
+root        347  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_27]
+root        348  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_28]
+root        349  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_28]
+root        350  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_29]
+root        351  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_29]
+root        352  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_30]
+root        353  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_30]
+root        354  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_31]
+root        355  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_31]
+root        356  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_32]
+root        357  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_32]
+root        358  0.0  0.0      0     0 ?        S<   19:29   0:00 [mpt_poll_1]
+root        360  0.0  0.0      0     0 ?        S<   19:29   0:00 [mpt/1]
+root        384  0.0  0.0      0     0 ?        S    19:29   0:00 [kworker/u256:28]
+root        385  0.0  0.0      0     0 ?        S    19:29   0:00 [kworker/u256:29]
+root        388  0.0  0.0      0     0 ?        S    19:29   0:00 [scsi_eh_33]
+root        389  0.0  0.0      0     0 ?        S<   19:29   0:00 [scsi_tmf_33]
+root        504  0.0  0.0      0     0 ?        S<   19:29   0:00 [kdmflush]
+root        505  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root        515  0.0  0.0      0     0 ?        S<   19:29   0:00 [kdmflush]
+root        516  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root        530  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root        531  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfsalloc]
+root        532  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs_mru_cache]
+root        533  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-buf/dm-0]
+root        534  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-data/dm-0]
+root        535  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-conv/dm-0]
+root        536  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-cil/dm-0]
+root        537  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-reclaim/dm-]
+root        538  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-log/dm-0]
+root        539  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-eofblocks/d]
+root        540  0.0  0.0      0     0 ?        S    19:29   0:01 [xfsaild/dm-0]
+root        572  0.0  0.0      0     0 ?        S<   19:29   0:00 [kworker/0:1H]
+root        617  0.0  0.2  36828  3744 ?        Ss   19:29   0:00 /usr/lib/systemd/systemd-journald
+root        644  0.0  0.1  44180  2176 ?        Ss   19:29   0:00 /usr/lib/systemd/systemd-udevd
+root        645  0.0  0.0 200776  1452 ?        Ss   19:29   0:00 /usr/sbin/lvmetad -f
+root        649  0.0  0.0      0     0 ?        S<   19:29   0:00 [rpciod]
+root        650  0.0  0.0      0     0 ?        S<   19:29   0:00 [xprtiod]
+root        669  0.0  0.0      0     0 ?        S<   19:29   0:00 [nfit]
+root        703  0.0  0.0      0     0 ?        S<   19:29   0:00 [kworker/u257:0]
+root        706  0.0  0.0      0     0 ?        S<   19:29   0:00 [hci0]
+root        707  0.0  0.0      0     0 ?        S<   19:29   0:00 [hci0]
+root        709  0.0  0.0      0     0 ?        S<   19:29   0:00 [kworker/u257:2]
+root        710  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-buf/sda1]
+root        711  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-data/sda1]
+root        712  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-conv/sda1]
+root        713  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-cil/sda1]
+root        714  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-reclaim/sda]
+root        715  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-log/sda1]
+root        716  0.0  0.0      0     0 ?        S<   19:29   0:00 [xfs-eofblocks/s]
+root        717  0.0  0.0      0     0 ?        S    19:29   0:00 [xfsaild/sda1]
+root        772  0.0  0.0      0     0 ?        S<   19:29   0:00 [kdmflush]
+root        773  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root        775  0.0  0.0      0     0 ?        S<   19:29   0:00 [kdmflush]
+root        776  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root        778  0.0  0.0      0     0 ?        S<   19:29   0:00 [kdmflush]
+root        780  0.0  0.0      0     0 ?        S<   19:29   0:00 [bioset]
+root        816  0.0  0.0  55452   884 ?        S<sl 19:29   0:00 /sbin/auditd
+root        839  0.0  0.2 214248  5100 ?        Ssl  19:29   0:00 /usr/sbin/rsyslogd -n
+dbus        840  0.0  0.0  28764  1724 ?        Ss   19:29   0:00 /bin/dbus-daemon --system --address=systemd: --nofork --
+root        844  0.0  0.4 469664  8880 ?        Ssl  19:29   0:00 /usr/sbin/NetworkManager --no-daemon
+root        846  0.0  0.3  99604  6080 ?        Ss   19:29   0:00 /usr/bin/VGAuthService -s
+root        848  0.1  0.3 305076  6132 ?        Ssl  19:29   0:03 /usr/bin/vmtoolsd
+polkitd     849  0.0  0.5 538380 11036 ?        Ssl  19:29   0:00 /usr/lib/polkit-1/polkitd --no-debug
+rpc         850  0.0  0.0  64956  1388 ?        Ss   19:29   0:00 /sbin/rpcbind -w
+root        857  0.0  0.0 195040  1232 ?        Ssl  19:29   0:00 /usr/sbin/gssproxy -D
+root       1081  0.0  1.0 562396 18764 ?        Ssl  19:29   0:00 /usr/bin/python -Es /usr/sbin/tuned -l -P
+root       1082  0.0  0.0  40608  1708 ?        Ss   19:29   0:00 /usr/sbin/ypserv -f
+root       1083  0.0  0.0  40400  1320 ?        Ss   19:29   0:00 /usr/sbin/rpc.ypxfrd -f
+root       1086  0.0  0.2 105996  4120 ?        Ss   19:29   0:00 /usr/sbin/sshd -D
+root       1094  0.0  0.0  44676  1116 ?        Ss   19:29   0:00 /usr/sbin/rpc.yppasswdd -f
+root       1099  0.0  0.0  53212   576 ?        Ss   19:29   0:00 /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+root       1105  0.0  0.0 115644   692 ?        Ss   19:29   0:00 /usr/bin/rhsmcertd
+root       1143  0.0  0.0 107892   284 ?        Ss   19:29   0:00 rhnsd
+root       1146  0.0  0.1 323728  2492 ?        Ssl  19:29   0:00 /usr/sbin/ypbind -n
+root       1190  0.0  0.0  24252  1708 ?        Ss   19:29   0:00 /usr/lib/systemd/systemd-logind
+root       1207  0.0  0.0 130476  1724 ?        Ss   19:29   0:00 /usr/sbin/crond -n
+root       1214  0.0  0.1  96992  2696 ?        Ss   19:29   0:00 login -- root
+root       1215  0.0  0.2 552368  4288 ?        Ssl  19:29   0:00 /usr/sbin/automount --pid-file /run/autofs.pid
+root       1350  0.0  0.1  89544  2080 ?        Ss   19:29   0:00 /usr/libexec/postfix/master -w
+postfix    1351  0.0  0.2  91744  4036 ?        S    19:29   0:00 pickup -l -t unix -u
+postfix    1352  0.0  0.2  91812  4068 ?        S    19:29   0:00 qmgr -l -t unix -u
+root       1450  0.0  0.1 115388  2024 tty1     Ss+  19:30   0:00 -bash
+root       1472  0.0  0.3 156868  6532 ?        Rs   19:31   0:00 sshd: root@pts/0
+root       1482  0.0  0.1 115492  2156 pts/0    Ss   19:31   0:00 -bash
+root       1962  0.0  0.0      0     0 ?        S    19:59   0:00 [kworker/0:1]
+root       1995  0.0  0.0 123208   768 ?        Ss   20:01   0:00 /usr/sbin/anacron -s
+root       2010  0.0  0.3 156868  6524 ?        Ss   20:01   0:00 sshd: root@pts/1
+root       2014  0.0  0.1 115392  2064 pts/1    Ss+  20:01   0:00 -bash
+root       2084  0.0  0.0      0     0 ?        S    20:04   0:00 [kworker/0:0]
+root       2169  0.0  0.0      0     0 ?        R    20:10   0:00 [kworker/0:2]
+root       2189  0.0  0.1 155308  1928 pts/0    R+   20:11   0:00 ps -aux
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# top
+top - 20:12:54 up 43 min,  3 users,  load average: 0.01, 0.04, 0.05
+Tasks: 177 total,   1 running, 176 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  0.0 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  1865964 total,  1499440 free,   122824 used,   243700 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.  1562068 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+  2208 root      20   0  157712   2260   1544 R  0.3  0.1   0:00.03 top
+     1 root      20   0  125468   3888   2500 S  0.0  0.2   0:02.68 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.03 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:00.45 ksoftirqd/0
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:00.64 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:00.06 watchdog/0
+    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    14 root      20   0       0      0      0 S  0.0  0.0   0:00.00 khungtaskd
+    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md
+    25 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kswapd0
+    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd
+    27 root      39  19       0      0      0 S  0.0  0.0   0:00.03 khugepaged
+    28 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto
+    36 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld
+    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd
+    39 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused
+    41 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ipv6_addrconf
+    60 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 deferwq
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# kill -l
+ 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP
+ 6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1
+11) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM
+16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ
+26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR
+31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3
+38) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13
+48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12
+53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7
+58) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+63) SIGRTMAX-1  64) SIGRTMAX
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# vi /ashok1 &
+[1] 2276
+[root@c111xyz /]#
+
+[1]+  Stopped                 vi /ashok1
+[root@c111xyz /]# vi /ashok2 &
+[2] 2277
+[root@c111xyz /]# vi /ashok3 &
+[3] 2279
+
+[2]+  Stopped                 vi /ashok2
+[root@c111xyz /]# vi /ashok4 &
+[4] 2281
+
+[3]+  Stopped                 vi /ashok3
+[root@c111xyz /]#
+
+[4]+  Stopped                 vi /ashok4
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i vi
+root        846      1  0 19:29 ?        00:00:00 /usr/bin/VGAuthService -s
+root       2276   1482  0 20:17 pts/0    00:00:00 vi /ashok1
+root       2277   1482  0 20:17 pts/0    00:00:00 vi /ashok2
+root       2279   1482  0 20:17 pts/0    00:00:00 vi /ashok3
+root       2281   1482  0 20:17 pts/0    00:00:00 vi /ashok4
+root       2284   1482  0 20:17 pts/0    00:00:00 grep --color=auto -i vi
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# kill -9 2276
+[root@c111xyz /]#
+[1]   Killed                  vi /ashok1
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i vi
+root        846      1  0 19:29 ?        00:00:00 /usr/bin/VGAuthService -s
+root       2277   1482  0 20:17 pts/0    00:00:00 vi /ashok2
+root       2279   1482  0 20:17 pts/0    00:00:00 vi /ashok3
+root       2281   1482  0 20:17 pts/0    00:00:00 vi /ashok4
+root       2299   1482  0 20:18 pts/0    00:00:00 grep --color=auto -i vi
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i 1482
+root       1482   1472  0 19:31 pts/0    00:00:00 -bash
+root       2277   1482  0 20:17 pts/0    00:00:00 vi /ashok2
+root       2279   1482  0 20:17 pts/0    00:00:00 vi /ashok3
+root       2281   1482  0 20:17 pts/0    00:00:00 vi /ashok4
+root       2302   1482  0 20:18 pts/0    00:00:00 ps -ef
+root       2303   1482  0 20:18 pts/0    00:00:00 grep --color=auto -i 1482
+[root@c111xyz /]#
+[root@c111xyz /]# kill -9 2277
+[root@c111xyz /]#
+[2]   Killed                  vi /ashok2
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i vi
+root        846      1  0 19:29 ?        00:00:00 /usr/bin/VGAuthService -s
+root       2279   1482  0 20:17 pts/0    00:00:00 vi /ashok3
+root       2281   1482  0 20:17 pts/0    00:00:00 vi /ashok4
+root       2334   1482  0 20:20 pts/0    00:00:00 grep --color=auto -i vi
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# vi /ashok9 &
+[5] 2337
+[root@c111xyz /]# vi /ashok8 &
+[6] 2338
+
+[5]+  Stopped                 vi /ashok9
+[root@c111xyz /]# vi /ashok7 &
+[7] 2340
+
+[6]+  Stopped                 vi /ashok8
+[root@c111xyz /]# vi /ashok6 &
+[8] 2342
+
+[7]+  Stopped                 vi /ashok7
+[root@c111xyz /]#
+
+[8]+  Stopped                 vi /ashok6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i vi
+root        846      1  0 19:29 ?        00:00:00 /usr/bin/VGAuthService -s
+root       2279   1482  0 20:17 pts/0    00:00:00 vi /ashok3
+root       2281   1482  0 20:17 pts/0    00:00:00 vi /ashok4
+root       2337   1482  0 20:20 pts/0    00:00:00 vi /ashok9
+root       2338   1482  0 20:20 pts/0    00:00:00 vi /ashok8
+root       2340   1482  0 20:20 pts/0    00:00:00 vi /ashok7
+root       2342   1482  0 20:20 pts/0    00:00:00 vi /ashok6
+root       2344   1482  0 20:20 pts/0    00:00:00 grep --color=auto -i vi
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# pkill -9 vi
+[3]   Killed                  vi /ashok3
+[4]   Killed                  vi /ashok4
+[5]   Killed                  vi /ashok9
+[6]   Killed                  vi /ashok8
+[7]-  Killed                  vi /ashok7
+[8]+  Killed                  vi /ashok6
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i vi
+root       2363   1482  0 20:21 pts/0    00:00:00 grep --color=auto -i vi
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i sshd
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       2010   1086  0 20:01 ?        00:00:00 sshd: root@pts/1
+root       2384   1482  0 20:22 pts/0    00:00:00 grep --color=auto -i sshd
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# kill -1 1086
+[root@c111xyz /]#
+[root@c111xyz /]# ps -ef |grep -i sshd
+root       1086      1  0 19:29 ?        00:00:00 /usr/sbin/sshd -D
+root       1472   1086  0 19:31 ?        00:00:00 sshd: root@pts/0
+root       2010   1086  0 20:01 ?        00:00:00 sshd: root@pts/1
+root       2388   1482  0 20:22 pts/0    00:00:00 grep --color=auto -i sshd
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.4G   16G   9% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.8M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# cp -r /var/log/ /tmp/backup &
+[1] 2454
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  1.5G   16G   9% /
+devtmpfs               901M     0  901M   0% /dev
+tmpfs                  912M     0  912M   0% /dev/shm
+tmpfs                  912M  8.8M  903M   1% /run
+tmpfs                  912M     0  912M   0% /sys/fs/cgroup
+/dev/sda1             1014M  143M  872M  15% /boot
+tmpfs                  183M     0  183M   0% /run/user/0
+[1]+  Done                    cp -i -r /var/log/ /tmp/backup
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]#
+[root@c111xyz /]# ls -l /tmp/
+total 8
+drwxr-xr-x 6 root root 4096 Jul 22 20:26 backup
+-rw-r--r-- 1 root root   45 Jul 21 19:09 file23
+drwx------ 3 root root   17 Jul 22 19:29 systemd-private-5ac2d482f3c04bfea6042d1eb958351c-vmtoolsd.service-oMzAsr
+drwx------ 3 root root   17 Jul 22 19:29 systemd-private-5ac2d482f3c04bfea6042d1eb958351c-ypbind.service-q0Mt7g
+drwx------ 3 root root   17 Jul 22 19:29 systemd-private-5ac2d482f3c04bfea6042d1eb958351c-yppasswdd.service-egnyqS
+drwx------ 3 root root   17 Jul 22 19:29 systemd-private-5ac2d482f3c04bfea6042d1eb958351c-ypserv.service-0lJC35
+drwx------ 3 root root   17 Jul 22 19:29 systemd-private-5ac2d482f3c04bfea6042d1eb958351c-ypxfrd.service-WApCeu
+[root@c111xyz /]# date
+Tue Jul 22 20:27:32 IST 2025
+[root@c111xyz /]#
