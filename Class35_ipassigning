@@ -1,0 +1,37 @@
+Class 35 03/11/2025
+
+IP Assigning to NIC
+
+Rhel7:
+======
+Step1: Add NIC to server 
+Step2: Identify New NIC card with "ifconfg" command
+	# ip addr
+Step3: Assign IP temporary
+	# ip addr add <IP ADDRESS/NETMASK VALUE> dev <NIC NAME>
+	# ip addr
+Step4: Perminantly add IP
+	# cd /etc/sysconfig/network-scripts
+	# cp ifcfg-ens33 ifcfg-ens39
+	# vi ifcfg-ens39
+	TYPE="Ethernet"
+	PROXY_METHOD="none"
+	BROWSER_ONLY="no"
+	BOOTPROTO="none"
+	DEFROUTE="yes"
+	IPV4_FAILURE_FATAL="no"
+	IPV6INIT="yes"
+	IPV6_AUTOCONF="yes"
+	IPV6_DEFROUTE="yes"
+	IPV6_FAILURE_FATAL="no"
+	IPV6_ADDR_GEN_MODE="stable-privacy"
+	NAME="ens39"
+	DEVICE="ens39"
+	ONBOOT="yes"
+	IPADDR="192.168.29.125"
+	PREFIX="24"
+	GATEWAY="192.168.29.1"
+	IPV6_PRIVACY="no"
+Step5: Reboot the server and check IP details
+	# systemctl reboot
+	# ip addr
