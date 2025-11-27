@@ -1,0 +1,32 @@
+Class 41 27/11/2025
+
+Real time things
+================
+1) consultency : a physically located company along with documents (Offer Letter, Last hike letter, last 3 monthes pay slips and while leaving they will provide releaving letter)
+2) shift pattren : 2 shifts, 6:30 to 3:30 PM, 1:30 to 10:30 PM Night shift will be supported by US team
+3) role Changes for a week, Proceess Implementation Document(PID). Normal change, emergency change, standard changes
+	a) new configuration setup
+	b) modification of the current configuration
+4) role Incidents for a week, priority1, p2, p3, p4
+	a) service down alert
+	b) server down alert
+	c) file system curreption
+	d) hardware failures
+5) Environment Used Tools:
+	Monitoring tool: Nagios, IMON
+	Ticketing tool: e-tracker
+	Messaging tool: MS teams
+	Email : MS Outlook
+	password manager: all server root passowrds will be stored
+6) Escalation Matrics:
+	First point of contact : Lead 
+	Next point of contact : Manager
+	Next point of contact : Delivery Manager
+	Then point of contact is : Communication Officer
+7) DataCenters: Texas in US, Hazalwood in UK, Ctrls-Hyd/India
+8) Roles/Responsibulities: 
+	a) what are the skills you have
+	b) how many servers you are supporting (1500+)
+	c) daily activity process
+	d) work style
+9) L1/L2/L3 support management
